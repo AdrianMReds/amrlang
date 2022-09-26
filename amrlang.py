@@ -1,3 +1,6 @@
+#Adrián Montemayor Rojas
+#A01283139
+
 import ply.lex as lex
 import ply.yacc as yacc
 import numpy as np
@@ -64,14 +67,40 @@ def t_ID(t):
     t.value = t.value.upper()
     return t
 
+def t_CTEFLOAT(t):
+    r'\d+\.\d+'
+    t.type = 'FLOAT'
+    t.value = float(t.value)
+    return t
+
 def t_CTEINT(t):
     r'\d+'
     t.type = 'INT'
     t.value = int(t.value)
     return t
 
-def t_CTEFLOAT(t):
-    r'\d+\.\d+'
-    t.type = 'FLOAT'
-    t.value = float(t.value)
-    return t
+
+def t_error(t):
+    print("Illegal character '%s'" %t.value[0])
+    t.lexer.skip(1)
+
+lexer = lex.lex()
+
+data = '''
+       program ejemplo; 
+       var float x, z;
+
+       func main()
+       var int y;
+       {
+        print()
+       }
+       '''
+
+lexer.input(data)
+
+while True:
+    tok = lexer.token()
+    if not tok:
+        break
+    print(tok)

@@ -1,0 +1,5 @@
+program amr;
+
+func main(){
+print()
+}

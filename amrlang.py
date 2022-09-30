@@ -61,7 +61,6 @@ t_DIFERENTE = r'\$'
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
-    t.type = 'ID'
     if t.value in reservadas:
         t.type = t.value
     t.value = t.value
@@ -69,22 +68,23 @@ def t_ID(t):
 
 def t_CTEFLOAT(t):
     r'\d+\.\d+'
-    t.type = 'FLOAT'
     t.value = float(t.value)
     return t
 
 def t_CTEINT(t):
     r'\d+'
-    t.type = 'INT'
     t.value = int(t.value)
     return t
 
 def t_CTESTRING(t):
-    r'\"[a-zA-Z_][a-zA-Z0-9_]*\"'
-    t.type = 'STRING'
+    # r'\"[a-zA-Z_][a-zA-Z0-9_]*\"'
+    r'\"(\\.|[^"\\])*\"'
     t.value = str(t.value)
     return t
 
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
 
 def t_error(t):
     print("Illegal character '%s'" %t.value[0])
@@ -93,11 +93,12 @@ def t_error(t):
 lexer = lex.lex()
 
 data = '''
-        program ejemplo;
-
-        func main(){
-            Sprint()
-        }
+        program amr;
+func main()
+var int x;
+{
+print("Hola");
+}
        '''
 
 lexer.input(data)
@@ -166,6 +167,7 @@ def p_type(p):
     type : int
          | float
          | string
+         | bool
     '''
 
 def p_function(p):
@@ -212,12 +214,13 @@ def p_escaux(p):
     '''
     escaux : expresion nextexp
            | CTESTRING nextexp
+           | empty
     '''
 
 #Para poner más de una expresión en un print
 def p_nextexp(p):
     '''
-    nextexp : COMA expresion
+    nextexp : COMA escaux
             | empty
     '''
 
@@ -300,15 +303,14 @@ parser = yacc.yacc()
 
 # parser.parse(data)
 
-try:
-    f = open("./ejemplo2.txt", "r")
-    fileContent = f.read()
-    print(fileContent)
-    parser.parse(fileContent)
-except EOFError:
-    print("Hubo un error con el archivo")
-    pass
-    
+# try:
+#     f = open("./ejemplo.txt", "r")
+#     fileContent = f.read()
+#     # print(fileContent)
+#     parser.parse(fileContent)
+# except EOFError:
+#     print("Hubo un error con el archivo")
+#     pass
 
 # while True:
 #     try:
@@ -317,7 +319,6 @@ except EOFError:
 #         break
 #     parser.parse(s)
 #     # print(result)
-
 
 while True:
     tok = lexer.token()

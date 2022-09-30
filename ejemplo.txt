@@ -1,0 +1,6 @@
+program amr;
+func main()
+var int x;
+{
+print("Hola");
+}

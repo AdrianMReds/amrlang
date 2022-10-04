@@ -167,7 +167,6 @@ def p_type(p):
     type : int
          | float
          | string
-         | bool
     '''
 
 def p_function(p):
@@ -302,15 +301,15 @@ def p_empty(p):
 parser = yacc.yacc()
 
 # parser.parse(data)
-
-# try:
-#     f = open("./ejemplo.txt", "r")
-#     fileContent = f.read()
-#     # print(fileContent)
-#     parser.parse(fileContent)
-# except EOFError:
-#     print("Hubo un error con el archivo")
-#     pass
+# fn = input("Nombre del archivo\n")
+try:
+    f = open("./ejemplo.txt", "r")
+    fileContent = f.read()
+    # print(fileContent)
+    parser.parse(fileContent)
+except:
+    print("Hubo un error con el archivo")
+    pass
 
 # while True:
 #     try:

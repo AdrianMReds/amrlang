@@ -1,13 +1,24 @@
 #Adrián Montemayor Rojas
 #A01283139
 
+#Pendiente y cambios
+#Pendiente:
+#Agregar llamadas especiales
+#Agregar llamadas especiales a asignación y escritura?
+#Checar si la parte de expresiones está bien
+#Agregar void a palabras reservadas y a gramática de function
+#Cambios:
+# Programa, main y function en grámatica hay que agregarle el regreso de vars --ver nuevos diagramas--
+
+
 import ply.lex as lex
 import ply.yacc as yacc
 import numpy as np
 import sys
 
-reservadas = ['program', 'var', 'func', 'main', 'int', 'float', 'string',
-              'print', 'if', 'else', 'while', 'for', 'input']
+reservadas = ['program', 'var', 'func', 'main', 'int', 'float', 'string', 'bool',
+              'write', 'if', 'else', 'while', 'for', 'read', 'void', 'end', 'length',
+              'max', 'min', 'avg', 'median', 'mode', 'variance', 'stdev']
 
 tokens = reservadas + ['ID', #NOMBRE DE VARIABLE O FUNCIÓN
                        'CTEINT', #CONSTANTE INT
@@ -32,7 +43,8 @@ tokens = reservadas + ['ID', #NOMBRE DE VARIABLE O FUNCIÓN
                        'MAYORQUE', # >
                        'MENORQUE', # <
                        'EQUALS', # ==
-                       'DIFERENTE' #$
+                       'DIFERENTE', #$
+                       'PUNTO' # .
                        ]
 
 t_ignore = r' '
@@ -58,6 +70,7 @@ t_MAYORQUE = r'\>'
 t_MENORQUE = r'\<'
 t_EQUALS = r'\=\='
 t_DIFERENTE = r'\$'
+t_PUNTO = r'\.'
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -97,43 +110,51 @@ data = '''
 func main()
 var int x;
 {
-print("Hola");
+write("Hola");
 }
        '''
 
 lexer.input(data)
 
+#varsaux es P
+#paux2 es F
 def p_programa(p):
     '''
-    programa : program ID PYC paux paux2 mainfunction
+    programa : program ID PYC varsaux paux2 mainfunction end PYC
     '''
 
 def p_programa_vacio(p):
     '''
-    programa : program ID PYC empty mainfunction
+    programa : program ID PYC empty mainfunction end PYC
     '''
 
-def p_paux(p):
+def p_varsaux(p):
     '''
-    paux : vars
+    varsaux : vars varsaux
          | empty
     '''
 
 def p_paux2(p):
     '''
-    paux2 : function
+    paux2 : function paux2
           | empty
     '''
 
+# def p_vars(p):
+#     '''
+#     vars : var type vaux PYC vars
+#          | empty
+#     '''
+
 def p_vars(p):
     '''
-    vars : var type vaux PYC vars
+    vars : var type vaux PYC
          | empty
     '''
 
 def p_vaux(p):
     '''
-    vaux : ID
+    vaux : ID nextvar
          | ID CORIZQ CTEINT CORDER nextvar
          | ID CORIZQ CTEINT COMA CTEINT CORDER nextvar
     '''
@@ -146,7 +167,7 @@ def p_nextvar(p):
 
 def p_mainfunction(p):
     '''
-    mainfunction : func main PARIZQ PARDER vars bloque
+    mainfunction : func main PARIZQ PARDER varsaux bloque
                  | func main PARIZQ PARDER bloque
     '''
 
@@ -167,12 +188,20 @@ def p_type(p):
     type : int
          | float
          | string
+         | bool
     '''
 
 def p_function(p):
     '''
-    function : type ID PARIZQ funcaux PARDER vars bloque
-             | type ID PARIZQ empty PARDER vars bloque
+    function : ftype func ID PARIZQ funcaux PARDER varsaux bloque
+             | ftype func ID PARIZQ empty PARDER varsaux bloque
+    '''
+
+#Function types
+def p_ftype(p):
+    '''
+    ftype : type
+          | void
     '''
 
 def p_funcaux(p):
@@ -195,6 +224,7 @@ def p_estatuto(p):
 def p_asignacion(p):
     '''
     asignacion : ID asignaux ASIGNA hyper_exp PYC
+               | ID asignaux ASIGNA llamada_esp PYC
     '''
 
 def p_asignaux(p):
@@ -206,14 +236,14 @@ def p_asignaux(p):
 
 def p_escritura(p):
     '''
-    escritura : print PARIZQ escaux PARDER PYC
+    escritura : write PARIZQ escaux PARDER PYC
     '''
 
 def p_escaux(p):
     '''
     escaux : expresion nextexp
            | CTESTRING nextexp
-           | empty
+           | llamada_esp nextexp
     '''
 
 #Para poner más de una expresión en un print
@@ -225,8 +255,21 @@ def p_nextexp(p):
 
 def p_llamada(p):
     '''
-    llamada : ID PARIZQ expresion nextexp PARDER
+    llamada : ID PARIZQ expresion llamaux PARDER
+            | ID PARIZQ llamada_esp llamaux PARDER
             | ID PARIZQ PARDER
+    '''
+
+def p_llamaux(p):
+    '''
+    llamaux : expresion nextparametro
+            | llamada_esp nextparametro
+    '''
+
+def p_nextparametro(p):
+    '''
+    nextparametro : COMA llamaux
+                  | empty
     '''
 
 def p_condicion(p):
@@ -242,12 +285,12 @@ def p_whileloop(p):
 
 def p_forloop(p):
     '''
-    forloop : for PARIZQ CTEINT DOSPUNTOS CTEINT PARDER bloque
+    forloop : for PARIZQ expresion DOSPUNTOS expresion PARDER bloque
     '''
 
 def p_lectura(p):
     '''
-    lectura : input PARIZQ ID PARDER PYC
+    lectura : read PARIZQ ID PARDER PYC
     '''
 
 def p_expresion(p):
@@ -266,15 +309,10 @@ def p_term(p):
 
 def p_fact(p):
     '''
-    fact : varcte 
-         | varcte PARIZQ hyper_exp PARDER fact
-    '''
-
-def p_varcte(p):
-    '''
-    varcte : CTEINT
-           | CTEFLOAT
-           | ID
+    fact : CTEINT
+         | CTEFLOAT
+         | ID
+         | hyper_exp
     '''
 
 def p_hyper_exp(p):
@@ -292,6 +330,24 @@ def p_super_exp(p):
               | expresion EQUALS expresion
               | expresion DIFERENTE expresion
     '''
+
+def p_llamada_esp(p):
+    '''
+    llamada_esp : ID PUNTO especiales PARIZQ PARDER
+    '''
+
+def p_especiales(p):
+    '''
+    especiales : length
+               | max
+               | min
+               | avg
+               | median
+               | mode
+               | variance
+               | stdev
+    '''
+
 
 def p_empty(p):
     '''

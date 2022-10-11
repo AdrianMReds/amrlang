@@ -1,6 +1,8 @@
-program amr;
-func main()
-var int x;
-{
-print("Hola");
+program ejemplo;
+var int x, y;
+
+func main(){
+write("Hola");
 }
+
+end;

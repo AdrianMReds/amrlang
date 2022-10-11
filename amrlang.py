@@ -72,6 +72,13 @@ t_EQUALS = r'\=\='
 t_DIFERENTE = r'\$'
 t_PUNTO = r'\.'
 
+progName = ''
+tipoVar = ''
+tipoFunc = ''
+actualFunc = ''
+dirFunc = {}
+dirVars = {}
+
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     if t.value in reservadas:
@@ -106,12 +113,15 @@ def t_error(t):
 lexer = lex.lex()
 
 data = '''
-        program amr;
-func main()
-var int x;
-{
+        program ejemplo;
+var int x, y, z[5];
+
+func main(){
 write("Hola");
 }
+
+end;
+
        '''
 
 lexer.input(data)
@@ -120,18 +130,27 @@ lexer.input(data)
 #paux2 es F
 def p_programa(p):
     '''
-    programa : program ID PYC varsaux paux2 mainfunction end PYC
+    programa : program ID auxprograma PYC varsaux paux2 mainfunction end PYC
     '''
 
 def p_programa_vacio(p):
     '''
-    programa : program ID PYC empty mainfunction end PYC
+    programa : program auxprograma ID PYC empty mainfunction end PYC
     '''
+
+def p_auxprograma(p):
+    '''auxprograma :
+    '''
+    progName = str(p[-1])
+    t = 'program'
+    dirFunc[progName] = {'type': t, 'vars' : {}}
+    global actualFunc
+    actualFunc = progName
 
 def p_varsaux(p):
     '''
     varsaux : vars varsaux
-         | empty
+            | empty
     '''
 
 def p_paux2(p):
@@ -140,23 +159,17 @@ def p_paux2(p):
           | empty
     '''
 
-# def p_vars(p):
-#     '''
-#     vars : var type vaux PYC vars
-#          | empty
-#     '''
-
 def p_vars(p):
     '''
-    vars : var type vaux PYC
+    vars : var type guardarTipo vaux PYC
          | empty
     '''
 
 def p_vaux(p):
     '''
-    vaux : ID nextvar
-         | ID CORIZQ CTEINT CORDER nextvar
-         | ID CORIZQ CTEINT COMA CTEINT CORDER nextvar
+    vaux : ID crearVar nextvar
+         | ID CORIZQ CTEINT CORDER crearVar nextvar
+         | ID CORIZQ CTEINT COMA CTEINT CORDER crearVar nextvar
     '''
 
 def p_nextvar(p):
@@ -165,11 +178,52 @@ def p_nextvar(p):
             | empty
     '''
 
+def p_crearVar(p):
+    '''
+    crearVar :
+    '''
+    print(p[-3])
+    e = dirFunc.get(actualFunc,0)
+    if e!=0:
+        #Simple variable
+        if p[-1]!=']':
+            #Name of var (ID)
+            nv = p[-1]
+            dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':0}
+        else:
+            #Array
+            if p[-3] != ',':
+                #Name of var (ID)
+                nv = p[-4]
+                dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':1}
+            #Matrix
+            else:
+                #Name of var (ID)
+                nv = p[-6]
+                dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':2}
+
+def p_guardarTipo(p):
+    '''
+    guardarTipo :
+    '''
+    global tipoVar
+    tipoVar = p[-1]
+
 def p_mainfunction(p):
     '''
-    mainfunction : func main PARIZQ PARDER varsaux bloque
-                 | func main PARIZQ PARDER bloque
+    mainfunction : func main agregaMain PARIZQ PARDER varsaux bloque
+                 | func main agregaMain PARIZQ PARDER bloque
     '''
+
+def p_agregaMain(p):
+    '''
+    agregaMain :
+    '''
+    t = 'main'
+    global actualFunc
+    actualFunc = p[-1]
+    dirFunc[actualFunc] = {'type': t, 'vars' : {}}
+
 
 def p_bloque(p):
     '''
@@ -354,6 +408,9 @@ def p_empty(p):
     empty : 
     '''
 
+def p_error(p):
+    print("Syntax error bro")
+
 parser = yacc.yacc()
 
 # parser.parse(data)
@@ -366,6 +423,12 @@ try:
 except:
     print("Hubo un error con el archivo")
     pass
+
+funcs = list(dirFunc)
+
+for f in funcs:
+    print(f)
+    print(dirFunc[f],'\n')
 
 # while True:
 #     try:

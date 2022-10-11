@@ -1,7 +1,9 @@
 program ejemplo;
-var int x, y;
+var int x, y, z[5], w[4,2];
 
-func main(){
+func main()
+var int p;
+{
 write("Hola");
 }
 

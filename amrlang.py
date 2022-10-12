@@ -2,19 +2,91 @@
 #A01283139
 
 #Pendiente y cambios
-#Pendiente:
-#Agregar llamadas especiales
-#Agregar llamadas especiales a asignación y escritura?
-#Checar si la parte de expresiones está bien
-#Agregar void a palabras reservadas y a gramática de function
+#Pendiente
+#No se pueden poner arreglos o matrices como parametros de funciones
+
 #Cambios:
 # Programa, main y function en grámatica hay que agregarle el regreso de vars --ver nuevos diagramas--
-
 
 import ply.lex as lex
 import ply.yacc as yacc
 import numpy as np
 import sys
+
+# -1 = error
+# 0 = int
+# 1 = float
+# 2 = string
+# 3 = bool
+
+typeList = ['int', 'float', 'string', 'bool']
+
+def cuboSemantico(op1, op2, operador) -> int:
+    if operador == '+':
+        if op1 == 'int' and op2 == 'int':
+            return 0
+        elif op1 == 'float' and op2 == 'float':
+            return 1
+        elif (op1 == 'int' and op2 == 'float') or (op1 == 'float' and op2 == 'int'):
+            return 1
+        else:
+            return -1
+    elif operador == '-':
+        if op1 == 'int' and op2 == 'int':
+            return 0
+        elif op1 == 'float' and op2 == 'float':
+            return 1
+        elif (op1 == 'int' and op2 == 'float') or (op1 == 'float' and op2 == 'int'):
+            return 1
+        else:
+            return -1
+    elif operador == '*':
+        if op1 == 'int' and op2 == 'int':
+            return 0
+        elif op1 == 'float' and op2 == 'float':
+            return 1
+        elif (op1 == 'int' and op2 == 'float') or (op1 == 'float' and op2 == 'int'):
+            return 1
+        else:
+            return -1
+    elif operador == '/':
+        if op1 == 'int' and op2 == 'int':
+            return 1
+        elif op1 == 'float' and op2 == 'float':
+            return 1
+        elif (op1 == 'int' and op2 == 'float') or (op1 == 'float' and op2 == 'int'):
+            return 1
+        else:
+            return -1
+    elif operador == '>' or operador == '<':
+        if op1 == 'int' and op2 == 'int':
+            return 3
+        elif op1 == 'float' and op2 == 'float':
+            return 3
+        elif (op1 == 'int' and op2 == 'float') or (op1 == 'float' and op2 == 'int'):
+            return 3
+        else:
+            return -1
+    elif operador == '==' or operador == '$':
+        if op1 == 'int' and op2 == 'int':
+            return 3
+        elif op1 == 'float' and op2 == 'float':
+            return 3
+        elif (op1 == 'int' and op2 == 'float') or (op1 == 'float' and op2 == 'int'):
+            return 3
+        elif op1 == 'string' and op2 == 'string':
+            return 3
+        elif op1 == 'bool' and op2 == 'bool':
+            return 3
+        else:
+            return -1
+    elif operador == '&&' or operador == '||':
+        if op1 == 'bool' and op2 == 'bool':
+            return 3
+        else:
+            return -1
+    else:
+        return -1
 
 reservadas = ['program', 'var', 'func', 'main', 'int', 'float', 'string', 'bool',
               'write', 'if', 'else', 'while', 'for', 'read', 'void', 'end', 'length',
@@ -141,6 +213,7 @@ def p_programa_vacio(p):
 def p_auxprograma(p):
     '''auxprograma :
     '''
+    global progName
     progName = str(p[-1])
     t = 'program'
     dirFunc[progName] = {'type': t, 'vars' : {}}
@@ -161,15 +234,15 @@ def p_paux2(p):
 
 def p_vars(p):
     '''
-    vars : var type guardarTipo vaux PYC
+    vars : var type vaux PYC
          | empty
     '''
 
 def p_vaux(p):
     '''
-    vaux : ID crearVar nextvar
-         | ID CORIZQ CTEINT CORDER crearVar nextvar
-         | ID CORIZQ CTEINT COMA CTEINT CORDER crearVar nextvar
+    vaux : ID agregaVar nextvar
+         | ID CORIZQ CTEINT CORDER agregaVar nextvar
+         | ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar nextvar
     '''
 
 def p_nextvar(p):
@@ -178,11 +251,10 @@ def p_nextvar(p):
             | empty
     '''
 
-def p_crearVar(p):
+def p_agregaVar(p):
     '''
-    crearVar :
+    agregaVar :
     '''
-    print(p[-3])
     e = dirFunc.get(actualFunc,0)
     if e!=0:
         #Simple variable
@@ -202,28 +274,39 @@ def p_crearVar(p):
                 nv = p[-6]
                 dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':2}
 
-def p_guardarTipo(p):
+def p_guardarTipoVar(p):
     '''
-    guardarTipo :
+    guardarTipoVar :
     '''
     global tipoVar
     tipoVar = p[-1]
 
+def p_guardarTipoFunc(p):
+    '''
+    guardarTipoFunc :
+    '''
+    global tipoFunc
+    tipoFunc = p[-1]
+
 def p_mainfunction(p):
     '''
-    mainfunction : func main agregaMain PARIZQ PARDER varsaux bloque
-                 | func main agregaMain PARIZQ PARDER bloque
+    mainfunction : func main agregaFunc PARIZQ PARDER varsaux bloque
+                 | func main agregaFunc PARIZQ PARDER bloque
     '''
 
-def p_agregaMain(p):
+def p_agregaFunc(p):
     '''
-    agregaMain :
+    agregaFunc :
     '''
-    t = 'main'
     global actualFunc
-    actualFunc = p[-1]
-    dirFunc[actualFunc] = {'type': t, 'vars' : {}}
-
+    global tipoFunc
+    if p[-1]=='main':
+        t = 'void'
+        actualFunc = p[-1]
+    else:
+        t = tipoFunc
+        actualFunc = p[-1]
+    dirFunc[actualFunc] = {'type': tipoFunc, 'vars' : {}}
 
 def p_bloque(p):
     '''
@@ -239,29 +322,32 @@ def p_bloqueaux(p):
 
 def p_type(p):
     '''
-    type : int
-         | float
-         | string
-         | bool
+    type : int guardarTipoVar
+         | float guardarTipoVar
+         | string guardarTipoVar
+         | bool guardarTipoVar
     '''
 
 def p_function(p):
     '''
-    function : ftype func ID PARIZQ funcaux PARDER varsaux bloque
-             | ftype func ID PARIZQ empty PARDER varsaux bloque
+    function : ftype func ID agregaFunc PARIZQ funcaux PARDER varsaux bloque
+             | ftype func ID agregaFunc PARIZQ empty PARDER varsaux bloque
     '''
 
 #Function types
 def p_ftype(p):
     '''
-    ftype : type
-          | void
+    ftype : int guardarTipoFunc
+          | float guardarTipoFunc
+          | string guardarTipoFunc
+          | bool guardarTipoFunc
+          | void guardarTipoFunc
     '''
 
 def p_funcaux(p):
     '''
-    funcaux : type ID 
-            | type ID COMA funcaux
+    funcaux : type ID agregaVar
+            | type ID agregaVar COMA funcaux
     '''
 
 def p_estatuto(p):
@@ -279,6 +365,7 @@ def p_asignacion(p):
     '''
     asignacion : ID asignaux ASIGNA hyper_exp PYC
                | ID asignaux ASIGNA llamada_esp PYC
+               | ID asignaux ASIGNA CTESTRING PYC
     '''
 
 def p_asignaux(p):
@@ -409,7 +496,10 @@ def p_empty(p):
     '''
 
 def p_error(p):
-    print("Syntax error bro")
+    # print("Syntax error at '%s'" %p[0])
+    print(p)
+    print("Syntax error")
+    sys.exit()
 
 parser = yacc.yacc()
 
@@ -419,10 +509,11 @@ try:
     f = open("./ejemplo.txt", "r")
     fileContent = f.read()
     # print(fileContent)
-    parser.parse(fileContent)
 except:
     print("Hubo un error con el archivo")
     pass
+
+parser.parse(fileContent)
 
 funcs = list(dirFunc)
 

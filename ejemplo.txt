@@ -1,10 +1,19 @@
 program ejemplo;
 var int x, y, z[5], w[4,2];
+var float ivi;
+
+void func hola(int num)
+var string nombre, apellido;
+{
+    write("Hola");
+    nombre = "Laura";
+    x = 1;
+}
 
 func main()
 var int p;
 {
-write("Hola");
+write("Dentro del main");
 }
 
 end;

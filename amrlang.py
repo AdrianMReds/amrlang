@@ -114,6 +114,8 @@ tokens = reservadas + ['ID', #NOMBRE DE VARIABLE O FUNCIÓN
                        'DIV', # /
                        'MAYORQUE', # >
                        'MENORQUE', # <
+                       'MAYORIGUAL',
+                       'MENORIGUAL',
                        'EQUALS', # ==
                        'DIFERENTE', #$
                        'PUNTO' # .
@@ -363,7 +365,7 @@ def p_estatuto(p):
 
 def p_asignacion(p):
     '''
-    asignacion : ID asignaux ASIGNA hyper_exp PYC
+    asignacion : ID asignaux ASIGNA expresion PYC
                | ID asignaux ASIGNA llamada_esp PYC
                | ID asignaux ASIGNA CTESTRING PYC
     '''
@@ -436,41 +438,87 @@ def p_lectura(p):
 
 def p_expresion(p):
     '''
-    expresion : term 
-              | term MAS term
-              | term MENOS term
+    expresion : andExpresion
+              | andExpresion OR andExpresion
+    '''
+
+def p_andExpresion(p):
+    '''
+    andExpresion : relopExpresion
+                 | relopExpresion AND relopExpresion
+    '''
+
+def p_relopExpresion(p):
+    '''
+    relopExpresion : aritExpresion
+                   | aritExpresion MAYORQUE aritExpresion
+                   | aritExpresion MENORQUE aritExpresion
+                   | aritExpresion MAYORIGUAL aritExpresion
+                   | aritExpresion MENORIGUAL aritExpresion
+                   | aritExpresion EQUALS aritExpresion
+                   | aritExpresion DIFERENTE aritExpresion
+    '''
+
+def p_aritExpresion(p):
+    '''
+    aritExpresion : term
+                  | term MAS term
+                  | term MENOS term
     '''
 
 def p_term(p):
     '''
-    term : fact
-         | fact MULT fact
-         | fact DIV fact
+    term : factor
+         | factor MULT factor
+         | factor DIV factor
     '''
 
-def p_fact(p):
+def p_factor(p):
     '''
-    fact : CTEINT
-         | CTEFLOAT
-         | ID
-         | hyper_exp
-    '''
-
-def p_hyper_exp(p):
-    '''
-    hyper_exp : super_exp
-              | super_exp AND super_exp
-              | super_exp OR super_exp
+    factor : PARIZQ expresion PARDER
+           | CTEINT
+           | CTEFLOAT
+           | ID
+           | llamada_esp
     '''
 
-def p_super_exp(p):
-    '''
-    super_exp : expresion
-              | expresion MAYORQUE expresion
-              | expresion MENORQUE expresion
-              | expresion EQUALS expresion
-              | expresion DIFERENTE expresion
-    '''
+# def p_expresion(p):
+#     '''
+#     expresion : term 
+#               | term MAS term
+#               | term MENOS term
+#     '''
+
+# def p_term(p):
+#     '''
+#     term : fact
+#          | fact MULT fact
+#          | fact DIV fact
+#     '''
+
+# def p_fact(p):
+#     '''
+#     fact : CTEINT
+#          | CTEFLOAT
+#          | ID
+#          | hyper_exp
+#     '''
+
+# def p_hyper_exp(p):
+#     '''
+#     hyper_exp : super_exp
+#               | super_exp AND super_exp
+#               | super_exp OR super_exp
+#     '''
+
+# def p_super_exp(p):
+#     '''
+#     super_exp : expresion
+#               | expresion MAYORQUE expresion
+#               | expresion MENORQUE expresion
+#               | expresion EQUALS expresion
+#               | expresion DIFERENTE expresion
+#     '''
 
 def p_llamada_esp(p):
     '''

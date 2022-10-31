@@ -56,6 +56,4 @@ El compilador ya detecta errores de sintaxis al escribir líneas de código inco
 
 -- AVANCE 2 --
 
-Para este avance ya se tiene la tabla de funciones con sus respectivas tablas de variables, pero por ahora solo falta poder agregar funciones comunes que no sean el main o el programa en general y hay un bug al guardar las variables, no se guarda bien su tipo por alguna razón.
-
-Lo que falta es el cubo semántico, también lo haré con un diccionario en donde guardaré el resultado de las combinaciones de diferentes tipos de variable con diferentes tipos de operadores.
+Para este avance ya se tiene la tabla de funciones con sus respectivas tablas de variables funcionando, también se desarrollo una función como cubo semántico pero aún no se ha probado, existe un bug al momento de poner expresiones en el código.

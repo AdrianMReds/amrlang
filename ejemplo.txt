@@ -7,7 +7,7 @@ var string nombre, apellido;
 {
     write("Hola");
     nombre = "Laura";
-    x = 1;
+    x = 1+4;
 }
 
 func main()

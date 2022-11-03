@@ -1,4 +1,17 @@
 program amr;
-func main(){
-print()
+var int x;
+var bool b;
+var string s;
+
+func main()
+var float y;
+var int i[3];
+{
+    write("Hola");
+    y = 2.0;
+    y = y + 1;
+    b = false;
+    s = "Hola";
 }
+
+end;

@@ -3,10 +3,10 @@
 
 #Pendiente y cambios
 #Pendiente
-#No se pueden poner arreglos o matrices como parametros de funciones
+#Se tiene que agregar asignación de índices de arreglos y matrices
+#Guardar el tamaño de listas y matrices cuando se guarda la variable
 
 #Cambios:
-# Programa, main y function en grámatica hay que agregarle el regreso de vars --ver nuevos diagramas--
 
 import ply.lex as lex
 import ply.yacc as yacc
@@ -85,17 +85,23 @@ def cuboSemantico(op1, op2, operador) -> int:
             return 3
         else:
             return -1
+    elif operador == '=':
+        if op1 != op2:
+            return -1
+        else:
+            return op1;
     else:
         return -1
 
 reservadas = ['program', 'var', 'func', 'main', 'int', 'float', 'string', 'bool',
               'write', 'if', 'else', 'while', 'for', 'read', 'void', 'end', 'length',
-              'max', 'min', 'avg', 'median', 'mode', 'variance', 'stdev']
+              'max', 'min', 'avg', 'median', 'mode', 'variance', 'stdev', 'true', 'false']
 
 tokens = reservadas + ['ID', #NOMBRE DE VARIABLE O FUNCIÓN
                        'CTEINT', #CONSTANTE INT
                        'CTEFLOAT', #CONSTANTE FLOAT
                        'CTESTRING', #CONSTANTE STRING
+                       'CTEBOOL',
                        'PYC', #PUNTO Y COMA
                        'CORIZQ', #CORCHETE IZQUIERDO
                        'CORDER', #CORCHETE DERECHO
@@ -152,6 +158,11 @@ tipoFunc = ''
 actualFunc = ''
 dirFunc = {}
 dirVars = {}
+listaCuadruplos = []
+pilaOperadores = []
+pilaOperandos = []
+pilaTipos = []
+
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -176,6 +187,11 @@ def t_CTESTRING(t):
     t.value = str(t.value)
     return t
 
+def t_CTEBOOL(t):
+    r'true|false'
+    t.value = bool(t.value)
+    return t
+
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
@@ -187,11 +203,17 @@ def t_error(t):
 lexer = lex.lex()
 
 data = '''
-        program ejemplo;
-var int x, y, z[5];
+program amr;
+var int x;
+var bool b;
 
-func main(){
-write("Hola");
+func main()
+var float y;
+{
+    write("Hola");
+    y = 2.0;
+    y = y + 1;
+    b = true;
 }
 
 end;
@@ -265,6 +287,7 @@ def p_agregaVar(p):
             nv = p[-1]
             dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':0}
         else:
+            print('p de arreglo o matriz',p)
             #Array
             if p[-3] != ',':
                 #Name of var (ID)
@@ -348,8 +371,15 @@ def p_ftype(p):
 
 def p_funcaux(p):
     '''
-    funcaux : type ID agregaVar
-            | type ID agregaVar COMA funcaux
+    funcaux : type ID agregaVar masParam
+            | type ID CORIZQ CTEINT CORDER agregaVar masParam
+            | type ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar masParam
+    '''
+
+def p_masParam(p):
+    '''
+    masParam : funcaux
+             | empty
     '''
 
 def p_estatuto(p):
@@ -365,10 +395,36 @@ def p_estatuto(p):
 
 def p_asignacion(p):
     '''
-    asignacion : ID asignaux ASIGNA expresion PYC
-               | ID asignaux ASIGNA llamada_esp PYC
-               | ID asignaux ASIGNA CTESTRING PYC
+    asignacion : ID checkID asignaux ASIGNA expresion PYC
+               | ID checkID asignaux ASIGNA llamada_esp PYC
+               | ID checkID asignaux ASIGNA CTESTRING PYC
     '''
+
+def p_checkID(p):
+    '''
+    checkID :
+    '''
+    id = p[-1]
+    varExists = False
+    global dirFunc
+    global actualFunc
+    global progName
+    global reservadas
+    if id in reservadas:
+        sys.exit("Error: can't use {} as an ID name".format(id))
+    varsInFunc = dirFunc[actualFunc]['vars']
+    for key in varsInFunc:
+        if key == id:
+            varExists = True
+    if varExists == False:
+        varsInFunc = dirFunc[progName]['vars']
+        for key in varsInFunc:
+            if key == id:
+                varExists = True
+                break
+    if varExists == False:
+        sys.exit("Error: ID {} does not exist in the scope".format(id))
+
 
 def p_asignaux(p):
     '''
@@ -433,7 +489,7 @@ def p_forloop(p):
 
 def p_lectura(p):
     '''
-    lectura : read PARIZQ ID PARDER PYC
+    lectura : read PARIZQ ID checkID PARDER PYC
     '''
 
 def p_expresion(p):
@@ -468,7 +524,7 @@ def p_aritExpresion(p):
 
 def p_term(p):
     '''
-    term : factor
+    term : factor 
          | factor MULT factor
          | factor DIV factor
     '''
@@ -476,11 +532,52 @@ def p_term(p):
 def p_factor(p):
     '''
     factor : PARIZQ expresion PARDER
-           | CTEINT
-           | CTEFLOAT
-           | ID
-           | llamada_esp
+           | CTEINT pushOT
+           | CTEFLOAT pushOT
+           | true pushOT
+           | false pushOT
+           | ID checkID pushOT
+           | llamada_esp pushOT
     '''
+
+def p_pushOT(p):
+    '''
+    pushOT :
+    '''
+    global pilaOperandos
+    global pilaTipos
+    global dirFunc
+    global actualFunc
+    global progName
+    print('p[-1] de factor = {}'.format(p[-1]))
+    if p[-1] != None:
+        operando = p[-1]
+        pilaOperandos.append(operando)
+    #Si es un ID porque está el checkID que es None
+    else:
+        operando = p[-2]
+        pilaOperandos.append(operando)
+    #En este if revisamos que tipo es el factor para agregarlo a la pila de tipos
+    #Si el número es entero
+    if(isinstance(operando, int)):
+        pilaTipos.append('int')
+    elif(isinstance(operando, float)):
+        pilaTipos.append('float')
+    #Si es un string significa que es un ID (variable)
+    elif(isinstance(operando, str)):
+        #Si es una constante boolena 'true' o 'false'
+        if(operando == 'true' or operando == 'false'):
+            pilaTipos.append('bool')
+        #Finalmente si es un ID
+        else:
+            #Revisamos si la variable usada es local o global
+            varsInFunc = dirFunc[actualFunc]['vars']
+            varLocal = operando in varsInFunc.keys()
+            if varLocal:
+                pilaTipos.append(dirFunc[actualFunc]['vars'][operando]['type'])
+            else:
+                pilaTipos.append(dirFunc[progName]['vars'][operando]['type'])
+
 
 # def p_expresion(p):
 #     '''
@@ -553,8 +650,9 @@ parser = yacc.yacc()
 
 # parser.parse(data)
 # fn = input("Nombre del archivo\n")
+
 try:
-    f = open("./ejemplo.txt", "r")
+    f = open("./ejemplo2.txt", "r")
     fileContent = f.read()
     # print(fileContent)
 except:
@@ -563,11 +661,17 @@ except:
 
 parser.parse(fileContent)
 
+# PRINTS DEBUGGEO ------------------------------------------------
+
 funcs = list(dirFunc)
 
 for f in funcs:
     print(f)
     print(dirFunc[f],'\n')
+
+print('Pila operandos\n',pilaOperandos)
+print('Pila Tipos\n', pilaTipos)
+# -----------------------------------------------------------------
 
 # while True:
 #     try:

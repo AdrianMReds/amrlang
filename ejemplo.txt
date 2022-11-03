@@ -2,7 +2,7 @@ program ejemplo;
 var int x, y, z[5], w[4,2];
 var float ivi;
 
-void func hola(int num)
+void func hola(int lst[6], float matrix[2,5])
 var string nombre, apellido;
 {
     write("Hola");

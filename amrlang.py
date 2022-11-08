@@ -22,6 +22,7 @@ import sys
 typeList = ['int', 'float', 'string', 'bool']
 
 def cuboSemantico(op1, op2, operador) -> int:
+    print("se revisa el tipo {} {} {}".format(op1,operador,op2))
     if operador == '+':
         if op1 == 'int' and op2 == 'int':
             return 0
@@ -159,10 +160,12 @@ actualFunc = ''
 dirFunc = {}
 dirVars = {}
 listaCuadruplos = []
-pilaOperadores = []
+poper = []
 pilaOperandos = []
 pilaTipos = []
-
+avail = ['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10'
+         , 't11', 't12', 't13', 't14', 't15', 't16', 't17', 't18', 't19', 't20']
+contAvail = 0
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -395,7 +398,7 @@ def p_estatuto(p):
 
 def p_asignacion(p):
     '''
-    asignacion : ID checkID asignaux ASIGNA expresion PYC
+    asignacion : ID checkID asignaux ASIGNA expresion cuadAsignacion PYC
                | ID checkID asignaux ASIGNA llamada_esp PYC
                | ID checkID asignaux ASIGNA CTESTRING PYC
     '''
@@ -495,38 +498,65 @@ def p_lectura(p):
 def p_expresion(p):
     '''
     expresion : andExpresion
-              | andExpresion OR andExpresion
+              | andExpresion OR pushOper andExpresion
     '''
 
 def p_andExpresion(p):
     '''
     andExpresion : relopExpresion
-                 | relopExpresion AND relopExpresion
+                 | relopExpresion AND pushOper relopExpresion
     '''
 
 def p_relopExpresion(p):
     '''
     relopExpresion : aritExpresion
-                   | aritExpresion MAYORQUE aritExpresion
-                   | aritExpresion MENORQUE aritExpresion
-                   | aritExpresion MAYORIGUAL aritExpresion
-                   | aritExpresion MENORIGUAL aritExpresion
-                   | aritExpresion EQUALS aritExpresion
-                   | aritExpresion DIFERENTE aritExpresion
+                   | aritExpresion relopAux aritExpresion
+    '''
+
+def p_relopAux(p):
+    '''
+    relopAux : MAYORQUE pushOper 
+             | MENORQUE pushOper 
+             | MAYORIGUAL pushOper
+             | MENORIGUAL pushOper
+             | EQUALS pushOper
+             | DIFERENTE pushOper
     '''
 
 def p_aritExpresion(p):
     '''
-    aritExpresion : term
-                  | term MAS term
-                  | term MENOS term
+    aritExpresion : term cuadTerm
+                  | term cuadTerm aritAux term cuadTerm
+    '''
+
+def p_p1(p):
+    '''
+    p1 : 
+    '''
+    print("Entrando a cuadTerm 1")
+
+def p_p2(p):
+    '''
+    p2 : 
+    '''
+    print("Entrando a cuadTerm 2")
+
+def p_aritAux(p):
+    '''
+    aritAux : MAS pushOper
+            | MENOS pushOper
     '''
 
 def p_term(p):
     '''
     term : factor 
-         | factor MULT factor
-         | factor DIV factor
+         | factor cuadFactor termAux factor cuadFactor
+    '''
+
+def p_termAux(p):
+    '''
+    termAux : MULT pushOper
+            | DIV pushOper
     '''
 
 def p_factor(p):
@@ -540,6 +570,13 @@ def p_factor(p):
            | llamada_esp pushOT
     '''
 
+def p_pushOper(p):
+    '''
+    pushOper :
+    '''
+    global poper
+    poper.append(p[-1])
+
 def p_pushOT(p):
     '''
     pushOT :
@@ -549,7 +586,7 @@ def p_pushOT(p):
     global dirFunc
     global actualFunc
     global progName
-    print('p[-1] de factor = {}'.format(p[-1]))
+    # print('p[-1] de factor = {}'.format(p[-1]))
     if p[-1] != None:
         operando = p[-1]
         pilaOperandos.append(operando)
@@ -559,6 +596,7 @@ def p_pushOT(p):
         pilaOperandos.append(operando)
     #En este if revisamos que tipo es el factor para agregarlo a la pila de tipos
     #Si el número es entero
+    
     if(isinstance(operando, int)):
         pilaTipos.append('int')
     elif(isinstance(operando, float)):
@@ -578,6 +616,89 @@ def p_pushOT(p):
             else:
                 pilaTipos.append(dirFunc[progName]['vars'][operando]['type'])
 
+def p_cuadTerm(p):
+    '''
+    cuadTerm :
+    '''
+    global poper
+    global listaCuadruplos
+    global avail
+    global contAvail
+    global pilaOperandos
+    # print("Poper dentro de cuadTerm",poper)
+    # try:
+    #     print("Ultimo elemento de poper",poper[-1])
+    # except:
+    #     print("No hay último elemento", poper)
+    hayOp = len(poper) >= 1
+    # print(hayOp)
+    print(pilaOperandos)
+    print(pilaTipos)
+    if (hayOp and (poper[-1] == '+' or poper[-1] == '-')):
+        rightOp = pilaOperandos.pop()
+        right_type = pilaTipos.pop()
+        leftOp = pilaOperandos.pop()
+        left_type = pilaTipos.pop()
+        operator = poper.pop()
+        typeResult = cuboSemantico(left_type, right_type, operator)
+        if typeResult != -1:
+            cuad = [operator, leftOp, rightOp, avail[contAvail]]
+            print("Generamos cuadruplo", cuad)
+            listaCuadruplos.append(cuad)
+            pilaOperandos.append(avail[contAvail])
+            pilaTipos.append(typeResult)
+            contAvail += 1
+        else:
+            sys.exit("TypeError : {} and {} cannot use operator {}".format(left_type, right_type, operator))
+
+def p_cuadFactor(p):
+    '''
+    cuadFactor :
+    '''
+    global poper
+    global listaCuadruplos
+    global avail
+    global contAvail
+    global typeList
+    # print("Poper dentro de cuadTerm",poper)
+    # try:
+    #     print("Ultimo elemento de poper",poper[-1])
+    # except:
+    #     print("No hay último elemento", poper)
+    hayOp = len(poper) >= 1
+    # print(hayOp)
+    print(pilaOperandos)
+    print(pilaTipos)
+    if (hayOp and (poper[-1] == '*' or poper[-1] == '/')):
+        rightOp = pilaOperandos.pop()
+        right_type = pilaTipos.pop()
+        leftOp = pilaOperandos.pop()
+        left_type = pilaTipos.pop()
+        operator = poper.pop()
+        typeResult = cuboSemantico(left_type, right_type, operator)
+        if typeResult != -1:
+            cuad = [operator, leftOp, rightOp, avail[contAvail]]
+            print("Generamos cuadruplo", cuad)
+            listaCuadruplos.append(cuad)
+            pilaOperandos.append(avail[contAvail])
+            pilaTipos.append(typeList[typeResult])
+            contAvail += 1
+        else:
+            sys.exit("TypeError : {} and {} cannot use operator {}".format(left_type, right_type, operator))
+    else:
+        pass
+
+def p_cuadAsignacion(p):
+    '''
+    cuadAsignacion :
+    '''
+    global listaCuadruplos
+    global avail
+    global contAvail
+    global pilaOperandos
+    print('p[-5]', p[-5])
+    cuad = ['=', pilaOperandos.pop(),p[-5]]
+    listaCuadruplos.append(cuad)
 
 # def p_expresion(p):
 #     '''
@@ -652,7 +773,7 @@ parser = yacc.yacc()
 # fn = input("Nombre del archivo\n")
 
 try:
-    f = open("./ejemplo2.txt", "r")
+    f = open("./ejemplo3.txt", "r")
     fileContent = f.read()
     # print(fileContent)
 except:
@@ -671,6 +792,9 @@ for f in funcs:
 
 print('Pila operandos\n',pilaOperandos)
 print('Pila Tipos\n', pilaTipos)
+print('Pila operadores\n', poper)
+for c in listaCuadruplos:
+    print(c)
 # -----------------------------------------------------------------
 
 # while True:

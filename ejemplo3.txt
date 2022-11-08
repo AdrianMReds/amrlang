@@ -1,0 +1,13 @@
+program ejemplo3;
+
+func main()
+var float x;
+var int i, y, z;
+{
+ i = 2;
+ x = 3.5;
+ y = i + x / 1;
+ z = y/1;
+}
+
+end;

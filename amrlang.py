@@ -12,87 +12,34 @@ import ply.lex as lex
 import ply.yacc as yacc
 import numpy as np
 import sys
+from funcionesCompilacion import *
 
 # -1 = error
 # 0 = int
 # 1 = float
 # 2 = string
 # 3 = bool
-
 typeList = ['int', 'float', 'string', 'bool']
 
-def cuboSemantico(op1, op2, operador) -> int:
-    print("se revisa el tipo {} {} {}".format(op1,operador,op2))
-    if operador == '+':
-        if op1 == 'int' and op2 == 'int':
-            return 0
-        elif op1 == 'float' and op2 == 'float':
-            return 1
-        elif (op1 == 'int' and op2 == 'float') or (op1 == 'float' and op2 == 'int'):
-            return 1
-        else:
-            return -1
-    elif operador == '-':
-        if op1 == 'int' and op2 == 'int':
-            return 0
-        elif op1 == 'float' and op2 == 'float':
-            return 1
-        elif (op1 == 'int' and op2 == 'float') or (op1 == 'float' and op2 == 'int'):
-            return 1
-        else:
-            return -1
-    elif operador == '*':
-        if op1 == 'int' and op2 == 'int':
-            return 0
-        elif op1 == 'float' and op2 == 'float':
-            return 1
-        elif (op1 == 'int' and op2 == 'float') or (op1 == 'float' and op2 == 'int'):
-            return 1
-        else:
-            return -1
-    elif operador == '/':
-        if op1 == 'int' and op2 == 'int':
-            return 1
-        elif op1 == 'float' and op2 == 'float':
-            return 1
-        elif (op1 == 'int' and op2 == 'float') or (op1 == 'float' and op2 == 'int'):
-            return 1
-        else:
-            return -1
-    elif operador == '>' or operador == '<':
-        if op1 == 'int' and op2 == 'int':
-            return 3
-        elif op1 == 'float' and op2 == 'float':
-            return 3
-        elif (op1 == 'int' and op2 == 'float') or (op1 == 'float' and op2 == 'int'):
-            return 3
-        else:
-            return -1
-    elif operador == '==' or operador == '$':
-        if op1 == 'int' and op2 == 'int':
-            return 3
-        elif op1 == 'float' and op2 == 'float':
-            return 3
-        elif (op1 == 'int' and op2 == 'float') or (op1 == 'float' and op2 == 'int'):
-            return 3
-        elif op1 == 'string' and op2 == 'string':
-            return 3
-        elif op1 == 'bool' and op2 == 'bool':
-            return 3
-        else:
-            return -1
-    elif operador == '&&' or operador == '||':
-        if op1 == 'bool' and op2 == 'bool':
-            return 3
-        else:
-            return -1
-    elif operador == '=':
-        if op1 != op2:
-            return -1
-        else:
-            return op1;
-    else:
-        return -1
+progName = ''
+tipoVar = ''
+tipoFunc = ''
+actualFunc = ''
+dirFunc = {}
+dirVars = {}
+listaCuadruplos = []
+contCuadruplos = 1
+poper = []
+pilaOperandos = []
+pilaTipos = []
+avail = ['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10'
+         , 't11', 't12', 't13', 't14', 't15', 't16', 't17', 't18', 't19', 't20']
+contAvail = 0
+pilaSaltos = []
+
+def fill(numCuad, contenido):
+    global listaCuadruplos
+    listaCuadruplos[numCuad-1].append(contenido)
 
 reservadas = ['program', 'var', 'func', 'main', 'int', 'float', 'string', 'bool',
               'write', 'if', 'else', 'while', 'for', 'read', 'void', 'end', 'length',
@@ -153,19 +100,6 @@ t_EQUALS = r'\=\='
 t_DIFERENTE = r'\$'
 t_PUNTO = r'\.'
 
-progName = ''
-tipoVar = ''
-tipoFunc = ''
-actualFunc = ''
-dirFunc = {}
-dirVars = {}
-listaCuadruplos = []
-poper = []
-pilaOperandos = []
-pilaTipos = []
-avail = ['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10'
-         , 't11', 't12', 't13', 't14', 't15', 't16', 't17', 't18', 't19', 't20']
-contAvail = 0
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -476,8 +410,13 @@ def p_nextparametro(p):
 
 def p_condicion(p):
     '''
-    condicion : if PARIZQ expresion PARDER bloque
-              | if PARIZQ expresion PARDER bloque else bloque
+    condicion : if PARIZQ expresion PARDER cuadGotof bloque condicionAux cuadFinIf
+    '''
+
+def p_condicionAux(p):
+    '''
+    condicionAux : else cuadGoto bloque
+                 | empty
     '''
 
 def p_whileloop(p):
@@ -509,8 +448,8 @@ def p_andExpresion(p):
 
 def p_relopExpresion(p):
     '''
-    relopExpresion : aritExpresion
-                   | aritExpresion relopAux aritExpresion
+    relopExpresion : aritExpresion cuadArit
+                   | aritExpresion cuadArit relopAux aritExpresion cuadArit
     '''
 
 def p_relopAux(p):
@@ -528,18 +467,6 @@ def p_aritExpresion(p):
     aritExpresion : term cuadTerm
                   | term cuadTerm aritAux term cuadTerm
     '''
-
-def p_p1(p):
-    '''
-    p1 : 
-    '''
-    print("Entrando a cuadTerm 1")
-
-def p_p2(p):
-    '''
-    p2 : 
-    '''
-    print("Entrando a cuadTerm 2")
 
 def p_aritAux(p):
     '''
@@ -568,6 +495,23 @@ def p_factor(p):
            | false pushOT
            | ID checkID pushOT
            | llamada_esp pushOT
+    '''
+
+def p_llamada_esp(p):
+    '''
+    llamada_esp : ID PUNTO especiales PARIZQ PARDER
+    '''
+
+def p_especiales(p):
+    '''
+    especiales : length
+               | max
+               | min
+               | avg
+               | median
+               | mode
+               | variance
+               | stdev
     '''
 
 def p_pushOper(p):
@@ -625,7 +569,8 @@ def p_cuadTerm(p):
     global avail
     global contAvail
     global pilaOperandos
-    # print("Poper dentro de cuadTerm",poper)
+    global contCuadruplos
+    print("Poper dentro de cuadTerm",poper)
     # try:
     #     print("Ultimo elemento de poper",poper[-1])
     # except:
@@ -642,12 +587,13 @@ def p_cuadTerm(p):
         operator = poper.pop()
         typeResult = cuboSemantico(left_type, right_type, operator)
         if typeResult != -1:
-            cuad = [operator, leftOp, rightOp, avail[contAvail]]
+            cuad = [contCuadruplos, operator, leftOp, rightOp, avail[contAvail]]
             print("Generamos cuadruplo", cuad)
             listaCuadruplos.append(cuad)
             pilaOperandos.append(avail[contAvail])
-            pilaTipos.append(typeResult)
+            pilaTipos.append(typeList[typeResult])
             contAvail += 1
+            contCuadruplos += 1
         else:
             sys.exit("TypeError : {} and {} cannot use operator {}".format(left_type, right_type, operator))
 
@@ -660,7 +606,8 @@ def p_cuadFactor(p):
     global avail
     global contAvail
     global typeList
-    # print("Poper dentro de cuadTerm",poper)
+    global contCuadruplos
+    print("Poper dentro de cuadTerm",poper)
     # try:
     #     print("Ultimo elemento de poper",poper[-1])
     # except:
@@ -677,12 +624,13 @@ def p_cuadFactor(p):
         operator = poper.pop()
         typeResult = cuboSemantico(left_type, right_type, operator)
         if typeResult != -1:
-            cuad = [operator, leftOp, rightOp, avail[contAvail]]
+            cuad = [contCuadruplos, operator, leftOp, rightOp, avail[contAvail]]
             print("Generamos cuadruplo", cuad)
             listaCuadruplos.append(cuad)
             pilaOperandos.append(avail[contAvail])
             pilaTipos.append(typeList[typeResult])
             contAvail += 1
+            contCuadruplos += 1
         else:
             sys.exit("TypeError : {} and {} cannot use operator {}".format(left_type, right_type, operator))
     else:
@@ -696,64 +644,101 @@ def p_cuadAsignacion(p):
     global avail
     global contAvail
     global pilaOperandos
+    global contCuadruplos
     print('p[-5]', p[-5])
-    cuad = ['=', pilaOperandos.pop(),p[-5]]
+    cuad = [contCuadruplos, '=', pilaOperandos.pop(),p[-5]]
     listaCuadruplos.append(cuad)
+    contCuadruplos += 1
 
-# def p_expresion(p):
-#     '''
-#     expresion : term 
-#               | term MAS term
-#               | term MENOS term
-#     '''
-
-# def p_term(p):
-#     '''
-#     term : fact
-#          | fact MULT fact
-#          | fact DIV fact
-#     '''
-
-# def p_fact(p):
-#     '''
-#     fact : CTEINT
-#          | CTEFLOAT
-#          | ID
-#          | hyper_exp
-#     '''
-
-# def p_hyper_exp(p):
-#     '''
-#     hyper_exp : super_exp
-#               | super_exp AND super_exp
-#               | super_exp OR super_exp
-#     '''
-
-# def p_super_exp(p):
-#     '''
-#     super_exp : expresion
-#               | expresion MAYORQUE expresion
-#               | expresion MENORQUE expresion
-#               | expresion EQUALS expresion
-#               | expresion DIFERENTE expresion
-#     '''
-
-def p_llamada_esp(p):
+def p_cuadArit(p):
     '''
-    llamada_esp : ID PUNTO especiales PARIZQ PARDER
+    cuadArit :
     '''
+    global poper
+    global listaCuadruplos
+    global avail
+    global contAvail
+    global pilaOperandos
+    global contCuadruplos
+    print("Poper dentro de cuadTerm",poper)
+    # try:
+    #     print("Ultimo elemento de poper",poper[-1])
+    # except:
+    #     print("No hay último elemento", poper)
+    hayOp = len(poper) >= 1
+    # print(hayOp)
+    print(pilaOperandos)
+    print(pilaTipos)
+    # MAYORQUE pushOper 
+    # | MENORQUE pushOper 
+    # | MAYORIGUAL pushOper
+    # | MENORIGUAL pushOper
+    # | EQUALS pushOper
+    # | DIFERENTE pushOper
+    if (hayOp and (poper[-1] == '<' or poper[-1] == '>'
+                or poper[-1] == '<=' or poper[-1] == '>='
+                or poper[-1] == '==' or poper[-1] == '$')):
+        rightOp = pilaOperandos.pop()
+        right_type = pilaTipos.pop()
+        leftOp = pilaOperandos.pop()
+        left_type = pilaTipos.pop()
+        operator = poper.pop()
+        typeResult = cuboSemantico(left_type, right_type, operator)
+        if typeResult != -1:
+            cuad = [contCuadruplos, operator, leftOp, rightOp, avail[contAvail]]
+            print("Generamos cuadruplo", cuad)
+            listaCuadruplos.append(cuad)
+            pilaOperandos.append(avail[contAvail])
+            pilaTipos.append(typeList[typeResult])
+            contAvail += 1
+            contCuadruplos += 1
+        else:
+            sys.exit("TypeError : {} and {} cannot use operator {}".format(left_type, right_type, operator))
 
-def p_especiales(p):
+def p_cuadGotof(p):
     '''
-    especiales : length
-               | max
-               | min
-               | avg
-               | median
-               | mode
-               | variance
-               | stdev
+    cuadGotof : 
     '''
+    global pilaTipos
+    global pilaOperandos
+    global contCuadruplos
+    global listaCuadruplos
+    global pilaSaltos
+    exp_type = pilaTipos.pop()
+    print(exp_type)
+    if(exp_type != 'bool'):
+        sys.exit("Type-mismatch Error: expression inside the if has to be bool")
+    else:
+        result = pilaOperandos.pop()
+        cuad = [contCuadruplos, 'gotof', result]
+        listaCuadruplos.append(cuad)
+        pilaSaltos.append(contCuadruplos)
+        contCuadruplos += 1
+
+def p_cuadFinIf(p):
+    '''
+    cuadFinIf :
+    '''
+    global pilaSaltos
+    global contCuadruplos
+    end = pilaSaltos.pop()
+    fill(end, contCuadruplos)
+
+def p_cuadGoto(p):
+    '''
+    cuadGoto :
+    '''
+    global listaCuadruplos
+    global contCuadruplos
+    global pilaSaltos
+    cuad = [contCuadruplos, 'Goto']
+    listaCuadruplos.append(cuad)
+    contCuadruplos += 1
+    #False -> la expresión del if fue falsa
+    fal = pilaSaltos.pop()
+    pilaSaltos.append(contCuadruplos-1)
+    fill(fal, contCuadruplos)
+
 
 
 def p_empty(p):
@@ -773,7 +758,7 @@ parser = yacc.yacc()
 # fn = input("Nombre del archivo\n")
 
 try:
-    f = open("./ejemplo3.txt", "r")
+    f = open("./ejemplo2.txt", "r")
     fileContent = f.read()
     # print(fileContent)
 except:

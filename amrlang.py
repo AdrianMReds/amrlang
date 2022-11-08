@@ -15,6 +15,7 @@ import numpy as np
 import sys
 from funcionesCompilacion import *
 
+
 # -1 = error
 # 0 = int
 # 1 = float

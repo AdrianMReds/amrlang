@@ -250,6 +250,241 @@ vars                 : 5
 varsaux              : 1 5 19 30 31
 vaux                 : 9 14
 whileloop            : 46
+Rule 1     programa -> program ID auxprograma PYC varsaux paux2 mainfunction end PYC
+Rule 2     programa -> program auxprograma ID PYC empty mainfunction end PYC
+Rule 3     auxprograma -> <empty>
+Rule 4     varsaux -> vars varsaux
+Rule 5     varsaux -> empty
+Rule 6     paux2 -> function paux2
+Rule 7     paux2 -> empty
+Rule 8     vars -> var type vaux PYC
+Rule 9     vars -> empty
+Rule 10    vaux -> ID agregaVar nextvar
+Rule 11    vaux -> ID CORIZQ CTEINT CORDER agregaVar nextvar
+Rule 12    vaux -> ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar nextvar
+Rule 13    nextvar -> COMA vaux
+Rule 14    nextvar -> empty
+Rule 15    agregaVar -> <empty>
+Rule 16    guardarTipoVar -> <empty>
+Rule 17    guardarTipoFunc -> <empty>
+Rule 18    mainfunction -> func main agregaFunc PARIZQ PARDER varsaux bloque
+Rule 19    mainfunction -> func main agregaFunc PARIZQ PARDER bloque
+Rule 20    agregaFunc -> <empty>
+Rule 21    bloque -> LLAVEIZQ bloqueaux LLAVEDER
+Rule 22    bloque -> LLAVEIZQ empty LLAVEDER
+Rule 23    bloqueaux -> estatuto bloqueaux
+Rule 24    bloqueaux -> estatuto
+Rule 25    type -> int guardarTipoVar
+Rule 26    type -> float guardarTipoVar
+Rule 27    type -> string guardarTipoVar
+Rule 28    type -> bool guardarTipoVar
+Rule 29    function -> ftype func ID agregaFunc PARIZQ funcaux PARDER varsaux bloque
+Rule 30    function -> ftype func ID agregaFunc PARIZQ empty PARDER varsaux bloque
+Rule 31    ftype -> int guardarTipoFunc
+Rule 32    ftype -> float guardarTipoFunc
+Rule 33    ftype -> string guardarTipoFunc
+Rule 34    ftype -> bool guardarTipoFunc
+Rule 35    ftype -> void guardarTipoFunc
+Rule 36    funcaux -> type ID agregaVar masParam
+Rule 37    funcaux -> type ID CORIZQ CTEINT CORDER agregaVar masParam
+Rule 38    funcaux -> type ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar masParam
+Rule 39    masParam -> funcaux
+Rule 40    masParam -> empty
+Rule 41    estatuto -> asignacion
+Rule 42    estatuto -> escritura
+Rule 43    estatuto -> llamada
+Rule 44    estatuto -> condicion
+Rule 45    estatuto -> whileloop
+Rule 46    estatuto -> forloop
+Rule 47    estatuto -> lectura
+Rule 48    asignacion -> ID checkID asignaux ASIGNA expresion cuadAsignacion PYC
+Rule 49    asignacion -> ID checkID asignaux ASIGNA llamada_esp PYC
+Rule 50    asignacion -> ID checkID asignaux ASIGNA CTESTRING PYC
+Rule 51    checkID -> <empty>
+Rule 52    asignaux -> CORIZQ expresion CORDER
+Rule 53    asignaux -> CORIZQ expresion COMA expresion CORDER
+Rule 54    asignaux -> empty
+Rule 55    escritura -> write PARIZQ escaux PARDER PYC
+Rule 56    escaux -> expresion nextexp
+Rule 57    escaux -> CTESTRING nextexp
+Rule 58    escaux -> llamada_esp nextexp
+Rule 59    nextexp -> COMA escaux
+Rule 60    nextexp -> empty
+Rule 61    llamada -> ID PARIZQ expresion llamaux PARDER
+Rule 62    llamada -> ID PARIZQ llamada_esp llamaux PARDER
+Rule 63    llamada -> ID PARIZQ PARDER
+Rule 64    llamaux -> expresion nextparametro
+Rule 65    llamaux -> llamada_esp nextparametro
+Rule 66    nextparametro -> COMA llamaux
+Rule 67    nextparametro -> empty
+Rule 68    condicion -> if PARIZQ expresion PARDER cuadGotof bloque condicionAux cuadFinIf
+Rule 69    condicionAux -> else cuadGoto bloque
+Rule 70    condicionAux -> empty
+Rule 71    whileloop -> while PARIZQ expresion PARDER bloque
+Rule 72    forloop -> for PARIZQ expresion DOSPUNTOS expresion PARDER bloque
+Rule 73    lectura -> read PARIZQ ID checkID PARDER PYC
+Rule 74    expresion -> andExpresion
+Rule 75    expresion -> andExpresion OR pushOper andExpresion
+Rule 76    andExpresion -> relopExpresion
+Rule 77    andExpresion -> relopExpresion AND pushOper relopExpresion
+Rule 78    relopExpresion -> aritExpresion cuadArit
+Rule 79    relopExpresion -> aritExpresion cuadArit relopAux aritExpresion cuadArit
+Rule 80    relopAux -> MAYORQUE pushOper
+Rule 81    relopAux -> MENORQUE pushOper
+Rule 82    relopAux -> MAYORIGUAL pushOper
+Rule 83    relopAux -> MENORIGUAL pushOper
+Rule 84    relopAux -> EQUALS pushOper
+Rule 85    relopAux -> DIFERENTE pushOper
+Rule 86    aritExpresion -> term cuadTerm
+Rule 87    aritExpresion -> term cuadTerm aritAux term cuadTerm
+Rule 88    aritAux -> MAS pushOper
+Rule 89    aritAux -> MENOS pushOper
+Rule 90    term -> factor
+Rule 91    term -> factor cuadFactor termAux factor cuadFactor
+Rule 92    termAux -> MULT pushOper
+Rule 93    termAux -> DIV pushOper
+Rule 94    factor -> PARIZQ expresion PARDER
+Rule 95    factor -> CTEINT pushOT
+Rule 96    factor -> CTEFLOAT pushOT
+Rule 97    factor -> true pushOT
+Rule 98    factor -> false pushOT
+Rule 99    factor -> ID checkID pushOT
+Rule 100   factor -> llamada_esp pushOT
+Rule 101   llamada_esp -> ID PUNTO especiales PARIZQ PARDER
+Rule 102   especiales -> length
+Rule 103   especiales -> max
+Rule 104   especiales -> min
+Rule 105   especiales -> avg
+Rule 106   especiales -> median
+Rule 107   especiales -> mode
+Rule 108   especiales -> variance
+Rule 109   especiales -> stdev
+Rule 110   pushOper -> <empty>
+Rule 111   pushOT -> <empty>
+Rule 112   cuadTerm -> <empty>
+Rule 113   cuadFactor -> <empty>
+Rule 114   cuadAsignacion -> <empty>
+Rule 115   cuadArit -> <empty>
+Rule 116   cuadGotof -> <empty>
+Rule 117   cuadFinIf -> <empty>
+Rule 118   cuadGoto -> <empty>
+Rule 119   empty -> <empty>
+
+Terminals, with rules where they appear
+
+AND                  : 77
+ASIGNA               : 48 49 50
+COMA                 : 12 13 38 53 59 66
+CORDER               : 11 12 37 38 52 53
+CORIZQ               : 11 12 37 38 52 53
+CTEBOOL              : 
+CTEFLOAT             : 96
+CTEINT               : 11 12 12 37 38 38 95
+CTESTRING            : 50 57
+DIFERENTE            : 85
+DIV                  : 93
+DOSPUNTOS            : 72
+EQUALS               : 84
+ID                   : 1 2 10 11 12 29 30 36 37 38 48 49 50 61 62 63 73 99 101
+LLAVEDER             : 21 22
+LLAVEIZQ             : 21 22
+MAS                  : 88
+MAYORIGUAL           : 82
+MAYORQUE             : 80
+MENORIGUAL           : 83
+MENORQUE             : 81
+MENOS                : 89
+MULT                 : 92
+OR                   : 75
+PARDER               : 18 19 29 30 55 61 62 63 68 71 72 73 94 101
+PARIZQ               : 18 19 29 30 55 61 62 63 68 71 72 73 94 101
+PUNTO                : 101
+PYC                  : 1 1 2 2 8 48 49 50 55 73
+avg                  : 105
+bool                 : 28 34
+else                 : 69
+end                  : 1 2
+error                : 
+false                : 98
+float                : 26 32
+for                  : 72
+func                 : 18 19 29 30
+if                   : 68
+int                  : 25 31
+length               : 102
+main                 : 18 19
+max                  : 103
+median               : 106
+min                  : 104
+mode                 : 107
+program              : 1 2
+read                 : 73
+stdev                : 109
+string               : 27 33
+true                 : 97
+var                  : 8
+variance             : 108
+void                 : 35
+while                : 71
+write                : 55
+
+Nonterminals, with rules where they appear
+
+agregaFunc           : 18 19 29 30
+agregaVar            : 10 11 12 36 37 38
+andExpresion         : 74 75 75
+aritAux              : 87
+aritExpresion        : 78 79 79
+asignacion           : 41
+asignaux             : 48 49 50
+auxprograma          : 1 2
+bloque               : 18 19 29 30 68 69 71 72
+bloqueaux            : 21 23
+checkID              : 48 49 50 73 99
+condicion            : 44
+condicionAux         : 68
+cuadArit             : 78 79 79
+cuadAsignacion       : 48
+cuadFactor           : 91 91
+cuadFinIf            : 68
+cuadGoto             : 69
+cuadGotof            : 68
+cuadTerm             : 86 87 87
+empty                : 2 5 7 9 14 22 30 40 54 60 67 70
+escaux               : 55 59
+escritura            : 42
+especiales           : 101
+estatuto             : 23 24
+expresion            : 48 52 53 53 56 61 64 68 71 72 72 94
+factor               : 90 91 91
+forloop              : 46
+ftype                : 29 30
+funcaux              : 29 39
+function             : 6
+guardarTipoFunc      : 31 32 33 34 35
+guardarTipoVar       : 25 26 27 28
+lectura              : 47
+llamada              : 43
+llamada_esp          : 49 58 62 65 100
+llamaux              : 61 62 66
+mainfunction         : 1 2
+masParam             : 36 37 38
+nextexp              : 56 57 58
+nextparametro        : 64 65
+nextvar              : 10 11 12
+paux2                : 1 6
+programa             : 0
+pushOT               : 95 96 97 98 99 100
+pushOper             : 75 77 80 81 82 83 84 85 88 89 92 93
+relopAux             : 79
+relopExpresion       : 76 77 77
+term                 : 86 87 87
+termAux              : 91
+type                 : 8 36 37 38
+vars                 : 4
+varsaux              : 1 4 18 29 30
+vaux                 : 8 13
+whileloop            : 45
 
 Parsing method: LALR
 
@@ -314,6 +549,7 @@ state 6
 
 state 7
 
+<<<<<<< HEAD
     (1) programa -> program ID auxprograma PYC . varsaux paux2 mainfunction end cuadEnd PYC
     (5) varsaux -> . vars varsaux
     (6) varsaux -> . empty
@@ -331,6 +567,25 @@ state 7
     func            reduce using rule 123 (empty -> .)
 
   ! var             [ reduce using rule 123 (empty -> .) ]
+=======
+    (1) programa -> program ID auxprograma PYC . varsaux paux2 mainfunction end PYC
+    (4) varsaux -> . vars varsaux
+    (5) varsaux -> . empty
+    (8) vars -> . var type vaux PYC
+    (9) vars -> . empty
+    (119) empty -> .
+
+  ! shift/reduce conflict for var resolved as shift
+    var             shift and go to state 12
+    int             reduce using rule 119 (empty -> .)
+    float           reduce using rule 119 (empty -> .)
+    string          reduce using rule 119 (empty -> .)
+    bool            reduce using rule 119 (empty -> .)
+    void            reduce using rule 119 (empty -> .)
+    func            reduce using rule 119 (empty -> .)
+
+  ! var             [ reduce using rule 119 (empty -> .) ]
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     varsaux                        shift and go to state 9
     vars                           shift and go to state 10
@@ -338,15 +593,23 @@ state 7
 
 state 8
 
+<<<<<<< HEAD
     (3) programa -> program auxprograma ID PYC . empty mainfunction end PYC
     (123) empty -> .
 
     func            reduce using rule 123 (empty -> .)
+=======
+    (2) programa -> program auxprograma ID PYC . empty mainfunction end PYC
+    (119) empty -> .
+
+    func            reduce using rule 119 (empty -> .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     empty                          shift and go to state 13
 
 state 9
 
+<<<<<<< HEAD
     (1) programa -> program ID auxprograma PYC varsaux . paux2 mainfunction end cuadEnd PYC
     (7) paux2 -> . function paux2
     (8) paux2 -> . empty
@@ -360,6 +623,21 @@ state 9
     (36) ftype -> . void guardarTipoFunc
 
     func            reduce using rule 123 (empty -> .)
+=======
+    (1) programa -> program ID auxprograma PYC varsaux . paux2 mainfunction end PYC
+    (6) paux2 -> . function paux2
+    (7) paux2 -> . empty
+    (29) function -> . ftype func ID agregaFunc PARIZQ funcaux PARDER varsaux bloque
+    (30) function -> . ftype func ID agregaFunc PARIZQ empty PARDER varsaux bloque
+    (119) empty -> .
+    (31) ftype -> . int guardarTipoFunc
+    (32) ftype -> . float guardarTipoFunc
+    (33) ftype -> . string guardarTipoFunc
+    (34) ftype -> . bool guardarTipoFunc
+    (35) ftype -> . void guardarTipoFunc
+
+    func            reduce using rule 119 (empty -> .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
     int             shift and go to state 18
     float           shift and go to state 19
     string          shift and go to state 20
@@ -373,6 +651,7 @@ state 9
 
 state 10
 
+<<<<<<< HEAD
     (5) varsaux -> vars . varsaux
     (5) varsaux -> . vars varsaux
     (6) varsaux -> . empty
@@ -391,6 +670,26 @@ state 10
     LLAVEIZQ        reduce using rule 123 (empty -> .)
 
   ! var             [ reduce using rule 123 (empty -> .) ]
+=======
+    (4) varsaux -> vars . varsaux
+    (4) varsaux -> . vars varsaux
+    (5) varsaux -> . empty
+    (8) vars -> . var type vaux PYC
+    (9) vars -> . empty
+    (119) empty -> .
+
+  ! shift/reduce conflict for var resolved as shift
+    var             shift and go to state 12
+    int             reduce using rule 119 (empty -> .)
+    float           reduce using rule 119 (empty -> .)
+    string          reduce using rule 119 (empty -> .)
+    bool            reduce using rule 119 (empty -> .)
+    void            reduce using rule 119 (empty -> .)
+    func            reduce using rule 119 (empty -> .)
+    LLAVEIZQ        reduce using rule 119 (empty -> .)
+
+  ! var             [ reduce using rule 119 (empty -> .) ]
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     vars                           shift and go to state 10
     varsaux                        shift and go to state 23
@@ -463,6 +762,7 @@ state 14
 
 state 15
 
+<<<<<<< HEAD
     (7) paux2 -> function . paux2
     (7) paux2 -> . function paux2
     (8) paux2 -> . empty
@@ -476,6 +776,21 @@ state 15
     (36) ftype -> . void guardarTipoFunc
 
     func            reduce using rule 123 (empty -> .)
+=======
+    (6) paux2 -> function . paux2
+    (6) paux2 -> . function paux2
+    (7) paux2 -> . empty
+    (29) function -> . ftype func ID agregaFunc PARIZQ funcaux PARDER varsaux bloque
+    (30) function -> . ftype func ID agregaFunc PARIZQ empty PARDER varsaux bloque
+    (119) empty -> .
+    (31) ftype -> . int guardarTipoFunc
+    (32) ftype -> . float guardarTipoFunc
+    (33) ftype -> . string guardarTipoFunc
+    (34) ftype -> . bool guardarTipoFunc
+    (35) ftype -> . void guardarTipoFunc
+
+    func            reduce using rule 119 (empty -> .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
     int             shift and go to state 18
     float           shift and go to state 19
     string          shift and go to state 20
@@ -779,6 +1094,7 @@ state 49
 
 state 50
 
+<<<<<<< HEAD
     (11) vaux -> ID agregaVar . nextvar
     (14) nextvar -> . COMA vaux
     (15) nextvar -> . empty
@@ -786,6 +1102,15 @@ state 50
 
     COMA            shift and go to state 57
     PYC             reduce using rule 123 (empty -> .)
+=======
+    (10) vaux -> ID agregaVar . nextvar
+    (13) nextvar -> . COMA vaux
+    (14) nextvar -> . empty
+    (119) empty -> .
+
+    COMA            shift and go to state 57
+    PYC             reduce using rule 119 (empty -> .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     nextvar                        shift and go to state 56
     empty                          shift and go to state 58
@@ -872,6 +1197,7 @@ state 60
 
 state 61
 
+<<<<<<< HEAD
     (1) programa -> program ID auxprograma PYC varsaux paux2 mainfunction end cuadEnd PYC .
 
     $end            reduce using rule 1 (programa -> program ID auxprograma PYC varsaux paux2 mainfunction end cuadEnd PYC .)
@@ -891,6 +1217,20 @@ state 62
     (29) type -> . bool guardarTipoVar
 
     PARDER          reduce using rule 123 (empty -> .)
+=======
+    (29) function -> ftype func ID agregaFunc PARIZQ . funcaux PARDER varsaux bloque
+    (30) function -> ftype func ID agregaFunc PARIZQ . empty PARDER varsaux bloque
+    (36) funcaux -> . type ID agregaVar masParam
+    (37) funcaux -> . type ID CORIZQ CTEINT CORDER agregaVar masParam
+    (38) funcaux -> . type ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar masParam
+    (119) empty -> .
+    (25) type -> . int guardarTipoVar
+    (26) type -> . float guardarTipoVar
+    (27) type -> . string guardarTipoVar
+    (28) type -> . bool guardarTipoVar
+
+    PARDER          reduce using rule 119 (empty -> .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
     int             shift and go to state 25
     float           shift and go to state 26
     string          shift and go to state 27
@@ -926,6 +1266,7 @@ state 65
 
 state 66
 
+<<<<<<< HEAD
     (19) mainfunction -> func main agregaFunc PARIZQ PARDER . varsaux bloque
     (20) mainfunction -> func main agregaFunc PARIZQ PARDER . bloque
     (5) varsaux -> . vars varsaux
@@ -935,14 +1276,30 @@ state 66
     (9) vars -> . var type vaux PYC
     (10) vars -> . empty
     (123) empty -> .
+=======
+    (18) mainfunction -> func main agregaFunc PARIZQ PARDER . varsaux bloque
+    (19) mainfunction -> func main agregaFunc PARIZQ PARDER . bloque
+    (4) varsaux -> . vars varsaux
+    (5) varsaux -> . empty
+    (21) bloque -> . LLAVEIZQ bloqueaux LLAVEDER
+    (22) bloque -> . LLAVEIZQ empty LLAVEDER
+    (8) vars -> . var type vaux PYC
+    (9) vars -> . empty
+    (119) empty -> .
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
   ! shift/reduce conflict for LLAVEIZQ resolved as shift
   ! shift/reduce conflict for var resolved as shift
     LLAVEIZQ        shift and go to state 74
     var             shift and go to state 12
 
+<<<<<<< HEAD
   ! LLAVEIZQ        [ reduce using rule 123 (empty -> .) ]
   ! var             [ reduce using rule 123 (empty -> .) ]
+=======
+  ! LLAVEIZQ        [ reduce using rule 119 (empty -> .) ]
+  ! var             [ reduce using rule 119 (empty -> .) ]
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     varsaux                        shift and go to state 72
     bloque                         shift and go to state 73
@@ -965,11 +1322,21 @@ state 68
 
 state 69
 
+<<<<<<< HEAD
     (37) funcaux -> type . ID agregaVar masParam
     (38) funcaux -> type . ID CORIZQ CTEINT CORDER agregaVar masParam
     (39) funcaux -> type . ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar masParam
 
     ID              shift and go to state 77
+=======
+    (11) vaux -> ID CORIZQ CTEINT CORDER agregaVar . nextvar
+    (13) nextvar -> . COMA vaux
+    (14) nextvar -> . empty
+    (119) empty -> .
+
+    COMA            shift and go to state 57
+    PYC             reduce using rule 119 (empty -> .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 70
@@ -1004,10 +1371,56 @@ state 72
 
 state 73
 
+<<<<<<< HEAD
     (20) mainfunction -> func main agregaFunc PARIZQ PARDER bloque .
+=======
+    (21) bloque -> LLAVEIZQ . bloqueaux LLAVEDER
+    (22) bloque -> LLAVEIZQ . empty LLAVEDER
+    (23) bloqueaux -> . estatuto bloqueaux
+    (24) bloqueaux -> . estatuto
+    (119) empty -> .
+    (41) estatuto -> . asignacion
+    (42) estatuto -> . escritura
+    (43) estatuto -> . llamada
+    (44) estatuto -> . condicion
+    (45) estatuto -> . whileloop
+    (46) estatuto -> . forloop
+    (47) estatuto -> . lectura
+    (48) asignacion -> . ID checkID asignaux ASIGNA expresion cuadAsignacion PYC
+    (49) asignacion -> . ID checkID asignaux ASIGNA llamada_esp PYC
+    (50) asignacion -> . ID checkID asignaux ASIGNA CTESTRING PYC
+    (55) escritura -> . write PARIZQ escaux PARDER PYC
+    (61) llamada -> . ID PARIZQ expresion llamaux PARDER
+    (62) llamada -> . ID PARIZQ llamada_esp llamaux PARDER
+    (63) llamada -> . ID PARIZQ PARDER
+    (68) condicion -> . if PARIZQ expresion PARDER cuadGotof bloque condicionAux cuadFinIf
+    (71) whileloop -> . while PARIZQ expresion PARDER bloque
+    (72) forloop -> . for PARIZQ expresion DOSPUNTOS expresion PARDER bloque
+    (73) lectura -> . read PARIZQ ID checkID PARDER PYC
+
+    LLAVEDER        reduce using rule 119 (empty -> .)
+    ID              shift and go to state 90
+    write           shift and go to state 91
+    if              shift and go to state 92
+    while           shift and go to state 93
+    for             shift and go to state 94
+    read            shift and go to state 95
+
+    bloqueaux                      shift and go to state 80
+    empty                          shift and go to state 81
+    estatuto                       shift and go to state 82
+    asignacion                     shift and go to state 83
+    escritura                      shift and go to state 84
+    llamada                        shift and go to state 85
+    condicion                      shift and go to state 86
+    whileloop                      shift and go to state 87
+    forloop                        shift and go to state 88
+    lectura                        shift and go to state 89
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     end             reduce using rule 20 (mainfunction -> func main agregaFunc PARIZQ PARDER bloque .)
 
+<<<<<<< HEAD
 
 state 74
 
@@ -1068,6 +1481,39 @@ state 75
     LLAVEIZQ        reduce using rule 123 (empty -> .)
 
   ! var             [ reduce using rule 123 (empty -> .) ]
+=======
+    (29) function -> ftype func ID agregaFunc PARIZQ funcaux PARDER . varsaux bloque
+    (4) varsaux -> . vars varsaux
+    (5) varsaux -> . empty
+    (8) vars -> . var type vaux PYC
+    (9) vars -> . empty
+    (119) empty -> .
+
+  ! shift/reduce conflict for var resolved as shift
+    var             shift and go to state 12
+    LLAVEIZQ        reduce using rule 119 (empty -> .)
+
+  ! var             [ reduce using rule 119 (empty -> .) ]
+
+    varsaux                        shift and go to state 96
+    vars                           shift and go to state 10
+    empty                          shift and go to state 11
+
+state 75
+
+    (30) function -> ftype func ID agregaFunc PARIZQ empty PARDER . varsaux bloque
+    (4) varsaux -> . vars varsaux
+    (5) varsaux -> . empty
+    (8) vars -> . var type vaux PYC
+    (9) vars -> . empty
+    (119) empty -> .
+
+  ! shift/reduce conflict for var resolved as shift
+    var             shift and go to state 12
+    LLAVEIZQ        reduce using rule 119 (empty -> .)
+
+  ! var             [ reduce using rule 119 (empty -> .) ]
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     varsaux                        shift and go to state 97
     vars                           shift and go to state 10
@@ -1141,7 +1587,50 @@ state 81
 
 state 82
 
+<<<<<<< HEAD
     (23) bloque -> LLAVEIZQ empty . LLAVEDER
+=======
+    (23) bloqueaux -> estatuto . bloqueaux
+    (24) bloqueaux -> estatuto .
+    (23) bloqueaux -> . estatuto bloqueaux
+    (24) bloqueaux -> . estatuto
+    (41) estatuto -> . asignacion
+    (42) estatuto -> . escritura
+    (43) estatuto -> . llamada
+    (44) estatuto -> . condicion
+    (45) estatuto -> . whileloop
+    (46) estatuto -> . forloop
+    (47) estatuto -> . lectura
+    (48) asignacion -> . ID checkID asignaux ASIGNA expresion cuadAsignacion PYC
+    (49) asignacion -> . ID checkID asignaux ASIGNA llamada_esp PYC
+    (50) asignacion -> . ID checkID asignaux ASIGNA CTESTRING PYC
+    (55) escritura -> . write PARIZQ escaux PARDER PYC
+    (61) llamada -> . ID PARIZQ expresion llamaux PARDER
+    (62) llamada -> . ID PARIZQ llamada_esp llamaux PARDER
+    (63) llamada -> . ID PARIZQ PARDER
+    (68) condicion -> . if PARIZQ expresion PARDER cuadGotof bloque condicionAux cuadFinIf
+    (71) whileloop -> . while PARIZQ expresion PARDER bloque
+    (72) forloop -> . for PARIZQ expresion DOSPUNTOS expresion PARDER bloque
+    (73) lectura -> . read PARIZQ ID checkID PARDER PYC
+
+    LLAVEDER        reduce using rule 24 (bloqueaux -> estatuto .)
+    ID              shift and go to state 90
+    write           shift and go to state 91
+    if              shift and go to state 92
+    while           shift and go to state 93
+    for             shift and go to state 94
+    read            shift and go to state 95
+
+    estatuto                       shift and go to state 82
+    bloqueaux                      shift and go to state 103
+    asignacion                     shift and go to state 83
+    escritura                      shift and go to state 84
+    llamada                        shift and go to state 85
+    condicion                      shift and go to state 86
+    whileloop                      shift and go to state 87
+    forloop                        shift and go to state 88
+    lectura                        shift and go to state 89
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     LLAVEDER        shift and go to state 103
 
@@ -1298,22 +1787,34 @@ state 91
 
 state 92
 
+<<<<<<< HEAD
     (56) escritura -> write . PARIZQ escaux PARDER PYC
+=======
+    (68) condicion -> if . PARIZQ expresion PARDER cuadGotof bloque condicionAux cuadFinIf
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     PARIZQ          shift and go to state 107
 
 
 state 93
 
+<<<<<<< HEAD
     (70) condicion -> if . PARIZQ expresion PARDER cuadGotof bloque condicionAux cuadFinIf
+=======
+    (71) whileloop -> while . PARIZQ expresion PARDER bloque
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     PARIZQ          shift and go to state 108
 
 
 state 94
 
+<<<<<<< HEAD
     (73) whileloop -> while . migaja PARIZQ expresion PARDER cuadGotof bloque cuadFinWhile
     (74) migaja -> .
+=======
+    (72) forloop -> for . PARIZQ expresion DOSPUNTOS expresion PARDER bloque
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     PARIZQ          reduce using rule 74 (migaja -> .)
 
@@ -1321,7 +1822,11 @@ state 94
 
 state 95
 
+<<<<<<< HEAD
     (76) forloop -> for . PARIZQ expresion DOSPUNTOS expresion PARDER bloque
+=======
+    (73) lectura -> read . PARIZQ ID checkID PARDER PYC
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     PARIZQ          shift and go to state 110
 
@@ -1345,6 +1850,7 @@ state 97
 
 state 98
 
+<<<<<<< HEAD
     (31) function -> ftype func ID agregaFunc PARIZQ empty PARDER varsaux . bloque
     (22) bloque -> . LLAVEIZQ bloqueaux LLAVEDER
     (23) bloque -> . LLAVEIZQ empty LLAVEDER
@@ -1368,6 +1874,21 @@ state 99
     (29) type -> . bool guardarTipoVar
 
     PARDER          reduce using rule 123 (empty -> .)
+=======
+    (36) funcaux -> type ID agregaVar . masParam
+    (39) masParam -> . funcaux
+    (40) masParam -> . empty
+    (36) funcaux -> . type ID agregaVar masParam
+    (37) funcaux -> . type ID CORIZQ CTEINT CORDER agregaVar masParam
+    (38) funcaux -> . type ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar masParam
+    (119) empty -> .
+    (25) type -> . int guardarTipoVar
+    (26) type -> . float guardarTipoVar
+    (27) type -> . string guardarTipoVar
+    (28) type -> . bool guardarTipoVar
+
+    PARDER          reduce using rule 119 (empty -> .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
     int             shift and go to state 25
     float           shift and go to state 26
     string          shift and go to state 27
@@ -1388,6 +1909,7 @@ state 100
 
 state 101
 
+<<<<<<< HEAD
     (13) vaux -> ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar . nextvar
     (14) nextvar -> . COMA vaux
     (15) nextvar -> . empty
@@ -1395,10 +1917,20 @@ state 101
 
     COMA            shift and go to state 57
     PYC             reduce using rule 123 (empty -> .)
+=======
+    (12) vaux -> ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar . nextvar
+    (13) nextvar -> . COMA vaux
+    (14) nextvar -> . empty
+    (119) empty -> .
+
+    COMA            shift and go to state 57
+    PYC             reduce using rule 119 (empty -> .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     nextvar                        shift and go to state 118
     empty                          shift and go to state 58
 
+<<<<<<< HEAD
 state 102
 
     (22) bloque -> LLAVEIZQ bloqueaux LLAVEDER .
@@ -1418,6 +1950,48 @@ state 102
     for             reduce using rule 22 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
     read            reduce using rule 22 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
     LLAVEDER        reduce using rule 22 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+=======
+state 101
+
+    (21) bloque -> LLAVEIZQ bloqueaux LLAVEDER .
+
+    end             reduce using rule 21 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+    int             reduce using rule 21 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+    float           reduce using rule 21 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+    string          reduce using rule 21 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+    bool            reduce using rule 21 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+    void            reduce using rule 21 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+    func            reduce using rule 21 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+    ID              reduce using rule 21 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+    write           reduce using rule 21 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+    if              reduce using rule 21 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+    while           reduce using rule 21 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+    for             reduce using rule 21 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+    read            reduce using rule 21 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+    LLAVEDER        reduce using rule 21 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+    else            reduce using rule 21 (bloque -> LLAVEIZQ bloqueaux LLAVEDER .)
+
+
+state 102
+
+    (22) bloque -> LLAVEIZQ empty LLAVEDER .
+
+    end             reduce using rule 22 (bloque -> LLAVEIZQ empty LLAVEDER .)
+    int             reduce using rule 22 (bloque -> LLAVEIZQ empty LLAVEDER .)
+    float           reduce using rule 22 (bloque -> LLAVEIZQ empty LLAVEDER .)
+    string          reduce using rule 22 (bloque -> LLAVEIZQ empty LLAVEDER .)
+    bool            reduce using rule 22 (bloque -> LLAVEIZQ empty LLAVEDER .)
+    void            reduce using rule 22 (bloque -> LLAVEIZQ empty LLAVEDER .)
+    func            reduce using rule 22 (bloque -> LLAVEIZQ empty LLAVEDER .)
+    ID              reduce using rule 22 (bloque -> LLAVEIZQ empty LLAVEDER .)
+    write           reduce using rule 22 (bloque -> LLAVEIZQ empty LLAVEDER .)
+    if              reduce using rule 22 (bloque -> LLAVEIZQ empty LLAVEDER .)
+    while           reduce using rule 22 (bloque -> LLAVEIZQ empty LLAVEDER .)
+    for             reduce using rule 22 (bloque -> LLAVEIZQ empty LLAVEDER .)
+    read            reduce using rule 22 (bloque -> LLAVEIZQ empty LLAVEDER .)
+    LLAVEDER        reduce using rule 22 (bloque -> LLAVEIZQ empty LLAVEDER .)
+    else            reduce using rule 22 (bloque -> LLAVEIZQ empty LLAVEDER .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 103
@@ -1443,13 +2017,27 @@ state 103
 
 state 104
 
+<<<<<<< HEAD
     (24) bloqueaux -> estatuto bloqueaux .
 
     LLAVEDER        reduce using rule 24 (bloqueaux -> estatuto bloqueaux .)
+=======
+    (48) asignacion -> ID checkID . asignaux ASIGNA expresion cuadAsignacion PYC
+    (49) asignacion -> ID checkID . asignaux ASIGNA llamada_esp PYC
+    (50) asignacion -> ID checkID . asignaux ASIGNA CTESTRING PYC
+    (52) asignaux -> . CORIZQ expresion CORDER
+    (53) asignaux -> . CORIZQ expresion COMA expresion CORDER
+    (54) asignaux -> . empty
+    (119) empty -> .
+
+    CORIZQ          shift and go to state 119
+    ASIGNA          reduce using rule 119 (empty -> .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 105
 
+<<<<<<< HEAD
     (49) asignacion -> ID checkID . asignaux ASIGNA expresion cuadAsignacion PYC
     (50) asignacion -> ID checkID . asignaux ASIGNA llamada_esp PYC
     (51) asignacion -> ID checkID . asignaux ASIGNA CTESTRING PYC
@@ -1586,9 +2174,205 @@ state 108
 state 109
 
     (73) whileloop -> while migaja . PARIZQ expresion PARDER cuadGotof bloque cuadFinWhile
+=======
+    (61) llamada -> ID PARIZQ . expresion llamaux PARDER
+    (62) llamada -> ID PARIZQ . llamada_esp llamaux PARDER
+    (63) llamada -> ID PARIZQ . PARDER
+    (74) expresion -> . andExpresion
+    (75) expresion -> . andExpresion OR pushOper andExpresion
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
+    (76) andExpresion -> . relopExpresion
+    (77) andExpresion -> . relopExpresion AND pushOper relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+
+    PARDER          shift and go to state 124
+    ID              shift and go to state 121
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+
+    expresion                      shift and go to state 123
+    llamada_esp                    shift and go to state 125
+    andExpresion                   shift and go to state 126
+    relopExpresion                 shift and go to state 127
+    aritExpresion                  shift and go to state 128
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+
+state 106
+
+    (55) escritura -> write PARIZQ . escaux PARDER PYC
+    (56) escaux -> . expresion nextexp
+    (57) escaux -> . CTESTRING nextexp
+    (58) escaux -> . llamada_esp nextexp
+    (74) expresion -> . andExpresion
+    (75) expresion -> . andExpresion OR pushOper andExpresion
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
+    (76) andExpresion -> . relopExpresion
+    (77) andExpresion -> . relopExpresion AND pushOper relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+
+    CTESTRING       shift and go to state 137
+    ID              shift and go to state 121
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+
+    escaux                         shift and go to state 135
+    expresion                      shift and go to state 136
+    llamada_esp                    shift and go to state 138
+    andExpresion                   shift and go to state 126
+    relopExpresion                 shift and go to state 127
+    aritExpresion                  shift and go to state 128
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+
+state 107
+
+    (68) condicion -> if PARIZQ . expresion PARDER cuadGotof bloque condicionAux cuadFinIf
+    (74) expresion -> . andExpresion
+    (75) expresion -> . andExpresion OR pushOper andExpresion
+    (76) andExpresion -> . relopExpresion
+    (77) andExpresion -> . relopExpresion AND pushOper relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
+
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+    ID              shift and go to state 140
+
+    expresion                      shift and go to state 139
+    andExpresion                   shift and go to state 126
+    relopExpresion                 shift and go to state 127
+    aritExpresion                  shift and go to state 128
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+    llamada_esp                    shift and go to state 141
+
+state 108
+
+    (71) whileloop -> while PARIZQ . expresion PARDER bloque
+    (74) expresion -> . andExpresion
+    (75) expresion -> . andExpresion OR pushOper andExpresion
+    (76) andExpresion -> . relopExpresion
+    (77) andExpresion -> . relopExpresion AND pushOper relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
+
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+    ID              shift and go to state 140
+
+    expresion                      shift and go to state 142
+    andExpresion                   shift and go to state 126
+    relopExpresion                 shift and go to state 127
+    aritExpresion                  shift and go to state 128
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+    llamada_esp                    shift and go to state 141
+
+state 109
+
+    (72) forloop -> for PARIZQ . expresion DOSPUNTOS expresion PARDER bloque
+    (74) expresion -> . andExpresion
+    (75) expresion -> . andExpresion OR pushOper andExpresion
+    (76) andExpresion -> . relopExpresion
+    (77) andExpresion -> . relopExpresion AND pushOper relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
+
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+    ID              shift and go to state 140
+
+    expresion                      shift and go to state 143
+    andExpresion                   shift and go to state 126
+    relopExpresion                 shift and go to state 127
+    aritExpresion                  shift and go to state 128
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+    llamada_esp                    shift and go to state 141
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     PARIZQ          shift and go to state 143
 
+<<<<<<< HEAD
+=======
+    (73) lectura -> read PARIZQ . ID checkID PARDER PYC
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 state 110
 
@@ -1697,9 +2481,47 @@ state 118
 
 state 119
 
+<<<<<<< HEAD
     (49) asignacion -> ID checkID asignaux . ASIGNA expresion cuadAsignacion PYC
     (50) asignacion -> ID checkID asignaux . ASIGNA llamada_esp PYC
     (51) asignacion -> ID checkID asignaux . ASIGNA CTESTRING PYC
+=======
+    (52) asignaux -> CORIZQ . expresion CORDER
+    (53) asignaux -> CORIZQ . expresion COMA expresion CORDER
+    (74) expresion -> . andExpresion
+    (75) expresion -> . andExpresion OR pushOper andExpresion
+    (76) andExpresion -> . relopExpresion
+    (77) andExpresion -> . relopExpresion AND pushOper relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
+
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+    ID              shift and go to state 140
+
+    expresion                      shift and go to state 148
+    andExpresion                   shift and go to state 126
+    relopExpresion                 shift and go to state 127
+    aritExpresion                  shift and go to state 128
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+    llamada_esp                    shift and go to state 141
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     ASIGNA          shift and go to state 148
 
@@ -1744,6 +2566,7 @@ state 120
 
 state 121
 
+<<<<<<< HEAD
     (55) asignaux -> empty .
 
     ASIGNA          reduce using rule 55 (asignaux -> empty .)
@@ -1808,6 +2631,104 @@ state 123
     true            shift and go to state 134
     false           shift and go to state 135
     ID              shift and go to state 141
+=======
+    (101) llamada_esp -> ID . PUNTO especiales PARIZQ PARDER
+    (99) factor -> ID . checkID pushOT
+    (51) checkID -> .
+
+    PUNTO           shift and go to state 149
+    MULT            reduce using rule 51 (checkID -> .)
+    DIV             reduce using rule 51 (checkID -> .)
+    MAS             reduce using rule 51 (checkID -> .)
+    MENOS           reduce using rule 51 (checkID -> .)
+    MAYORQUE        reduce using rule 51 (checkID -> .)
+    MENORQUE        reduce using rule 51 (checkID -> .)
+    MAYORIGUAL      reduce using rule 51 (checkID -> .)
+    MENORIGUAL      reduce using rule 51 (checkID -> .)
+    EQUALS          reduce using rule 51 (checkID -> .)
+    DIFERENTE       reduce using rule 51 (checkID -> .)
+    AND             reduce using rule 51 (checkID -> .)
+    OR              reduce using rule 51 (checkID -> .)
+    ID              reduce using rule 51 (checkID -> .)
+    PARIZQ          reduce using rule 51 (checkID -> .)
+    CTEINT          reduce using rule 51 (checkID -> .)
+    CTEFLOAT        reduce using rule 51 (checkID -> .)
+    true            reduce using rule 51 (checkID -> .)
+    false           reduce using rule 51 (checkID -> .)
+    COMA            reduce using rule 51 (checkID -> .)
+    PARDER          reduce using rule 51 (checkID -> .)
+    PYC             reduce using rule 51 (checkID -> .)
+
+    checkID                        shift and go to state 150
+
+state 122
+
+    (94) factor -> PARIZQ . expresion PARDER
+    (74) expresion -> . andExpresion
+    (75) expresion -> . andExpresion OR pushOper andExpresion
+    (76) andExpresion -> . relopExpresion
+    (77) andExpresion -> . relopExpresion AND pushOper relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
+
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+    ID              shift and go to state 140
+
+    expresion                      shift and go to state 151
+    andExpresion                   shift and go to state 126
+    relopExpresion                 shift and go to state 127
+    aritExpresion                  shift and go to state 128
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+    llamada_esp                    shift and go to state 141
+
+state 123
+
+    (61) llamada -> ID PARIZQ expresion . llamaux PARDER
+    (64) llamaux -> . expresion nextparametro
+    (65) llamaux -> . llamada_esp nextparametro
+    (74) expresion -> . andExpresion
+    (75) expresion -> . andExpresion OR pushOper andExpresion
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
+    (76) andExpresion -> . relopExpresion
+    (77) andExpresion -> . relopExpresion AND pushOper relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+
+    ID              shift and go to state 121
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     expresion                      shift and go to state 152
     andExpresion                   shift and go to state 127
@@ -1869,6 +2790,7 @@ state 125
     read            reduce using rule 65 (llamada -> ID PARIZQ PARDER .)
     LLAVEDER        reduce using rule 65 (llamada -> ID PARIZQ PARDER .)
 
+<<<<<<< HEAD
 
 state 126
 
@@ -1895,6 +2817,31 @@ state 126
     (102) factor -> . false pushOT
     (103) factor -> . ID checkID pushOT
     (104) factor -> . llamada_esp pushOT
+=======
+    (62) llamada -> ID PARIZQ llamada_esp . llamaux PARDER
+    (100) factor -> llamada_esp . pushOT
+    (64) llamaux -> . expresion nextparametro
+    (65) llamaux -> . llamada_esp nextparametro
+    (111) pushOT -> .
+    (74) expresion -> . andExpresion
+    (75) expresion -> . andExpresion OR pushOper andExpresion
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
+    (76) andExpresion -> . relopExpresion
+    (77) andExpresion -> . relopExpresion AND pushOper relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
   ! shift/reduce conflict for ID resolved as shift
   ! shift/reduce conflict for PARIZQ resolved as shift
@@ -1902,6 +2849,7 @@ state 126
   ! shift/reduce conflict for CTEFLOAT resolved as shift
   ! shift/reduce conflict for true resolved as shift
   ! shift/reduce conflict for false resolved as shift
+<<<<<<< HEAD
     MULT            reduce using rule 115 (pushOT -> .)
     DIV             reduce using rule 115 (pushOT -> .)
     MAS             reduce using rule 115 (pushOT -> .)
@@ -1957,10 +2905,88 @@ state 127
     CORDER          reduce using rule 78 (expresion -> andExpresion .)
     PYC             reduce using rule 78 (expresion -> andExpresion .)
     OR              shift and go to state 158
+=======
+    MULT            reduce using rule 111 (pushOT -> .)
+    DIV             reduce using rule 111 (pushOT -> .)
+    MAS             reduce using rule 111 (pushOT -> .)
+    MENOS           reduce using rule 111 (pushOT -> .)
+    MAYORQUE        reduce using rule 111 (pushOT -> .)
+    MENORQUE        reduce using rule 111 (pushOT -> .)
+    MAYORIGUAL      reduce using rule 111 (pushOT -> .)
+    MENORIGUAL      reduce using rule 111 (pushOT -> .)
+    EQUALS          reduce using rule 111 (pushOT -> .)
+    DIFERENTE       reduce using rule 111 (pushOT -> .)
+    AND             reduce using rule 111 (pushOT -> .)
+    OR              reduce using rule 111 (pushOT -> .)
+    COMA            reduce using rule 111 (pushOT -> .)
+    PARDER          reduce using rule 111 (pushOT -> .)
+    ID              shift and go to state 121
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+
+  ! ID              [ reduce using rule 111 (pushOT -> .) ]
+  ! PARIZQ          [ reduce using rule 111 (pushOT -> .) ]
+  ! CTEINT          [ reduce using rule 111 (pushOT -> .) ]
+  ! CTEFLOAT        [ reduce using rule 111 (pushOT -> .) ]
+  ! true            [ reduce using rule 111 (pushOT -> .) ]
+  ! false           [ reduce using rule 111 (pushOT -> .) ]
+
+    llamada_esp                    shift and go to state 154
+    llamaux                        shift and go to state 155
+    pushOT                         shift and go to state 156
+    expresion                      shift and go to state 152
+    andExpresion                   shift and go to state 126
+    relopExpresion                 shift and go to state 127
+    aritExpresion                  shift and go to state 128
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+
+state 126
+
+    (74) expresion -> andExpresion .
+    (75) expresion -> andExpresion . OR pushOper andExpresion
+
+    ID              reduce using rule 74 (expresion -> andExpresion .)
+    PARIZQ          reduce using rule 74 (expresion -> andExpresion .)
+    CTEINT          reduce using rule 74 (expresion -> andExpresion .)
+    CTEFLOAT        reduce using rule 74 (expresion -> andExpresion .)
+    true            reduce using rule 74 (expresion -> andExpresion .)
+    false           reduce using rule 74 (expresion -> andExpresion .)
+    COMA            reduce using rule 74 (expresion -> andExpresion .)
+    PARDER          reduce using rule 74 (expresion -> andExpresion .)
+    DOSPUNTOS       reduce using rule 74 (expresion -> andExpresion .)
+    CORDER          reduce using rule 74 (expresion -> andExpresion .)
+    PYC             reduce using rule 74 (expresion -> andExpresion .)
+    OR              shift and go to state 157
+
+
+state 127
+
+    (76) andExpresion -> relopExpresion .
+    (77) andExpresion -> relopExpresion . AND pushOper relopExpresion
+
+    OR              reduce using rule 76 (andExpresion -> relopExpresion .)
+    ID              reduce using rule 76 (andExpresion -> relopExpresion .)
+    PARIZQ          reduce using rule 76 (andExpresion -> relopExpresion .)
+    CTEINT          reduce using rule 76 (andExpresion -> relopExpresion .)
+    CTEFLOAT        reduce using rule 76 (andExpresion -> relopExpresion .)
+    true            reduce using rule 76 (andExpresion -> relopExpresion .)
+    false           reduce using rule 76 (andExpresion -> relopExpresion .)
+    COMA            reduce using rule 76 (andExpresion -> relopExpresion .)
+    PARDER          reduce using rule 76 (andExpresion -> relopExpresion .)
+    DOSPUNTOS       reduce using rule 76 (andExpresion -> relopExpresion .)
+    CORDER          reduce using rule 76 (andExpresion -> relopExpresion .)
+    PYC             reduce using rule 76 (andExpresion -> relopExpresion .)
+    AND             shift and go to state 158
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 128
 
+<<<<<<< HEAD
     (80) andExpresion -> relopExpresion .
     (81) andExpresion -> relopExpresion . AND pushOper relopExpresion
 
@@ -2097,11 +3123,161 @@ state 132
     DOSPUNTOS       reduce using rule 115 (pushOT -> .)
     CORDER          reduce using rule 115 (pushOT -> .)
     PYC             reduce using rule 115 (pushOT -> .)
+=======
+    (78) relopExpresion -> aritExpresion . cuadArit
+    (79) relopExpresion -> aritExpresion . cuadArit relopAux aritExpresion cuadArit
+    (115) cuadArit -> .
+
+    MAYORQUE        reduce using rule 115 (cuadArit -> .)
+    MENORQUE        reduce using rule 115 (cuadArit -> .)
+    MAYORIGUAL      reduce using rule 115 (cuadArit -> .)
+    MENORIGUAL      reduce using rule 115 (cuadArit -> .)
+    EQUALS          reduce using rule 115 (cuadArit -> .)
+    DIFERENTE       reduce using rule 115 (cuadArit -> .)
+    AND             reduce using rule 115 (cuadArit -> .)
+    OR              reduce using rule 115 (cuadArit -> .)
+    ID              reduce using rule 115 (cuadArit -> .)
+    PARIZQ          reduce using rule 115 (cuadArit -> .)
+    CTEINT          reduce using rule 115 (cuadArit -> .)
+    CTEFLOAT        reduce using rule 115 (cuadArit -> .)
+    true            reduce using rule 115 (cuadArit -> .)
+    false           reduce using rule 115 (cuadArit -> .)
+    COMA            reduce using rule 115 (cuadArit -> .)
+    PARDER          reduce using rule 115 (cuadArit -> .)
+    DOSPUNTOS       reduce using rule 115 (cuadArit -> .)
+    CORDER          reduce using rule 115 (cuadArit -> .)
+    PYC             reduce using rule 115 (cuadArit -> .)
+
+    cuadArit                       shift and go to state 159
+
+state 129
+
+    (86) aritExpresion -> term . cuadTerm
+    (87) aritExpresion -> term . cuadTerm aritAux term cuadTerm
+    (112) cuadTerm -> .
+
+    MAS             reduce using rule 112 (cuadTerm -> .)
+    MENOS           reduce using rule 112 (cuadTerm -> .)
+    MAYORQUE        reduce using rule 112 (cuadTerm -> .)
+    MENORQUE        reduce using rule 112 (cuadTerm -> .)
+    MAYORIGUAL      reduce using rule 112 (cuadTerm -> .)
+    MENORIGUAL      reduce using rule 112 (cuadTerm -> .)
+    EQUALS          reduce using rule 112 (cuadTerm -> .)
+    DIFERENTE       reduce using rule 112 (cuadTerm -> .)
+    AND             reduce using rule 112 (cuadTerm -> .)
+    OR              reduce using rule 112 (cuadTerm -> .)
+    ID              reduce using rule 112 (cuadTerm -> .)
+    PARIZQ          reduce using rule 112 (cuadTerm -> .)
+    CTEINT          reduce using rule 112 (cuadTerm -> .)
+    CTEFLOAT        reduce using rule 112 (cuadTerm -> .)
+    true            reduce using rule 112 (cuadTerm -> .)
+    false           reduce using rule 112 (cuadTerm -> .)
+    COMA            reduce using rule 112 (cuadTerm -> .)
+    PARDER          reduce using rule 112 (cuadTerm -> .)
+    DOSPUNTOS       reduce using rule 112 (cuadTerm -> .)
+    CORDER          reduce using rule 112 (cuadTerm -> .)
+    PYC             reduce using rule 112 (cuadTerm -> .)
+
+    cuadTerm                       shift and go to state 160
+
+state 130
+
+    (90) term -> factor .
+    (91) term -> factor . cuadFactor termAux factor cuadFactor
+    (113) cuadFactor -> .
+
+    MAS             reduce using rule 90 (term -> factor .)
+    MENOS           reduce using rule 90 (term -> factor .)
+    MAYORQUE        reduce using rule 90 (term -> factor .)
+    MENORQUE        reduce using rule 90 (term -> factor .)
+    MAYORIGUAL      reduce using rule 90 (term -> factor .)
+    MENORIGUAL      reduce using rule 90 (term -> factor .)
+    EQUALS          reduce using rule 90 (term -> factor .)
+    DIFERENTE       reduce using rule 90 (term -> factor .)
+    AND             reduce using rule 90 (term -> factor .)
+    OR              reduce using rule 90 (term -> factor .)
+    ID              reduce using rule 90 (term -> factor .)
+    PARIZQ          reduce using rule 90 (term -> factor .)
+    CTEINT          reduce using rule 90 (term -> factor .)
+    CTEFLOAT        reduce using rule 90 (term -> factor .)
+    true            reduce using rule 90 (term -> factor .)
+    false           reduce using rule 90 (term -> factor .)
+    COMA            reduce using rule 90 (term -> factor .)
+    PARDER          reduce using rule 90 (term -> factor .)
+    DOSPUNTOS       reduce using rule 90 (term -> factor .)
+    CORDER          reduce using rule 90 (term -> factor .)
+    PYC             reduce using rule 90 (term -> factor .)
+    MULT            reduce using rule 113 (cuadFactor -> .)
+    DIV             reduce using rule 113 (cuadFactor -> .)
+
+    cuadFactor                     shift and go to state 161
+
+state 131
+
+    (95) factor -> CTEINT . pushOT
+    (111) pushOT -> .
+
+    MULT            reduce using rule 111 (pushOT -> .)
+    DIV             reduce using rule 111 (pushOT -> .)
+    MAS             reduce using rule 111 (pushOT -> .)
+    MENOS           reduce using rule 111 (pushOT -> .)
+    MAYORQUE        reduce using rule 111 (pushOT -> .)
+    MENORQUE        reduce using rule 111 (pushOT -> .)
+    MAYORIGUAL      reduce using rule 111 (pushOT -> .)
+    MENORIGUAL      reduce using rule 111 (pushOT -> .)
+    EQUALS          reduce using rule 111 (pushOT -> .)
+    DIFERENTE       reduce using rule 111 (pushOT -> .)
+    AND             reduce using rule 111 (pushOT -> .)
+    OR              reduce using rule 111 (pushOT -> .)
+    ID              reduce using rule 111 (pushOT -> .)
+    PARIZQ          reduce using rule 111 (pushOT -> .)
+    CTEINT          reduce using rule 111 (pushOT -> .)
+    CTEFLOAT        reduce using rule 111 (pushOT -> .)
+    true            reduce using rule 111 (pushOT -> .)
+    false           reduce using rule 111 (pushOT -> .)
+    COMA            reduce using rule 111 (pushOT -> .)
+    PARDER          reduce using rule 111 (pushOT -> .)
+    DOSPUNTOS       reduce using rule 111 (pushOT -> .)
+    CORDER          reduce using rule 111 (pushOT -> .)
+    PYC             reduce using rule 111 (pushOT -> .)
+
+    pushOT                         shift and go to state 162
+
+state 132
+
+    (96) factor -> CTEFLOAT . pushOT
+    (111) pushOT -> .
+
+    MULT            reduce using rule 111 (pushOT -> .)
+    DIV             reduce using rule 111 (pushOT -> .)
+    MAS             reduce using rule 111 (pushOT -> .)
+    MENOS           reduce using rule 111 (pushOT -> .)
+    MAYORQUE        reduce using rule 111 (pushOT -> .)
+    MENORQUE        reduce using rule 111 (pushOT -> .)
+    MAYORIGUAL      reduce using rule 111 (pushOT -> .)
+    MENORIGUAL      reduce using rule 111 (pushOT -> .)
+    EQUALS          reduce using rule 111 (pushOT -> .)
+    DIFERENTE       reduce using rule 111 (pushOT -> .)
+    AND             reduce using rule 111 (pushOT -> .)
+    OR              reduce using rule 111 (pushOT -> .)
+    ID              reduce using rule 111 (pushOT -> .)
+    PARIZQ          reduce using rule 111 (pushOT -> .)
+    CTEINT          reduce using rule 111 (pushOT -> .)
+    CTEFLOAT        reduce using rule 111 (pushOT -> .)
+    true            reduce using rule 111 (pushOT -> .)
+    false           reduce using rule 111 (pushOT -> .)
+    COMA            reduce using rule 111 (pushOT -> .)
+    PARDER          reduce using rule 111 (pushOT -> .)
+    DOSPUNTOS       reduce using rule 111 (pushOT -> .)
+    CORDER          reduce using rule 111 (pushOT -> .)
+    PYC             reduce using rule 111 (pushOT -> .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     pushOT                         shift and go to state 163
 
 state 133
 
+<<<<<<< HEAD
     (100) factor -> CTEFLOAT . pushOT
     (115) pushOT -> .
 
@@ -2128,11 +3304,40 @@ state 133
     DOSPUNTOS       reduce using rule 115 (pushOT -> .)
     CORDER          reduce using rule 115 (pushOT -> .)
     PYC             reduce using rule 115 (pushOT -> .)
+=======
+    (97) factor -> true . pushOT
+    (111) pushOT -> .
+
+    MULT            reduce using rule 111 (pushOT -> .)
+    DIV             reduce using rule 111 (pushOT -> .)
+    MAS             reduce using rule 111 (pushOT -> .)
+    MENOS           reduce using rule 111 (pushOT -> .)
+    MAYORQUE        reduce using rule 111 (pushOT -> .)
+    MENORQUE        reduce using rule 111 (pushOT -> .)
+    MAYORIGUAL      reduce using rule 111 (pushOT -> .)
+    MENORIGUAL      reduce using rule 111 (pushOT -> .)
+    EQUALS          reduce using rule 111 (pushOT -> .)
+    DIFERENTE       reduce using rule 111 (pushOT -> .)
+    AND             reduce using rule 111 (pushOT -> .)
+    OR              reduce using rule 111 (pushOT -> .)
+    ID              reduce using rule 111 (pushOT -> .)
+    PARIZQ          reduce using rule 111 (pushOT -> .)
+    CTEINT          reduce using rule 111 (pushOT -> .)
+    CTEFLOAT        reduce using rule 111 (pushOT -> .)
+    true            reduce using rule 111 (pushOT -> .)
+    false           reduce using rule 111 (pushOT -> .)
+    COMA            reduce using rule 111 (pushOT -> .)
+    PARDER          reduce using rule 111 (pushOT -> .)
+    DOSPUNTOS       reduce using rule 111 (pushOT -> .)
+    CORDER          reduce using rule 111 (pushOT -> .)
+    PYC             reduce using rule 111 (pushOT -> .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     pushOT                         shift and go to state 164
 
 state 134
 
+<<<<<<< HEAD
     (101) factor -> true . pushOT
     (115) pushOT -> .
 
@@ -2159,11 +3364,40 @@ state 134
     DOSPUNTOS       reduce using rule 115 (pushOT -> .)
     CORDER          reduce using rule 115 (pushOT -> .)
     PYC             reduce using rule 115 (pushOT -> .)
+=======
+    (98) factor -> false . pushOT
+    (111) pushOT -> .
+
+    MULT            reduce using rule 111 (pushOT -> .)
+    DIV             reduce using rule 111 (pushOT -> .)
+    MAS             reduce using rule 111 (pushOT -> .)
+    MENOS           reduce using rule 111 (pushOT -> .)
+    MAYORQUE        reduce using rule 111 (pushOT -> .)
+    MENORQUE        reduce using rule 111 (pushOT -> .)
+    MAYORIGUAL      reduce using rule 111 (pushOT -> .)
+    MENORIGUAL      reduce using rule 111 (pushOT -> .)
+    EQUALS          reduce using rule 111 (pushOT -> .)
+    DIFERENTE       reduce using rule 111 (pushOT -> .)
+    AND             reduce using rule 111 (pushOT -> .)
+    OR              reduce using rule 111 (pushOT -> .)
+    ID              reduce using rule 111 (pushOT -> .)
+    PARIZQ          reduce using rule 111 (pushOT -> .)
+    CTEINT          reduce using rule 111 (pushOT -> .)
+    CTEFLOAT        reduce using rule 111 (pushOT -> .)
+    true            reduce using rule 111 (pushOT -> .)
+    false           reduce using rule 111 (pushOT -> .)
+    COMA            reduce using rule 111 (pushOT -> .)
+    PARDER          reduce using rule 111 (pushOT -> .)
+    DOSPUNTOS       reduce using rule 111 (pushOT -> .)
+    CORDER          reduce using rule 111 (pushOT -> .)
+    PYC             reduce using rule 111 (pushOT -> .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     pushOT                         shift and go to state 165
 
 state 135
 
+<<<<<<< HEAD
     (102) factor -> false . pushOT
     (115) pushOT -> .
 
@@ -2217,9 +3451,75 @@ state 138
 
     COMA            reduce using rule 60 (cuadEsc -> .)
     PARDER          reduce using rule 60 (cuadEsc -> .)
+=======
+    (55) escritura -> write PARIZQ escaux . PARDER PYC
+
+    PARDER          shift and go to state 166
+
+
+state 136
+
+    (56) escaux -> expresion . nextexp
+    (59) nextexp -> . COMA escaux
+    (60) nextexp -> . empty
+    (119) empty -> .
+
+    COMA            shift and go to state 168
+    PARDER          reduce using rule 119 (empty -> .)
+
+    nextexp                        shift and go to state 167
+    empty                          shift and go to state 169
+
+state 137
+
+    (57) escaux -> CTESTRING . nextexp
+    (59) nextexp -> . COMA escaux
+    (60) nextexp -> . empty
+    (119) empty -> .
+
+    COMA            shift and go to state 168
+    PARDER          reduce using rule 119 (empty -> .)
+
+    nextexp                        shift and go to state 170
+    empty                          shift and go to state 169
+
+state 138
+
+    (58) escaux -> llamada_esp . nextexp
+    (100) factor -> llamada_esp . pushOT
+    (59) nextexp -> . COMA escaux
+    (60) nextexp -> . empty
+    (111) pushOT -> .
+    (119) empty -> .
+
+  ! shift/reduce conflict for COMA resolved as shift
+  ! reduce/reduce conflict for PARDER resolved using rule 111 (pushOT -> .)
+    COMA            shift and go to state 168
+    MULT            reduce using rule 111 (pushOT -> .)
+    DIV             reduce using rule 111 (pushOT -> .)
+    MAS             reduce using rule 111 (pushOT -> .)
+    MENOS           reduce using rule 111 (pushOT -> .)
+    MAYORQUE        reduce using rule 111 (pushOT -> .)
+    MENORQUE        reduce using rule 111 (pushOT -> .)
+    MAYORIGUAL      reduce using rule 111 (pushOT -> .)
+    MENORIGUAL      reduce using rule 111 (pushOT -> .)
+    EQUALS          reduce using rule 111 (pushOT -> .)
+    DIFERENTE       reduce using rule 111 (pushOT -> .)
+    AND             reduce using rule 111 (pushOT -> .)
+    OR              reduce using rule 111 (pushOT -> .)
+    PARDER          reduce using rule 111 (pushOT -> .)
+
+  ! COMA            [ reduce using rule 111 (pushOT -> .) ]
+  ! PARDER          [ reduce using rule 119 (empty -> .) ]
+
+    nextexp                        shift and go to state 171
+    pushOT                         shift and go to state 156
+    empty                          shift and go to state 169
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     cuadEsc                        shift and go to state 169
 
+<<<<<<< HEAD
 state 139
 
     (59) escaux -> llamada_esp . nextexp
@@ -2228,6 +3528,11 @@ state 139
     (62) nextexp -> . empty
     (115) pushOT -> .
     (123) empty -> .
+=======
+    (68) condicion -> if PARIZQ expresion . PARDER cuadGotof bloque condicionAux cuadFinIf
+
+    PARDER          shift and go to state 172
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
   ! shift/reduce conflict for COMA resolved as shift
   ! reduce/reduce conflict for PARDER resolved using rule 115 (pushOT -> .)
@@ -2255,13 +3560,78 @@ state 139
 
 state 140
 
+<<<<<<< HEAD
     (70) condicion -> if PARIZQ expresion . PARDER cuadGotof bloque condicionAux cuadFinIf
+=======
+    (99) factor -> ID . checkID pushOT
+    (101) llamada_esp -> ID . PUNTO especiales PARIZQ PARDER
+    (51) checkID -> .
+
+    PUNTO           shift and go to state 149
+    MULT            reduce using rule 51 (checkID -> .)
+    DIV             reduce using rule 51 (checkID -> .)
+    MAS             reduce using rule 51 (checkID -> .)
+    MENOS           reduce using rule 51 (checkID -> .)
+    MAYORQUE        reduce using rule 51 (checkID -> .)
+    MENORQUE        reduce using rule 51 (checkID -> .)
+    MAYORIGUAL      reduce using rule 51 (checkID -> .)
+    MENORIGUAL      reduce using rule 51 (checkID -> .)
+    EQUALS          reduce using rule 51 (checkID -> .)
+    DIFERENTE       reduce using rule 51 (checkID -> .)
+    AND             reduce using rule 51 (checkID -> .)
+    OR              reduce using rule 51 (checkID -> .)
+    PARDER          reduce using rule 51 (checkID -> .)
+    DOSPUNTOS       reduce using rule 51 (checkID -> .)
+    CORDER          reduce using rule 51 (checkID -> .)
+    COMA            reduce using rule 51 (checkID -> .)
+    ID              reduce using rule 51 (checkID -> .)
+    PARIZQ          reduce using rule 51 (checkID -> .)
+    CTEINT          reduce using rule 51 (checkID -> .)
+    CTEFLOAT        reduce using rule 51 (checkID -> .)
+    true            reduce using rule 51 (checkID -> .)
+    false           reduce using rule 51 (checkID -> .)
+    PYC             reduce using rule 51 (checkID -> .)
+
+    checkID                        shift and go to state 150
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     PARDER          shift and go to state 173
 
+<<<<<<< HEAD
+=======
+    (100) factor -> llamada_esp . pushOT
+    (111) pushOT -> .
+
+    MULT            reduce using rule 111 (pushOT -> .)
+    DIV             reduce using rule 111 (pushOT -> .)
+    MAS             reduce using rule 111 (pushOT -> .)
+    MENOS           reduce using rule 111 (pushOT -> .)
+    MAYORQUE        reduce using rule 111 (pushOT -> .)
+    MENORQUE        reduce using rule 111 (pushOT -> .)
+    MAYORIGUAL      reduce using rule 111 (pushOT -> .)
+    MENORIGUAL      reduce using rule 111 (pushOT -> .)
+    EQUALS          reduce using rule 111 (pushOT -> .)
+    DIFERENTE       reduce using rule 111 (pushOT -> .)
+    AND             reduce using rule 111 (pushOT -> .)
+    OR              reduce using rule 111 (pushOT -> .)
+    PARDER          reduce using rule 111 (pushOT -> .)
+    DOSPUNTOS       reduce using rule 111 (pushOT -> .)
+    CORDER          reduce using rule 111 (pushOT -> .)
+    COMA            reduce using rule 111 (pushOT -> .)
+    ID              reduce using rule 111 (pushOT -> .)
+    PARIZQ          reduce using rule 111 (pushOT -> .)
+    CTEINT          reduce using rule 111 (pushOT -> .)
+    CTEFLOAT        reduce using rule 111 (pushOT -> .)
+    true            reduce using rule 111 (pushOT -> .)
+    false           reduce using rule 111 (pushOT -> .)
+    PYC             reduce using rule 111 (pushOT -> .)
+
+    pushOT                         shift and go to state 156
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 state 141
 
+<<<<<<< HEAD
     (103) factor -> ID . checkID pushOT
     (105) llamada_esp -> ID . PUNTO especiales PARIZQ PARDER
     (52) checkID -> .
@@ -2294,6 +3664,11 @@ state 141
     checkID                        shift and go to state 151
 
 state 142
+=======
+    (71) whileloop -> while PARIZQ expresion . PARDER bloque
+
+    PARDER          shift and go to state 173
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     (104) factor -> llamada_esp . pushOT
     (115) pushOT -> .
@@ -2326,6 +3701,7 @@ state 142
 
 state 143
 
+<<<<<<< HEAD
     (73) whileloop -> while migaja PARIZQ . expresion PARDER cuadGotof bloque cuadFinWhile
     (78) expresion -> . andExpresion
     (79) expresion -> . andExpresion OR pushOper andExpresion
@@ -2364,9 +3740,24 @@ state 143
 state 144
 
     (76) forloop -> for PARIZQ expresion . DOSPUNTOS expresion PARDER bloque
+=======
+    (72) forloop -> for PARIZQ expresion . DOSPUNTOS expresion PARDER bloque
+
+    DOSPUNTOS       shift and go to state 174
+
+
+state 144
+
+    (73) lectura -> read PARIZQ ID . checkID PARDER PYC
+    (51) checkID -> .
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     DOSPUNTOS       shift and go to state 175
 
+<<<<<<< HEAD
+=======
+    checkID                        shift and go to state 175
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 state 145
 
@@ -2375,29 +3766,82 @@ state 145
 
     PARDER          reduce using rule 52 (checkID -> .)
 
+<<<<<<< HEAD
     checkID                        shift and go to state 176
+=======
+    agregaVar                      shift and go to state 176
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 state 146
 
     (38) funcaux -> type ID CORIZQ CTEINT CORDER . agregaVar masParam
     (16) agregaVar -> .
 
+<<<<<<< HEAD
     int             reduce using rule 16 (agregaVar -> .)
     float           reduce using rule 16 (agregaVar -> .)
     string          reduce using rule 16 (agregaVar -> .)
     bool            reduce using rule 16 (agregaVar -> .)
     PARDER          reduce using rule 16 (agregaVar -> .)
+=======
+    CTEINT          shift and go to state 177
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     agregaVar                      shift and go to state 177
 
 state 147
 
+<<<<<<< HEAD
     (39) funcaux -> type ID CORIZQ CTEINT COMA . CTEINT CORDER agregaVar masParam
+=======
+    (48) asignacion -> ID checkID asignaux ASIGNA . expresion cuadAsignacion PYC
+    (49) asignacion -> ID checkID asignaux ASIGNA . llamada_esp PYC
+    (50) asignacion -> ID checkID asignaux ASIGNA . CTESTRING PYC
+    (74) expresion -> . andExpresion
+    (75) expresion -> . andExpresion OR pushOper andExpresion
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
+    (76) andExpresion -> . relopExpresion
+    (77) andExpresion -> . relopExpresion AND pushOper relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+
+    CTESTRING       shift and go to state 180
+    ID              shift and go to state 121
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+
+    expresion                      shift and go to state 178
+    llamada_esp                    shift and go to state 179
+    andExpresion                   shift and go to state 126
+    relopExpresion                 shift and go to state 127
+    aritExpresion                  shift and go to state 128
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     CTEINT          shift and go to state 178
 
 
+<<<<<<< HEAD
 state 148
+=======
+    CORDER          shift and go to state 181
+    COMA            shift and go to state 182
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     (49) asignacion -> ID checkID asignaux ASIGNA . expresion cuadAsignacion PYC
     (50) asignacion -> ID checkID asignaux ASIGNA . llamada_esp PYC
@@ -2439,15 +3883,70 @@ state 148
 
 state 149
 
+<<<<<<< HEAD
     (53) asignaux -> CORIZQ expresion . CORDER
     (54) asignaux -> CORIZQ expresion . COMA expresion CORDER
+=======
+    (101) llamada_esp -> ID PUNTO . especiales PARIZQ PARDER
+    (102) especiales -> . length
+    (103) especiales -> . max
+    (104) especiales -> . min
+    (105) especiales -> . avg
+    (106) especiales -> . median
+    (107) especiales -> . mode
+    (108) especiales -> . variance
+    (109) especiales -> . stdev
+
+    length          shift and go to state 184
+    max             shift and go to state 185
+    min             shift and go to state 186
+    avg             shift and go to state 187
+    median          shift and go to state 188
+    mode            shift and go to state 189
+    variance        shift and go to state 190
+    stdev           shift and go to state 191
+
+    especiales                     shift and go to state 183
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     CORDER          shift and go to state 182
     COMA            shift and go to state 183
 
+<<<<<<< HEAD
+=======
+    (99) factor -> ID checkID . pushOT
+    (111) pushOT -> .
+
+    MULT            reduce using rule 111 (pushOT -> .)
+    DIV             reduce using rule 111 (pushOT -> .)
+    MAS             reduce using rule 111 (pushOT -> .)
+    MENOS           reduce using rule 111 (pushOT -> .)
+    MAYORQUE        reduce using rule 111 (pushOT -> .)
+    MENORQUE        reduce using rule 111 (pushOT -> .)
+    MAYORIGUAL      reduce using rule 111 (pushOT -> .)
+    MENORIGUAL      reduce using rule 111 (pushOT -> .)
+    EQUALS          reduce using rule 111 (pushOT -> .)
+    DIFERENTE       reduce using rule 111 (pushOT -> .)
+    AND             reduce using rule 111 (pushOT -> .)
+    OR              reduce using rule 111 (pushOT -> .)
+    ID              reduce using rule 111 (pushOT -> .)
+    PARIZQ          reduce using rule 111 (pushOT -> .)
+    CTEINT          reduce using rule 111 (pushOT -> .)
+    CTEFLOAT        reduce using rule 111 (pushOT -> .)
+    true            reduce using rule 111 (pushOT -> .)
+    false           reduce using rule 111 (pushOT -> .)
+    COMA            reduce using rule 111 (pushOT -> .)
+    PARDER          reduce using rule 111 (pushOT -> .)
+    DOSPUNTOS       reduce using rule 111 (pushOT -> .)
+    CORDER          reduce using rule 111 (pushOT -> .)
+    PYC             reduce using rule 111 (pushOT -> .)
+
+    pushOT                         shift and go to state 192
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 state 150
 
+<<<<<<< HEAD
     (105) llamada_esp -> ID PUNTO . especiales PARIZQ PARDER
     (106) especiales -> . length
     (107) especiales -> . max
@@ -2470,6 +3969,11 @@ state 150
     especiales                     shift and go to state 184
 
 state 151
+=======
+    (94) factor -> PARIZQ expresion . PARDER
+
+    PARDER          shift and go to state 193
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     (103) factor -> ID checkID . pushOT
     (115) pushOT -> .
@@ -2502,10 +4006,23 @@ state 151
 
 state 152
 
+<<<<<<< HEAD
     (98) factor -> PARIZQ expresion . PARDER
 
     PARDER          shift and go to state 194
 
+=======
+    (64) llamaux -> expresion . nextparametro
+    (66) nextparametro -> . COMA llamaux
+    (67) nextparametro -> . empty
+    (119) empty -> .
+
+    COMA            shift and go to state 195
+    PARDER          reduce using rule 119 (empty -> .)
+
+    nextparametro                  shift and go to state 194
+    empty                          shift and go to state 196
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 state 153
 
@@ -2514,27 +4031,68 @@ state 153
     (69) nextparametro -> . empty
     (123) empty -> .
 
+<<<<<<< HEAD
     COMA            shift and go to state 196
     PARDER          reduce using rule 123 (empty -> .)
+=======
+    PARDER          shift and go to state 197
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     nextparametro                  shift and go to state 195
     empty                          shift and go to state 197
 
 state 154
 
+<<<<<<< HEAD
     (63) llamada -> ID PARIZQ expresion llamaux . PARDER
 
     PARDER          shift and go to state 198
+=======
+    (65) llamaux -> llamada_esp . nextparametro
+    (100) factor -> llamada_esp . pushOT
+    (66) nextparametro -> . COMA llamaux
+    (67) nextparametro -> . empty
+    (111) pushOT -> .
+    (119) empty -> .
+
+  ! shift/reduce conflict for COMA resolved as shift
+  ! reduce/reduce conflict for PARDER resolved using rule 111 (pushOT -> .)
+    COMA            shift and go to state 195
+    MULT            reduce using rule 111 (pushOT -> .)
+    DIV             reduce using rule 111 (pushOT -> .)
+    MAS             reduce using rule 111 (pushOT -> .)
+    MENOS           reduce using rule 111 (pushOT -> .)
+    MAYORQUE        reduce using rule 111 (pushOT -> .)
+    MENORQUE        reduce using rule 111 (pushOT -> .)
+    MAYORIGUAL      reduce using rule 111 (pushOT -> .)
+    MENORIGUAL      reduce using rule 111 (pushOT -> .)
+    EQUALS          reduce using rule 111 (pushOT -> .)
+    DIFERENTE       reduce using rule 111 (pushOT -> .)
+    AND             reduce using rule 111 (pushOT -> .)
+    OR              reduce using rule 111 (pushOT -> .)
+    PARDER          reduce using rule 111 (pushOT -> .)
+
+  ! COMA            [ reduce using rule 111 (pushOT -> .) ]
+  ! PARDER          [ reduce using rule 119 (empty -> .) ]
+
+    nextparametro                  shift and go to state 198
+    pushOT                         shift and go to state 156
+    empty                          shift and go to state 196
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 155
 
+<<<<<<< HEAD
     (67) llamaux -> llamada_esp . nextparametro
     (104) factor -> llamada_esp . pushOT
     (68) nextparametro -> . COMA llamaux
     (69) nextparametro -> . empty
     (115) pushOT -> .
     (123) empty -> .
+=======
+    PARDER          shift and go to state 199
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
   ! shift/reduce conflict for COMA resolved as shift
   ! reduce/reduce conflict for PARDER resolved using rule 115 (pushOT -> .)
@@ -2562,11 +4120,40 @@ state 155
 
 state 156
 
+<<<<<<< HEAD
     (64) llamada -> ID PARIZQ llamada_esp llamaux . PARDER
+=======
+    (100) factor -> llamada_esp pushOT .
+
+    MULT            reduce using rule 100 (factor -> llamada_esp pushOT .)
+    DIV             reduce using rule 100 (factor -> llamada_esp pushOT .)
+    MAS             reduce using rule 100 (factor -> llamada_esp pushOT .)
+    MENOS           reduce using rule 100 (factor -> llamada_esp pushOT .)
+    MAYORQUE        reduce using rule 100 (factor -> llamada_esp pushOT .)
+    MENORQUE        reduce using rule 100 (factor -> llamada_esp pushOT .)
+    MAYORIGUAL      reduce using rule 100 (factor -> llamada_esp pushOT .)
+    MENORIGUAL      reduce using rule 100 (factor -> llamada_esp pushOT .)
+    EQUALS          reduce using rule 100 (factor -> llamada_esp pushOT .)
+    DIFERENTE       reduce using rule 100 (factor -> llamada_esp pushOT .)
+    AND             reduce using rule 100 (factor -> llamada_esp pushOT .)
+    OR              reduce using rule 100 (factor -> llamada_esp pushOT .)
+    ID              reduce using rule 100 (factor -> llamada_esp pushOT .)
+    PARIZQ          reduce using rule 100 (factor -> llamada_esp pushOT .)
+    CTEINT          reduce using rule 100 (factor -> llamada_esp pushOT .)
+    CTEFLOAT        reduce using rule 100 (factor -> llamada_esp pushOT .)
+    true            reduce using rule 100 (factor -> llamada_esp pushOT .)
+    false           reduce using rule 100 (factor -> llamada_esp pushOT .)
+    COMA            reduce using rule 100 (factor -> llamada_esp pushOT .)
+    PARDER          reduce using rule 100 (factor -> llamada_esp pushOT .)
+    DOSPUNTOS       reduce using rule 100 (factor -> llamada_esp pushOT .)
+    CORDER          reduce using rule 100 (factor -> llamada_esp pushOT .)
+    PYC             reduce using rule 100 (factor -> llamada_esp pushOT .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     PARDER          shift and go to state 200
 
 
+<<<<<<< HEAD
 state 157
 
     (104) factor -> llamada_esp pushOT .
@@ -2607,13 +4194,71 @@ state 158
     true            reduce using rule 114 (pushOper -> .)
     false           reduce using rule 114 (pushOper -> .)
     ID              reduce using rule 114 (pushOper -> .)
+=======
+    (75) expresion -> andExpresion OR . pushOper andExpresion
+    (110) pushOper -> .
+
+    PARIZQ          reduce using rule 110 (pushOper -> .)
+    CTEINT          reduce using rule 110 (pushOper -> .)
+    CTEFLOAT        reduce using rule 110 (pushOper -> .)
+    true            reduce using rule 110 (pushOper -> .)
+    false           reduce using rule 110 (pushOper -> .)
+    ID              reduce using rule 110 (pushOper -> .)
+
+    pushOper                       shift and go to state 200
+
+state 158
+
+    (77) andExpresion -> relopExpresion AND . pushOper relopExpresion
+    (110) pushOper -> .
+
+    PARIZQ          reduce using rule 110 (pushOper -> .)
+    CTEINT          reduce using rule 110 (pushOper -> .)
+    CTEFLOAT        reduce using rule 110 (pushOper -> .)
+    true            reduce using rule 110 (pushOper -> .)
+    false           reduce using rule 110 (pushOper -> .)
+    ID              reduce using rule 110 (pushOper -> .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     pushOper                       shift and go to state 201
 
 state 159
 
+<<<<<<< HEAD
     (81) andExpresion -> relopExpresion AND . pushOper relopExpresion
     (114) pushOper -> .
+=======
+    (78) relopExpresion -> aritExpresion cuadArit .
+    (79) relopExpresion -> aritExpresion cuadArit . relopAux aritExpresion cuadArit
+    (80) relopAux -> . MAYORQUE pushOper
+    (81) relopAux -> . MENORQUE pushOper
+    (82) relopAux -> . MAYORIGUAL pushOper
+    (83) relopAux -> . MENORIGUAL pushOper
+    (84) relopAux -> . EQUALS pushOper
+    (85) relopAux -> . DIFERENTE pushOper
+
+    AND             reduce using rule 78 (relopExpresion -> aritExpresion cuadArit .)
+    OR              reduce using rule 78 (relopExpresion -> aritExpresion cuadArit .)
+    ID              reduce using rule 78 (relopExpresion -> aritExpresion cuadArit .)
+    PARIZQ          reduce using rule 78 (relopExpresion -> aritExpresion cuadArit .)
+    CTEINT          reduce using rule 78 (relopExpresion -> aritExpresion cuadArit .)
+    CTEFLOAT        reduce using rule 78 (relopExpresion -> aritExpresion cuadArit .)
+    true            reduce using rule 78 (relopExpresion -> aritExpresion cuadArit .)
+    false           reduce using rule 78 (relopExpresion -> aritExpresion cuadArit .)
+    COMA            reduce using rule 78 (relopExpresion -> aritExpresion cuadArit .)
+    PARDER          reduce using rule 78 (relopExpresion -> aritExpresion cuadArit .)
+    DOSPUNTOS       reduce using rule 78 (relopExpresion -> aritExpresion cuadArit .)
+    CORDER          reduce using rule 78 (relopExpresion -> aritExpresion cuadArit .)
+    PYC             reduce using rule 78 (relopExpresion -> aritExpresion cuadArit .)
+    MAYORQUE        shift and go to state 203
+    MENORQUE        shift and go to state 204
+    MAYORIGUAL      shift and go to state 205
+    MENORIGUAL      shift and go to state 206
+    EQUALS          shift and go to state 207
+    DIFERENTE       shift and go to state 208
+
+    relopAux                       shift and go to state 202
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     PARIZQ          reduce using rule 114 (pushOper -> .)
     CTEINT          reduce using rule 114 (pushOper -> .)
@@ -2622,6 +4267,7 @@ state 159
     false           reduce using rule 114 (pushOper -> .)
     ID              reduce using rule 114 (pushOper -> .)
 
+<<<<<<< HEAD
     pushOper                       shift and go to state 202
 
 state 160
@@ -2726,10 +4372,109 @@ state 163
     DOSPUNTOS       reduce using rule 99 (factor -> CTEINT pushOT .)
     CORDER          reduce using rule 99 (factor -> CTEINT pushOT .)
     PYC             reduce using rule 99 (factor -> CTEINT pushOT .)
+=======
+    (86) aritExpresion -> term cuadTerm .
+    (87) aritExpresion -> term cuadTerm . aritAux term cuadTerm
+    (88) aritAux -> . MAS pushOper
+    (89) aritAux -> . MENOS pushOper
+
+    MAYORQUE        reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    MENORQUE        reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    MAYORIGUAL      reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    MENORIGUAL      reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    EQUALS          reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    DIFERENTE       reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    AND             reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    OR              reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    ID              reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    PARIZQ          reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    CTEINT          reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    CTEFLOAT        reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    true            reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    false           reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    COMA            reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    PARDER          reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    DOSPUNTOS       reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    CORDER          reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    PYC             reduce using rule 86 (aritExpresion -> term cuadTerm .)
+    MAS             shift and go to state 210
+    MENOS           shift and go to state 211
+
+    aritAux                        shift and go to state 209
+
+state 161
+
+    (91) term -> factor cuadFactor . termAux factor cuadFactor
+    (92) termAux -> . MULT pushOper
+    (93) termAux -> . DIV pushOper
+
+    MULT            shift and go to state 213
+    DIV             shift and go to state 214
+
+    termAux                        shift and go to state 212
+
+state 162
+
+    (95) factor -> CTEINT pushOT .
+
+    MULT            reduce using rule 95 (factor -> CTEINT pushOT .)
+    DIV             reduce using rule 95 (factor -> CTEINT pushOT .)
+    MAS             reduce using rule 95 (factor -> CTEINT pushOT .)
+    MENOS           reduce using rule 95 (factor -> CTEINT pushOT .)
+    MAYORQUE        reduce using rule 95 (factor -> CTEINT pushOT .)
+    MENORQUE        reduce using rule 95 (factor -> CTEINT pushOT .)
+    MAYORIGUAL      reduce using rule 95 (factor -> CTEINT pushOT .)
+    MENORIGUAL      reduce using rule 95 (factor -> CTEINT pushOT .)
+    EQUALS          reduce using rule 95 (factor -> CTEINT pushOT .)
+    DIFERENTE       reduce using rule 95 (factor -> CTEINT pushOT .)
+    AND             reduce using rule 95 (factor -> CTEINT pushOT .)
+    OR              reduce using rule 95 (factor -> CTEINT pushOT .)
+    ID              reduce using rule 95 (factor -> CTEINT pushOT .)
+    PARIZQ          reduce using rule 95 (factor -> CTEINT pushOT .)
+    CTEINT          reduce using rule 95 (factor -> CTEINT pushOT .)
+    CTEFLOAT        reduce using rule 95 (factor -> CTEINT pushOT .)
+    true            reduce using rule 95 (factor -> CTEINT pushOT .)
+    false           reduce using rule 95 (factor -> CTEINT pushOT .)
+    COMA            reduce using rule 95 (factor -> CTEINT pushOT .)
+    PARDER          reduce using rule 95 (factor -> CTEINT pushOT .)
+    DOSPUNTOS       reduce using rule 95 (factor -> CTEINT pushOT .)
+    CORDER          reduce using rule 95 (factor -> CTEINT pushOT .)
+    PYC             reduce using rule 95 (factor -> CTEINT pushOT .)
+
+
+state 163
+
+    (96) factor -> CTEFLOAT pushOT .
+
+    MULT            reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    DIV             reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    MAS             reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    MENOS           reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    MAYORQUE        reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    MENORQUE        reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    MAYORIGUAL      reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    MENORIGUAL      reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    EQUALS          reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    DIFERENTE       reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    AND             reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    OR              reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    ID              reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    PARIZQ          reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    CTEINT          reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    CTEFLOAT        reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    true            reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    false           reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    COMA            reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    PARDER          reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    DOSPUNTOS       reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    CORDER          reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+    PYC             reduce using rule 96 (factor -> CTEFLOAT pushOT .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 164
 
+<<<<<<< HEAD
     (100) factor -> CTEFLOAT pushOT .
 
     MULT            reduce using rule 100 (factor -> CTEFLOAT pushOT .)
@@ -2755,10 +4500,38 @@ state 164
     DOSPUNTOS       reduce using rule 100 (factor -> CTEFLOAT pushOT .)
     CORDER          reduce using rule 100 (factor -> CTEFLOAT pushOT .)
     PYC             reduce using rule 100 (factor -> CTEFLOAT pushOT .)
+=======
+    (97) factor -> true pushOT .
+
+    MULT            reduce using rule 97 (factor -> true pushOT .)
+    DIV             reduce using rule 97 (factor -> true pushOT .)
+    MAS             reduce using rule 97 (factor -> true pushOT .)
+    MENOS           reduce using rule 97 (factor -> true pushOT .)
+    MAYORQUE        reduce using rule 97 (factor -> true pushOT .)
+    MENORQUE        reduce using rule 97 (factor -> true pushOT .)
+    MAYORIGUAL      reduce using rule 97 (factor -> true pushOT .)
+    MENORIGUAL      reduce using rule 97 (factor -> true pushOT .)
+    EQUALS          reduce using rule 97 (factor -> true pushOT .)
+    DIFERENTE       reduce using rule 97 (factor -> true pushOT .)
+    AND             reduce using rule 97 (factor -> true pushOT .)
+    OR              reduce using rule 97 (factor -> true pushOT .)
+    ID              reduce using rule 97 (factor -> true pushOT .)
+    PARIZQ          reduce using rule 97 (factor -> true pushOT .)
+    CTEINT          reduce using rule 97 (factor -> true pushOT .)
+    CTEFLOAT        reduce using rule 97 (factor -> true pushOT .)
+    true            reduce using rule 97 (factor -> true pushOT .)
+    false           reduce using rule 97 (factor -> true pushOT .)
+    COMA            reduce using rule 97 (factor -> true pushOT .)
+    PARDER          reduce using rule 97 (factor -> true pushOT .)
+    DOSPUNTOS       reduce using rule 97 (factor -> true pushOT .)
+    CORDER          reduce using rule 97 (factor -> true pushOT .)
+    PYC             reduce using rule 97 (factor -> true pushOT .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 165
 
+<<<<<<< HEAD
     (101) factor -> true pushOT .
 
     MULT            reduce using rule 101 (factor -> true pushOT .)
@@ -2784,10 +4557,38 @@ state 165
     DOSPUNTOS       reduce using rule 101 (factor -> true pushOT .)
     CORDER          reduce using rule 101 (factor -> true pushOT .)
     PYC             reduce using rule 101 (factor -> true pushOT .)
+=======
+    (98) factor -> false pushOT .
+
+    MULT            reduce using rule 98 (factor -> false pushOT .)
+    DIV             reduce using rule 98 (factor -> false pushOT .)
+    MAS             reduce using rule 98 (factor -> false pushOT .)
+    MENOS           reduce using rule 98 (factor -> false pushOT .)
+    MAYORQUE        reduce using rule 98 (factor -> false pushOT .)
+    MENORQUE        reduce using rule 98 (factor -> false pushOT .)
+    MAYORIGUAL      reduce using rule 98 (factor -> false pushOT .)
+    MENORIGUAL      reduce using rule 98 (factor -> false pushOT .)
+    EQUALS          reduce using rule 98 (factor -> false pushOT .)
+    DIFERENTE       reduce using rule 98 (factor -> false pushOT .)
+    AND             reduce using rule 98 (factor -> false pushOT .)
+    OR              reduce using rule 98 (factor -> false pushOT .)
+    ID              reduce using rule 98 (factor -> false pushOT .)
+    PARIZQ          reduce using rule 98 (factor -> false pushOT .)
+    CTEINT          reduce using rule 98 (factor -> false pushOT .)
+    CTEFLOAT        reduce using rule 98 (factor -> false pushOT .)
+    true            reduce using rule 98 (factor -> false pushOT .)
+    false           reduce using rule 98 (factor -> false pushOT .)
+    COMA            reduce using rule 98 (factor -> false pushOT .)
+    PARDER          reduce using rule 98 (factor -> false pushOT .)
+    DOSPUNTOS       reduce using rule 98 (factor -> false pushOT .)
+    CORDER          reduce using rule 98 (factor -> false pushOT .)
+    PYC             reduce using rule 98 (factor -> false pushOT .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 166
 
+<<<<<<< HEAD
     (102) factor -> false pushOT .
 
     MULT            reduce using rule 102 (factor -> false pushOT .)
@@ -2902,9 +4703,14 @@ state 172
     (62) nextexp -> empty .
 
     PARDER          reduce using rule 62 (nextexp -> empty .)
+=======
+    (55) escritura -> write PARIZQ escaux PARDER . PYC
+
+    PYC             shift and go to state 215
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 173
+state 167
 
     (70) condicion -> if PARIZQ expresion PARDER . cuadGotof bloque condicionAux cuadFinIf
     (120) cuadGotof -> .
@@ -2913,11 +4719,55 @@ state 173
 
     cuadGotof                      shift and go to state 220
 
-state 174
+state 168
 
+<<<<<<< HEAD
     (73) whileloop -> while migaja PARIZQ expresion . PARDER cuadGotof bloque cuadFinWhile
 
     PARDER          shift and go to state 221
+=======
+    (59) nextexp -> COMA . escaux
+    (56) escaux -> . expresion nextexp
+    (57) escaux -> . CTESTRING nextexp
+    (58) escaux -> . llamada_esp nextexp
+    (74) expresion -> . andExpresion
+    (75) expresion -> . andExpresion OR pushOper andExpresion
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
+    (76) andExpresion -> . relopExpresion
+    (77) andExpresion -> . relopExpresion AND pushOper relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+
+    CTESTRING       shift and go to state 137
+    ID              shift and go to state 121
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+
+    escaux                         shift and go to state 216
+    expresion                      shift and go to state 136
+    llamada_esp                    shift and go to state 138
+    andExpresion                   shift and go to state 126
+    relopExpresion                 shift and go to state 127
+    aritExpresion                  shift and go to state 128
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+
+state 169
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 175
@@ -2957,14 +4807,14 @@ state 175
     factor                         shift and go to state 131
     llamada_esp                    shift and go to state 142
 
-state 176
+state 170
 
     (77) lectura -> read PARIZQ ID checkID . PARDER PYC
 
     PARDER          shift and go to state 223
 
 
-state 177
+state 171
 
     (38) funcaux -> type ID CORIZQ CTEINT CORDER agregaVar . masParam
     (40) masParam -> . funcaux
@@ -2989,24 +4839,44 @@ state 177
     funcaux                        shift and go to state 115
     empty                          shift and go to state 116
 
-state 178
+state 172
 
+<<<<<<< HEAD
     (39) funcaux -> type ID CORIZQ CTEINT COMA CTEINT . CORDER agregaVar masParam
 
     CORDER          shift and go to state 225
 
+=======
+    (68) condicion -> if PARIZQ expresion PARDER . cuadGotof bloque condicionAux cuadFinIf
+    (116) cuadGotof -> .
 
-state 179
+    LLAVEIZQ        reduce using rule 116 (cuadGotof -> .)
 
+    cuadGotof                      shift and go to state 217
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 173
+
+<<<<<<< HEAD
     (49) asignacion -> ID checkID asignaux ASIGNA expresion . cuadAsignacion PYC
     (118) cuadAsignacion -> .
+=======
+    (71) whileloop -> while PARIZQ expresion PARDER . bloque
+    (21) bloque -> . LLAVEIZQ bloqueaux LLAVEDER
+    (22) bloque -> . LLAVEIZQ empty LLAVEDER
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     PYC             reduce using rule 118 (cuadAsignacion -> .)
 
+<<<<<<< HEAD
     cuadAsignacion                 shift and go to state 226
+=======
+    bloque                         shift and go to state 218
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
-state 180
+state 174
 
+<<<<<<< HEAD
     (50) asignacion -> ID checkID asignaux ASIGNA llamada_esp . PYC
     (104) factor -> llamada_esp . pushOT
     (115) pushOT -> .
@@ -3029,22 +4899,95 @@ state 180
   ! PYC             [ reduce using rule 115 (pushOT -> .) ]
 
     pushOT                         shift and go to state 157
+=======
+    (72) forloop -> for PARIZQ expresion DOSPUNTOS . expresion PARDER bloque
+    (74) expresion -> . andExpresion
+    (75) expresion -> . andExpresion OR pushOper andExpresion
+    (76) andExpresion -> . relopExpresion
+    (77) andExpresion -> . relopExpresion AND pushOper relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
 
-state 181
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+    ID              shift and go to state 140
 
+    expresion                      shift and go to state 219
+    andExpresion                   shift and go to state 126
+    relopExpresion                 shift and go to state 127
+    aritExpresion                  shift and go to state 128
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+    llamada_esp                    shift and go to state 141
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 175
+
+<<<<<<< HEAD
     (51) asignacion -> ID checkID asignaux ASIGNA CTESTRING . PYC
 
     PYC             shift and go to state 228
+=======
+    (73) lectura -> read PARIZQ ID checkID . PARDER PYC
+
+    PARDER          shift and go to state 220
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 182
+state 176
 
+<<<<<<< HEAD
     (53) asignaux -> CORIZQ expresion CORDER .
 
     ASIGNA          reduce using rule 53 (asignaux -> CORIZQ expresion CORDER .)
 
 
 state 183
+=======
+    (37) funcaux -> type ID CORIZQ CTEINT CORDER agregaVar . masParam
+    (39) masParam -> . funcaux
+    (40) masParam -> . empty
+    (36) funcaux -> . type ID agregaVar masParam
+    (37) funcaux -> . type ID CORIZQ CTEINT CORDER agregaVar masParam
+    (38) funcaux -> . type ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar masParam
+    (119) empty -> .
+    (25) type -> . int guardarTipoVar
+    (26) type -> . float guardarTipoVar
+    (27) type -> . string guardarTipoVar
+    (28) type -> . bool guardarTipoVar
+
+    PARDER          reduce using rule 119 (empty -> .)
+    int             shift and go to state 25
+    float           shift and go to state 26
+    string          shift and go to state 27
+    bool            shift and go to state 28
+
+    type                           shift and go to state 68
+    masParam                       shift and go to state 221
+    funcaux                        shift and go to state 114
+    empty                          shift and go to state 115
+
+state 177
+
+    (38) funcaux -> type ID CORIZQ CTEINT COMA CTEINT . CORDER agregaVar masParam
+
+    CORDER          shift and go to state 222
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     (54) asignaux -> CORIZQ expresion COMA . expresion CORDER
     (78) expresion -> . andExpresion
@@ -3081,71 +5024,171 @@ state 183
     factor                         shift and go to state 131
     llamada_esp                    shift and go to state 142
 
-state 184
+state 178
 
+<<<<<<< HEAD
     (105) llamada_esp -> ID PUNTO especiales . PARIZQ PARDER
 
     PARIZQ          shift and go to state 230
 
+=======
+    (48) asignacion -> ID checkID asignaux ASIGNA expresion . cuadAsignacion PYC
+    (114) cuadAsignacion -> .
 
-state 185
+    PYC             reduce using rule 114 (cuadAsignacion -> .)
 
+    cuadAsignacion                 shift and go to state 223
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 179
+
+<<<<<<< HEAD
     (106) especiales -> length .
 
     PARIZQ          reduce using rule 106 (especiales -> length .)
 
+=======
+    (49) asignacion -> ID checkID asignaux ASIGNA llamada_esp . PYC
+    (100) factor -> llamada_esp . pushOT
+    (111) pushOT -> .
 
-state 186
+  ! shift/reduce conflict for PYC resolved as shift
+    PYC             shift and go to state 224
+    MULT            reduce using rule 111 (pushOT -> .)
+    DIV             reduce using rule 111 (pushOT -> .)
+    MAS             reduce using rule 111 (pushOT -> .)
+    MENOS           reduce using rule 111 (pushOT -> .)
+    MAYORQUE        reduce using rule 111 (pushOT -> .)
+    MENORQUE        reduce using rule 111 (pushOT -> .)
+    MAYORIGUAL      reduce using rule 111 (pushOT -> .)
+    MENORIGUAL      reduce using rule 111 (pushOT -> .)
+    EQUALS          reduce using rule 111 (pushOT -> .)
+    DIFERENTE       reduce using rule 111 (pushOT -> .)
+    AND             reduce using rule 111 (pushOT -> .)
+    OR              reduce using rule 111 (pushOT -> .)
+
+  ! PYC             [ reduce using rule 111 (pushOT -> .) ]
+
+    pushOT                         shift and go to state 156
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 180
 
     (107) especiales -> max .
 
+<<<<<<< HEAD
     PARIZQ          reduce using rule 107 (especiales -> max .)
+=======
+    PYC             shift and go to state 225
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 187
+state 181
 
     (108) especiales -> min .
 
     PARIZQ          reduce using rule 108 (especiales -> min .)
 
 
-state 188
+state 182
 
+<<<<<<< HEAD
     (109) especiales -> avg .
 
     PARIZQ          reduce using rule 109 (especiales -> avg .)
 
+=======
+    (53) asignaux -> CORIZQ expresion COMA . expresion CORDER
+    (74) expresion -> . andExpresion
+    (75) expresion -> . andExpresion OR pushOper andExpresion
+    (76) andExpresion -> . relopExpresion
+    (77) andExpresion -> . relopExpresion AND pushOper relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
 
-state 189
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+    ID              shift and go to state 140
 
+    expresion                      shift and go to state 226
+    andExpresion                   shift and go to state 126
+    relopExpresion                 shift and go to state 127
+    aritExpresion                  shift and go to state 128
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+    llamada_esp                    shift and go to state 141
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 183
+
+<<<<<<< HEAD
     (110) especiales -> median .
 
     PARIZQ          reduce using rule 110 (especiales -> median .)
+=======
+    (101) llamada_esp -> ID PUNTO especiales . PARIZQ PARDER
+
+    PARIZQ          shift and go to state 227
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 190
+state 184
 
+<<<<<<< HEAD
     (111) especiales -> mode .
 
     PARIZQ          reduce using rule 111 (especiales -> mode .)
+=======
+    (102) especiales -> length .
+
+    PARIZQ          reduce using rule 102 (especiales -> length .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 191
+state 185
 
+<<<<<<< HEAD
     (112) especiales -> variance .
 
     PARIZQ          reduce using rule 112 (especiales -> variance .)
+=======
+    (103) especiales -> max .
+
+    PARIZQ          reduce using rule 103 (especiales -> max .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 192
+state 186
 
+<<<<<<< HEAD
     (113) especiales -> stdev .
 
     PARIZQ          reduce using rule 113 (especiales -> stdev .)
+=======
+    (104) especiales -> min .
+
+    PARIZQ          reduce using rule 104 (especiales -> min .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 193
+state 187
 
+<<<<<<< HEAD
     (103) factor -> ID checkID pushOT .
 
     MULT            reduce using rule 103 (factor -> ID checkID pushOT .)
@@ -3171,10 +5214,16 @@ state 193
     DOSPUNTOS       reduce using rule 103 (factor -> ID checkID pushOT .)
     CORDER          reduce using rule 103 (factor -> ID checkID pushOT .)
     PYC             reduce using rule 103 (factor -> ID checkID pushOT .)
+=======
+    (105) especiales -> avg .
+
+    PARIZQ          reduce using rule 105 (especiales -> avg .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 194
+state 188
 
+<<<<<<< HEAD
     (98) factor -> PARIZQ expresion PARDER .
 
     MULT            reduce using rule 98 (factor -> PARIZQ expresion PARDER .)
@@ -3200,17 +5249,29 @@ state 194
     DOSPUNTOS       reduce using rule 98 (factor -> PARIZQ expresion PARDER .)
     CORDER          reduce using rule 98 (factor -> PARIZQ expresion PARDER .)
     PYC             reduce using rule 98 (factor -> PARIZQ expresion PARDER .)
+=======
+    (106) especiales -> median .
+
+    PARIZQ          reduce using rule 106 (especiales -> median .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 195
+state 189
 
+<<<<<<< HEAD
     (66) llamaux -> expresion nextparametro .
 
     PARDER          reduce using rule 66 (llamaux -> expresion nextparametro .)
+=======
+    (107) especiales -> mode .
+
+    PARIZQ          reduce using rule 107 (especiales -> mode .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 196
+state 190
 
+<<<<<<< HEAD
     (68) nextparametro -> COMA . llamaux
     (66) llamaux -> . expresion nextparametro
     (67) llamaux -> . llamada_esp nextparametro
@@ -3248,16 +5309,29 @@ state 196
     aritExpresion                  shift and go to state 129
     term                           shift and go to state 130
     factor                         shift and go to state 131
+=======
+    (108) especiales -> variance .
 
-state 197
+    PARIZQ          reduce using rule 108 (especiales -> variance .)
 
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 191
+
+<<<<<<< HEAD
     (69) nextparametro -> empty .
 
     PARDER          reduce using rule 69 (nextparametro -> empty .)
+=======
+    (109) especiales -> stdev .
+
+    PARIZQ          reduce using rule 109 (especiales -> stdev .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 198
+state 192
 
+<<<<<<< HEAD
     (63) llamada -> ID PARIZQ expresion llamaux PARDER .
 
     ID              reduce using rule 63 (llamada -> ID PARIZQ expresion llamaux PARDER .)
@@ -3267,16 +5341,71 @@ state 198
     for             reduce using rule 63 (llamada -> ID PARIZQ expresion llamaux PARDER .)
     read            reduce using rule 63 (llamada -> ID PARIZQ expresion llamaux PARDER .)
     LLAVEDER        reduce using rule 63 (llamada -> ID PARIZQ expresion llamaux PARDER .)
+=======
+    (99) factor -> ID checkID pushOT .
+
+    MULT            reduce using rule 99 (factor -> ID checkID pushOT .)
+    DIV             reduce using rule 99 (factor -> ID checkID pushOT .)
+    MAS             reduce using rule 99 (factor -> ID checkID pushOT .)
+    MENOS           reduce using rule 99 (factor -> ID checkID pushOT .)
+    MAYORQUE        reduce using rule 99 (factor -> ID checkID pushOT .)
+    MENORQUE        reduce using rule 99 (factor -> ID checkID pushOT .)
+    MAYORIGUAL      reduce using rule 99 (factor -> ID checkID pushOT .)
+    MENORIGUAL      reduce using rule 99 (factor -> ID checkID pushOT .)
+    EQUALS          reduce using rule 99 (factor -> ID checkID pushOT .)
+    DIFERENTE       reduce using rule 99 (factor -> ID checkID pushOT .)
+    AND             reduce using rule 99 (factor -> ID checkID pushOT .)
+    OR              reduce using rule 99 (factor -> ID checkID pushOT .)
+    ID              reduce using rule 99 (factor -> ID checkID pushOT .)
+    PARIZQ          reduce using rule 99 (factor -> ID checkID pushOT .)
+    CTEINT          reduce using rule 99 (factor -> ID checkID pushOT .)
+    CTEFLOAT        reduce using rule 99 (factor -> ID checkID pushOT .)
+    true            reduce using rule 99 (factor -> ID checkID pushOT .)
+    false           reduce using rule 99 (factor -> ID checkID pushOT .)
+    COMA            reduce using rule 99 (factor -> ID checkID pushOT .)
+    PARDER          reduce using rule 99 (factor -> ID checkID pushOT .)
+    DOSPUNTOS       reduce using rule 99 (factor -> ID checkID pushOT .)
+    CORDER          reduce using rule 99 (factor -> ID checkID pushOT .)
+    PYC             reduce using rule 99 (factor -> ID checkID pushOT .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 199
+state 193
 
+<<<<<<< HEAD
     (67) llamaux -> llamada_esp nextparametro .
 
     PARDER          reduce using rule 67 (llamaux -> llamada_esp nextparametro .)
+=======
+    (94) factor -> PARIZQ expresion PARDER .
+
+    MULT            reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    DIV             reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    MAS             reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    MENOS           reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    MAYORQUE        reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    MENORQUE        reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    MAYORIGUAL      reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    MENORIGUAL      reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    EQUALS          reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    DIFERENTE       reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    AND             reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    OR              reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    ID              reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    PARIZQ          reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    CTEINT          reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    CTEFLOAT        reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    true            reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    false           reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    COMA            reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    PARDER          reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    DOSPUNTOS       reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    CORDER          reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+    PYC             reduce using rule 94 (factor -> PARIZQ expresion PARDER .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 200
+state 194
 
     (64) llamada -> ID PARIZQ llamada_esp llamaux PARDER .
 
@@ -3289,8 +5418,9 @@ state 200
     LLAVEDER        reduce using rule 64 (llamada -> ID PARIZQ llamada_esp llamaux PARDER .)
 
 
-state 201
+state 195
 
+<<<<<<< HEAD
     (79) expresion -> andExpresion OR pushOper . andExpresion
     (80) andExpresion -> . relopExpresion
     (81) andExpresion -> . relopExpresion AND pushOper relopExpresion
@@ -3322,8 +5452,47 @@ state 201
     term                           shift and go to state 130
     factor                         shift and go to state 131
     llamada_esp                    shift and go to state 142
+=======
+    (66) nextparametro -> COMA . llamaux
+    (64) llamaux -> . expresion nextparametro
+    (65) llamaux -> . llamada_esp nextparametro
+    (74) expresion -> . andExpresion
+    (75) expresion -> . andExpresion OR pushOper andExpresion
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
+    (76) andExpresion -> . relopExpresion
+    (77) andExpresion -> . relopExpresion AND pushOper relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
 
-state 202
+    ID              shift and go to state 121
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+
+    llamaux                        shift and go to state 228
+    expresion                      shift and go to state 152
+    llamada_esp                    shift and go to state 154
+    andExpresion                   shift and go to state 126
+    relopExpresion                 shift and go to state 127
+    aritExpresion                  shift and go to state 128
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 196
 
     (81) andExpresion -> relopExpresion AND pushOper . relopExpresion
     (82) relopExpresion -> . aritExpresion cuadArit
@@ -3354,7 +5523,7 @@ state 202
     factor                         shift and go to state 131
     llamada_esp                    shift and go to state 142
 
-state 203
+state 197
 
     (83) relopExpresion -> aritExpresion cuadArit relopAux . aritExpresion cuadArit
     (90) aritExpresion -> . term cuadTerm
@@ -3382,7 +5551,7 @@ state 203
     factor                         shift and go to state 131
     llamada_esp                    shift and go to state 142
 
-state 204
+state 198
 
     (84) relopAux -> MAYORQUE . pushOper
     (114) pushOper -> .
@@ -3396,7 +5565,7 @@ state 204
 
     pushOper                       shift and go to state 235
 
-state 205
+state 199
 
     (85) relopAux -> MENORQUE . pushOper
     (114) pushOper -> .
@@ -3410,8 +5579,9 @@ state 205
 
     pushOper                       shift and go to state 236
 
-state 206
+state 200
 
+<<<<<<< HEAD
     (86) relopAux -> MAYORIGUAL . pushOper
     (114) pushOper -> .
 
@@ -3423,9 +5593,43 @@ state 206
     ID              reduce using rule 114 (pushOper -> .)
 
     pushOper                       shift and go to state 237
+=======
+    (75) expresion -> andExpresion OR pushOper . andExpresion
+    (76) andExpresion -> . relopExpresion
+    (77) andExpresion -> . relopExpresion AND pushOper relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
 
-state 207
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+    ID              shift and go to state 140
 
+    andExpresion                   shift and go to state 229
+    relopExpresion                 shift and go to state 127
+    aritExpresion                  shift and go to state 128
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+    llamada_esp                    shift and go to state 141
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 201
+
+<<<<<<< HEAD
     (87) relopAux -> MENORIGUAL . pushOper
     (114) pushOper -> .
 
@@ -3437,9 +5641,40 @@ state 207
     ID              reduce using rule 114 (pushOper -> .)
 
     pushOper                       shift and go to state 238
+=======
+    (77) andExpresion -> relopExpresion AND pushOper . relopExpresion
+    (78) relopExpresion -> . aritExpresion cuadArit
+    (79) relopExpresion -> . aritExpresion cuadArit relopAux aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
 
-state 208
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+    ID              shift and go to state 140
 
+    relopExpresion                 shift and go to state 230
+    aritExpresion                  shift and go to state 128
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+    llamada_esp                    shift and go to state 141
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 202
+
+<<<<<<< HEAD
     (88) relopAux -> EQUALS . pushOper
     (114) pushOper -> .
 
@@ -3451,9 +5686,37 @@ state 208
     ID              reduce using rule 114 (pushOper -> .)
 
     pushOper                       shift and go to state 239
+=======
+    (79) relopExpresion -> aritExpresion cuadArit relopAux . aritExpresion cuadArit
+    (86) aritExpresion -> . term cuadTerm
+    (87) aritExpresion -> . term cuadTerm aritAux term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
 
-state 209
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+    ID              shift and go to state 140
 
+    aritExpresion                  shift and go to state 231
+    term                           shift and go to state 129
+    factor                         shift and go to state 130
+    llamada_esp                    shift and go to state 141
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 203
+
+<<<<<<< HEAD
     (89) relopAux -> DIFERENTE . pushOper
     (114) pushOper -> .
 
@@ -3465,9 +5728,23 @@ state 209
     ID              reduce using rule 114 (pushOper -> .)
 
     pushOper                       shift and go to state 240
+=======
+    (80) relopAux -> MAYORQUE . pushOper
+    (110) pushOper -> .
 
-state 210
+    PARIZQ          reduce using rule 110 (pushOper -> .)
+    CTEINT          reduce using rule 110 (pushOper -> .)
+    CTEFLOAT        reduce using rule 110 (pushOper -> .)
+    true            reduce using rule 110 (pushOper -> .)
+    false           reduce using rule 110 (pushOper -> .)
+    ID              reduce using rule 110 (pushOper -> .)
 
+    pushOper                       shift and go to state 232
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 204
+
+<<<<<<< HEAD
     (91) aritExpresion -> term cuadTerm aritAux . term cuadTerm
     (94) term -> . factor
     (95) term -> . factor cuadFactor termAux factor cuadFactor
@@ -3490,9 +5767,23 @@ state 210
     term                           shift and go to state 241
     factor                         shift and go to state 131
     llamada_esp                    shift and go to state 142
+=======
+    (81) relopAux -> MENORQUE . pushOper
+    (110) pushOper -> .
 
-state 211
+    PARIZQ          reduce using rule 110 (pushOper -> .)
+    CTEINT          reduce using rule 110 (pushOper -> .)
+    CTEFLOAT        reduce using rule 110 (pushOper -> .)
+    true            reduce using rule 110 (pushOper -> .)
+    false           reduce using rule 110 (pushOper -> .)
+    ID              reduce using rule 110 (pushOper -> .)
 
+    pushOper                       shift and go to state 233
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 205
+
+<<<<<<< HEAD
     (92) aritAux -> MAS . pushOper
     (114) pushOper -> .
 
@@ -3504,9 +5795,23 @@ state 211
     ID              reduce using rule 114 (pushOper -> .)
 
     pushOper                       shift and go to state 242
+=======
+    (82) relopAux -> MAYORIGUAL . pushOper
+    (110) pushOper -> .
 
-state 212
+    PARIZQ          reduce using rule 110 (pushOper -> .)
+    CTEINT          reduce using rule 110 (pushOper -> .)
+    CTEFLOAT        reduce using rule 110 (pushOper -> .)
+    true            reduce using rule 110 (pushOper -> .)
+    false           reduce using rule 110 (pushOper -> .)
+    ID              reduce using rule 110 (pushOper -> .)
 
+    pushOper                       shift and go to state 234
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 206
+
+<<<<<<< HEAD
     (93) aritAux -> MENOS . pushOper
     (114) pushOper -> .
 
@@ -3518,9 +5823,23 @@ state 212
     ID              reduce using rule 114 (pushOper -> .)
 
     pushOper                       shift and go to state 243
+=======
+    (83) relopAux -> MENORIGUAL . pushOper
+    (110) pushOper -> .
 
-state 213
+    PARIZQ          reduce using rule 110 (pushOper -> .)
+    CTEINT          reduce using rule 110 (pushOper -> .)
+    CTEFLOAT        reduce using rule 110 (pushOper -> .)
+    true            reduce using rule 110 (pushOper -> .)
+    false           reduce using rule 110 (pushOper -> .)
+    ID              reduce using rule 110 (pushOper -> .)
 
+    pushOper                       shift and go to state 235
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 207
+
+<<<<<<< HEAD
     (95) term -> factor cuadFactor termAux . factor cuadFactor
     (98) factor -> . PARIZQ expresion PARDER
     (99) factor -> . CTEINT pushOT
@@ -3540,9 +5859,23 @@ state 213
 
     factor                         shift and go to state 244
     llamada_esp                    shift and go to state 142
+=======
+    (84) relopAux -> EQUALS . pushOper
+    (110) pushOper -> .
 
-state 214
+    PARIZQ          reduce using rule 110 (pushOper -> .)
+    CTEINT          reduce using rule 110 (pushOper -> .)
+    CTEFLOAT        reduce using rule 110 (pushOper -> .)
+    true            reduce using rule 110 (pushOper -> .)
+    false           reduce using rule 110 (pushOper -> .)
+    ID              reduce using rule 110 (pushOper -> .)
 
+    pushOper                       shift and go to state 236
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 208
+
+<<<<<<< HEAD
     (96) termAux -> MULT . pushOper
     (114) pushOper -> .
 
@@ -3554,9 +5887,23 @@ state 214
     ID              reduce using rule 114 (pushOper -> .)
 
     pushOper                       shift and go to state 245
+=======
+    (85) relopAux -> DIFERENTE . pushOper
+    (110) pushOper -> .
 
-state 215
+    PARIZQ          reduce using rule 110 (pushOper -> .)
+    CTEINT          reduce using rule 110 (pushOper -> .)
+    CTEFLOAT        reduce using rule 110 (pushOper -> .)
+    true            reduce using rule 110 (pushOper -> .)
+    false           reduce using rule 110 (pushOper -> .)
+    ID              reduce using rule 110 (pushOper -> .)
 
+    pushOper                       shift and go to state 237
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 209
+
+<<<<<<< HEAD
     (97) termAux -> DIV . pushOper
     (114) pushOper -> .
 
@@ -3568,9 +5915,34 @@ state 215
     ID              reduce using rule 114 (pushOper -> .)
 
     pushOper                       shift and go to state 246
+=======
+    (87) aritExpresion -> term cuadTerm aritAux . term cuadTerm
+    (90) term -> . factor
+    (91) term -> . factor cuadFactor termAux factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
 
-state 216
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+    ID              shift and go to state 140
 
+    term                           shift and go to state 238
+    factor                         shift and go to state 130
+    llamada_esp                    shift and go to state 141
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 210
+
+<<<<<<< HEAD
     (56) escritura -> write PARIZQ escaux PARDER PYC .
 
     ID              reduce using rule 56 (escritura -> write PARIZQ escaux PARDER PYC .)
@@ -3581,30 +5953,94 @@ state 216
     read            reduce using rule 56 (escritura -> write PARIZQ escaux PARDER PYC .)
     LLAVEDER        reduce using rule 56 (escritura -> write PARIZQ escaux PARDER PYC .)
 
+=======
+    (88) aritAux -> MAS . pushOper
+    (110) pushOper -> .
 
-state 217
+    PARIZQ          reduce using rule 110 (pushOper -> .)
+    CTEINT          reduce using rule 110 (pushOper -> .)
+    CTEFLOAT        reduce using rule 110 (pushOper -> .)
+    true            reduce using rule 110 (pushOper -> .)
+    false           reduce using rule 110 (pushOper -> .)
+    ID              reduce using rule 110 (pushOper -> .)
 
+    pushOper                       shift and go to state 239
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 211
+
+<<<<<<< HEAD
     (57) escaux -> expresion cuadEsc nextexp .
 
     PARDER          reduce using rule 57 (escaux -> expresion cuadEsc nextexp .)
 
+=======
+    (89) aritAux -> MENOS . pushOper
+    (110) pushOper -> .
 
-state 218
+    PARIZQ          reduce using rule 110 (pushOper -> .)
+    CTEINT          reduce using rule 110 (pushOper -> .)
+    CTEFLOAT        reduce using rule 110 (pushOper -> .)
+    true            reduce using rule 110 (pushOper -> .)
+    false           reduce using rule 110 (pushOper -> .)
+    ID              reduce using rule 110 (pushOper -> .)
 
+    pushOper                       shift and go to state 240
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 212
+
+<<<<<<< HEAD
     (58) escaux -> CTESTRING cuadEsc nextexp .
 
     PARDER          reduce using rule 58 (escaux -> CTESTRING cuadEsc nextexp .)
 
+=======
+    (91) term -> factor cuadFactor termAux . factor cuadFactor
+    (94) factor -> . PARIZQ expresion PARDER
+    (95) factor -> . CTEINT pushOT
+    (96) factor -> . CTEFLOAT pushOT
+    (97) factor -> . true pushOT
+    (98) factor -> . false pushOT
+    (99) factor -> . ID checkID pushOT
+    (100) factor -> . llamada_esp pushOT
+    (101) llamada_esp -> . ID PUNTO especiales PARIZQ PARDER
 
-state 219
+    PARIZQ          shift and go to state 122
+    CTEINT          shift and go to state 131
+    CTEFLOAT        shift and go to state 132
+    true            shift and go to state 133
+    false           shift and go to state 134
+    ID              shift and go to state 140
 
+    factor                         shift and go to state 241
+    llamada_esp                    shift and go to state 141
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 213
+
+<<<<<<< HEAD
     (61) nextexp -> COMA escaux .
 
     PARDER          reduce using rule 61 (nextexp -> COMA escaux .)
 
+=======
+    (92) termAux -> MULT . pushOper
+    (110) pushOper -> .
 
-state 220
+    PARIZQ          reduce using rule 110 (pushOper -> .)
+    CTEINT          reduce using rule 110 (pushOper -> .)
+    CTEFLOAT        reduce using rule 110 (pushOper -> .)
+    true            reduce using rule 110 (pushOper -> .)
+    false           reduce using rule 110 (pushOper -> .)
+    ID              reduce using rule 110 (pushOper -> .)
 
+    pushOper                       shift and go to state 242
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 214
+
+<<<<<<< HEAD
     (70) condicion -> if PARIZQ expresion PARDER cuadGotof . bloque condicionAux cuadFinIf
     (22) bloque -> . LLAVEIZQ bloqueaux LLAVEDER
     (23) bloque -> . LLAVEIZQ empty LLAVEDER
@@ -3612,8 +6048,21 @@ state 220
     LLAVEIZQ        shift and go to state 74
 
     bloque                         shift and go to state 247
+=======
+    (93) termAux -> DIV . pushOper
+    (110) pushOper -> .
 
-state 221
+    PARIZQ          reduce using rule 110 (pushOper -> .)
+    CTEINT          reduce using rule 110 (pushOper -> .)
+    CTEFLOAT        reduce using rule 110 (pushOper -> .)
+    true            reduce using rule 110 (pushOper -> .)
+    false           reduce using rule 110 (pushOper -> .)
+    ID              reduce using rule 110 (pushOper -> .)
+
+    pushOper                       shift and go to state 243
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 215
 
     (73) whileloop -> while migaja PARIZQ expresion PARDER . cuadGotof bloque cuadFinWhile
     (120) cuadGotof -> .
@@ -3622,29 +6071,51 @@ state 221
 
     cuadGotof                      shift and go to state 248
 
-state 222
+state 216
 
     (76) forloop -> for PARIZQ expresion DOSPUNTOS expresion . PARDER bloque
 
     PARDER          shift and go to state 249
 
 
-state 223
+state 217
 
+<<<<<<< HEAD
     (77) lectura -> read PARIZQ ID checkID PARDER . PYC
 
     PYC             shift and go to state 250
+=======
+    (68) condicion -> if PARIZQ expresion PARDER cuadGotof . bloque condicionAux cuadFinIf
+    (21) bloque -> . LLAVEIZQ bloqueaux LLAVEDER
+    (22) bloque -> . LLAVEIZQ empty LLAVEDER
 
+    LLAVEIZQ        shift and go to state 73
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
-state 224
+    bloque                         shift and go to state 244
 
+state 218
+
+<<<<<<< HEAD
     (38) funcaux -> type ID CORIZQ CTEINT CORDER agregaVar masParam .
 
     PARDER          reduce using rule 38 (funcaux -> type ID CORIZQ CTEINT CORDER agregaVar masParam .)
+=======
+    (71) whileloop -> while PARIZQ expresion PARDER bloque .
+
+    ID              reduce using rule 71 (whileloop -> while PARIZQ expresion PARDER bloque .)
+    write           reduce using rule 71 (whileloop -> while PARIZQ expresion PARDER bloque .)
+    if              reduce using rule 71 (whileloop -> while PARIZQ expresion PARDER bloque .)
+    while           reduce using rule 71 (whileloop -> while PARIZQ expresion PARDER bloque .)
+    for             reduce using rule 71 (whileloop -> while PARIZQ expresion PARDER bloque .)
+    read            reduce using rule 71 (whileloop -> while PARIZQ expresion PARDER bloque .)
+    LLAVEDER        reduce using rule 71 (whileloop -> while PARIZQ expresion PARDER bloque .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 225
+state 219
 
+<<<<<<< HEAD
     (39) funcaux -> type ID CORIZQ CTEINT COMA CTEINT CORDER . agregaVar masParam
     (16) agregaVar -> .
 
@@ -3653,17 +6124,28 @@ state 225
     string          reduce using rule 16 (agregaVar -> .)
     bool            reduce using rule 16 (agregaVar -> .)
     PARDER          reduce using rule 16 (agregaVar -> .)
+=======
+    (72) forloop -> for PARIZQ expresion DOSPUNTOS expresion . PARDER bloque
+
+    PARDER          shift and go to state 245
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     agregaVar                      shift and go to state 251
 
-state 226
+state 220
 
+<<<<<<< HEAD
     (49) asignacion -> ID checkID asignaux ASIGNA expresion cuadAsignacion . PYC
 
     PYC             shift and go to state 252
+=======
+    (73) lectura -> read PARIZQ ID checkID PARDER . PYC
+
+    PYC             shift and go to state 246
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 227
+state 221
 
     (50) asignacion -> ID checkID asignaux ASIGNA llamada_esp PYC .
 
@@ -3676,7 +6158,7 @@ state 227
     LLAVEDER        reduce using rule 50 (asignacion -> ID checkID asignaux ASIGNA llamada_esp PYC .)
 
 
-state 228
+state 222
 
     (51) asignacion -> ID checkID asignaux ASIGNA CTESTRING PYC .
 
@@ -3688,32 +6170,41 @@ state 228
     read            reduce using rule 51 (asignacion -> ID checkID asignaux ASIGNA CTESTRING PYC .)
     LLAVEDER        reduce using rule 51 (asignacion -> ID checkID asignaux ASIGNA CTESTRING PYC .)
 
+<<<<<<< HEAD
+=======
+    agregaVar                      shift and go to state 247
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
-state 229
+state 223
 
     (54) asignaux -> CORIZQ expresion COMA expresion . CORDER
 
+<<<<<<< HEAD
     CORDER          shift and go to state 253
+=======
+    PYC             shift and go to state 248
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 230
+state 224
 
     (105) llamada_esp -> ID PUNTO especiales PARIZQ . PARDER
 
     PARDER          shift and go to state 254
 
 
-state 231
+state 225
 
     (68) nextparametro -> COMA llamaux .
 
     PARDER          reduce using rule 68 (nextparametro -> COMA llamaux .)
 
 
-state 232
+state 226
 
     (79) expresion -> andExpresion OR pushOper andExpresion .
 
+<<<<<<< HEAD
     ID              reduce using rule 79 (expresion -> andExpresion OR pushOper andExpresion .)
     PARIZQ          reduce using rule 79 (expresion -> andExpresion OR pushOper andExpresion .)
     CTEINT          reduce using rule 79 (expresion -> andExpresion OR pushOper andExpresion .)
@@ -3725,10 +6216,14 @@ state 232
     DOSPUNTOS       reduce using rule 79 (expresion -> andExpresion OR pushOper andExpresion .)
     CORDER          reduce using rule 79 (expresion -> andExpresion OR pushOper andExpresion .)
     PYC             reduce using rule 79 (expresion -> andExpresion OR pushOper andExpresion .)
+=======
+    CORDER          shift and go to state 249
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 233
+state 227
 
+<<<<<<< HEAD
     (81) andExpresion -> relopExpresion AND pushOper relopExpresion .
 
     OR              reduce using rule 81 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
@@ -3743,9 +6238,14 @@ state 233
     DOSPUNTOS       reduce using rule 81 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
     CORDER          reduce using rule 81 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
     PYC             reduce using rule 81 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
+=======
+    (101) llamada_esp -> ID PUNTO especiales PARIZQ . PARDER
+
+    PARDER          shift and go to state 250
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 234
+state 228
 
     (83) relopExpresion -> aritExpresion cuadArit relopAux aritExpresion . cuadArit
     (119) cuadArit -> .
@@ -3766,8 +6266,101 @@ state 234
 
     cuadArit                       shift and go to state 255
 
+state 229
+
+    (75) expresion -> andExpresion OR pushOper andExpresion .
+
+    ID              reduce using rule 75 (expresion -> andExpresion OR pushOper andExpresion .)
+    PARIZQ          reduce using rule 75 (expresion -> andExpresion OR pushOper andExpresion .)
+    CTEINT          reduce using rule 75 (expresion -> andExpresion OR pushOper andExpresion .)
+    CTEFLOAT        reduce using rule 75 (expresion -> andExpresion OR pushOper andExpresion .)
+    true            reduce using rule 75 (expresion -> andExpresion OR pushOper andExpresion .)
+    false           reduce using rule 75 (expresion -> andExpresion OR pushOper andExpresion .)
+    COMA            reduce using rule 75 (expresion -> andExpresion OR pushOper andExpresion .)
+    PARDER          reduce using rule 75 (expresion -> andExpresion OR pushOper andExpresion .)
+    DOSPUNTOS       reduce using rule 75 (expresion -> andExpresion OR pushOper andExpresion .)
+    CORDER          reduce using rule 75 (expresion -> andExpresion OR pushOper andExpresion .)
+    PYC             reduce using rule 75 (expresion -> andExpresion OR pushOper andExpresion .)
+
+
+state 230
+
+    (77) andExpresion -> relopExpresion AND pushOper relopExpresion .
+
+    OR              reduce using rule 77 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
+    ID              reduce using rule 77 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
+    PARIZQ          reduce using rule 77 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
+    CTEINT          reduce using rule 77 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
+    CTEFLOAT        reduce using rule 77 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
+    true            reduce using rule 77 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
+    false           reduce using rule 77 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
+    COMA            reduce using rule 77 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
+    PARDER          reduce using rule 77 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
+    DOSPUNTOS       reduce using rule 77 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
+    CORDER          reduce using rule 77 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
+    PYC             reduce using rule 77 (andExpresion -> relopExpresion AND pushOper relopExpresion .)
+
+
+state 231
+
+    (79) relopExpresion -> aritExpresion cuadArit relopAux aritExpresion . cuadArit
+    (115) cuadArit -> .
+
+    AND             reduce using rule 115 (cuadArit -> .)
+    OR              reduce using rule 115 (cuadArit -> .)
+    ID              reduce using rule 115 (cuadArit -> .)
+    PARIZQ          reduce using rule 115 (cuadArit -> .)
+    CTEINT          reduce using rule 115 (cuadArit -> .)
+    CTEFLOAT        reduce using rule 115 (cuadArit -> .)
+    true            reduce using rule 115 (cuadArit -> .)
+    false           reduce using rule 115 (cuadArit -> .)
+    COMA            reduce using rule 115 (cuadArit -> .)
+    PARDER          reduce using rule 115 (cuadArit -> .)
+    DOSPUNTOS       reduce using rule 115 (cuadArit -> .)
+    CORDER          reduce using rule 115 (cuadArit -> .)
+    PYC             reduce using rule 115 (cuadArit -> .)
+
+    cuadArit                       shift and go to state 251
+
+state 232
+
+    (80) relopAux -> MAYORQUE pushOper .
+
+    PARIZQ          reduce using rule 80 (relopAux -> MAYORQUE pushOper .)
+    CTEINT          reduce using rule 80 (relopAux -> MAYORQUE pushOper .)
+    CTEFLOAT        reduce using rule 80 (relopAux -> MAYORQUE pushOper .)
+    true            reduce using rule 80 (relopAux -> MAYORQUE pushOper .)
+    false           reduce using rule 80 (relopAux -> MAYORQUE pushOper .)
+    ID              reduce using rule 80 (relopAux -> MAYORQUE pushOper .)
+
+
+state 233
+
+    (81) relopAux -> MENORQUE pushOper .
+
+    PARIZQ          reduce using rule 81 (relopAux -> MENORQUE pushOper .)
+    CTEINT          reduce using rule 81 (relopAux -> MENORQUE pushOper .)
+    CTEFLOAT        reduce using rule 81 (relopAux -> MENORQUE pushOper .)
+    true            reduce using rule 81 (relopAux -> MENORQUE pushOper .)
+    false           reduce using rule 81 (relopAux -> MENORQUE pushOper .)
+    ID              reduce using rule 81 (relopAux -> MENORQUE pushOper .)
+
+
+state 234
+
+    (82) relopAux -> MAYORIGUAL pushOper .
+
+    PARIZQ          reduce using rule 82 (relopAux -> MAYORIGUAL pushOper .)
+    CTEINT          reduce using rule 82 (relopAux -> MAYORIGUAL pushOper .)
+    CTEFLOAT        reduce using rule 82 (relopAux -> MAYORIGUAL pushOper .)
+    true            reduce using rule 82 (relopAux -> MAYORIGUAL pushOper .)
+    false           reduce using rule 82 (relopAux -> MAYORIGUAL pushOper .)
+    ID              reduce using rule 82 (relopAux -> MAYORIGUAL pushOper .)
+
+
 state 235
 
+<<<<<<< HEAD
     (84) relopAux -> MAYORQUE pushOper .
 
     PARIZQ          reduce using rule 84 (relopAux -> MAYORQUE pushOper .)
@@ -3776,10 +6369,21 @@ state 235
     true            reduce using rule 84 (relopAux -> MAYORQUE pushOper .)
     false           reduce using rule 84 (relopAux -> MAYORQUE pushOper .)
     ID              reduce using rule 84 (relopAux -> MAYORQUE pushOper .)
+=======
+    (83) relopAux -> MENORIGUAL pushOper .
+
+    PARIZQ          reduce using rule 83 (relopAux -> MENORIGUAL pushOper .)
+    CTEINT          reduce using rule 83 (relopAux -> MENORIGUAL pushOper .)
+    CTEFLOAT        reduce using rule 83 (relopAux -> MENORIGUAL pushOper .)
+    true            reduce using rule 83 (relopAux -> MENORIGUAL pushOper .)
+    false           reduce using rule 83 (relopAux -> MENORIGUAL pushOper .)
+    ID              reduce using rule 83 (relopAux -> MENORIGUAL pushOper .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 236
 
+<<<<<<< HEAD
     (85) relopAux -> MENORQUE pushOper .
 
     PARIZQ          reduce using rule 85 (relopAux -> MENORQUE pushOper .)
@@ -3788,10 +6392,21 @@ state 236
     true            reduce using rule 85 (relopAux -> MENORQUE pushOper .)
     false           reduce using rule 85 (relopAux -> MENORQUE pushOper .)
     ID              reduce using rule 85 (relopAux -> MENORQUE pushOper .)
+=======
+    (84) relopAux -> EQUALS pushOper .
+
+    PARIZQ          reduce using rule 84 (relopAux -> EQUALS pushOper .)
+    CTEINT          reduce using rule 84 (relopAux -> EQUALS pushOper .)
+    CTEFLOAT        reduce using rule 84 (relopAux -> EQUALS pushOper .)
+    true            reduce using rule 84 (relopAux -> EQUALS pushOper .)
+    false           reduce using rule 84 (relopAux -> EQUALS pushOper .)
+    ID              reduce using rule 84 (relopAux -> EQUALS pushOper .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 237
 
+<<<<<<< HEAD
     (86) relopAux -> MAYORIGUAL pushOper .
 
     PARIZQ          reduce using rule 86 (relopAux -> MAYORIGUAL pushOper .)
@@ -3801,9 +6416,18 @@ state 237
     false           reduce using rule 86 (relopAux -> MAYORIGUAL pushOper .)
     ID              reduce using rule 86 (relopAux -> MAYORIGUAL pushOper .)
 
+=======
+    (85) relopAux -> DIFERENTE pushOper .
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
-state 238
+    PARIZQ          reduce using rule 85 (relopAux -> DIFERENTE pushOper .)
+    CTEINT          reduce using rule 85 (relopAux -> DIFERENTE pushOper .)
+    CTEFLOAT        reduce using rule 85 (relopAux -> DIFERENTE pushOper .)
+    true            reduce using rule 85 (relopAux -> DIFERENTE pushOper .)
+    false           reduce using rule 85 (relopAux -> DIFERENTE pushOper .)
+    ID              reduce using rule 85 (relopAux -> DIFERENTE pushOper .)
 
+<<<<<<< HEAD
     (87) relopAux -> MENORIGUAL pushOper .
 
     PARIZQ          reduce using rule 87 (relopAux -> MENORIGUAL pushOper .)
@@ -3812,10 +6436,39 @@ state 238
     true            reduce using rule 87 (relopAux -> MENORIGUAL pushOper .)
     false           reduce using rule 87 (relopAux -> MENORIGUAL pushOper .)
     ID              reduce using rule 87 (relopAux -> MENORIGUAL pushOper .)
+=======
 
+state 238
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+    (87) aritExpresion -> term cuadTerm aritAux term . cuadTerm
+    (112) cuadTerm -> .
+
+    MAYORQUE        reduce using rule 112 (cuadTerm -> .)
+    MENORQUE        reduce using rule 112 (cuadTerm -> .)
+    MAYORIGUAL      reduce using rule 112 (cuadTerm -> .)
+    MENORIGUAL      reduce using rule 112 (cuadTerm -> .)
+    EQUALS          reduce using rule 112 (cuadTerm -> .)
+    DIFERENTE       reduce using rule 112 (cuadTerm -> .)
+    AND             reduce using rule 112 (cuadTerm -> .)
+    OR              reduce using rule 112 (cuadTerm -> .)
+    ID              reduce using rule 112 (cuadTerm -> .)
+    PARIZQ          reduce using rule 112 (cuadTerm -> .)
+    CTEINT          reduce using rule 112 (cuadTerm -> .)
+    CTEFLOAT        reduce using rule 112 (cuadTerm -> .)
+    true            reduce using rule 112 (cuadTerm -> .)
+    false           reduce using rule 112 (cuadTerm -> .)
+    COMA            reduce using rule 112 (cuadTerm -> .)
+    PARDER          reduce using rule 112 (cuadTerm -> .)
+    DOSPUNTOS       reduce using rule 112 (cuadTerm -> .)
+    CORDER          reduce using rule 112 (cuadTerm -> .)
+    PYC             reduce using rule 112 (cuadTerm -> .)
+
+    cuadTerm                       shift and go to state 252
 
 state 239
 
+<<<<<<< HEAD
     (88) relopAux -> EQUALS pushOper .
 
     PARIZQ          reduce using rule 88 (relopAux -> EQUALS pushOper .)
@@ -3824,10 +6477,21 @@ state 239
     true            reduce using rule 88 (relopAux -> EQUALS pushOper .)
     false           reduce using rule 88 (relopAux -> EQUALS pushOper .)
     ID              reduce using rule 88 (relopAux -> EQUALS pushOper .)
+=======
+    (88) aritAux -> MAS pushOper .
+
+    PARIZQ          reduce using rule 88 (aritAux -> MAS pushOper .)
+    CTEINT          reduce using rule 88 (aritAux -> MAS pushOper .)
+    CTEFLOAT        reduce using rule 88 (aritAux -> MAS pushOper .)
+    true            reduce using rule 88 (aritAux -> MAS pushOper .)
+    false           reduce using rule 88 (aritAux -> MAS pushOper .)
+    ID              reduce using rule 88 (aritAux -> MAS pushOper .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 240
 
+<<<<<<< HEAD
     (89) relopAux -> DIFERENTE pushOper .
 
     PARIZQ          reduce using rule 89 (relopAux -> DIFERENTE pushOper .)
@@ -3836,10 +6500,21 @@ state 240
     true            reduce using rule 89 (relopAux -> DIFERENTE pushOper .)
     false           reduce using rule 89 (relopAux -> DIFERENTE pushOper .)
     ID              reduce using rule 89 (relopAux -> DIFERENTE pushOper .)
+=======
+    (89) aritAux -> MENOS pushOper .
+
+    PARIZQ          reduce using rule 89 (aritAux -> MENOS pushOper .)
+    CTEINT          reduce using rule 89 (aritAux -> MENOS pushOper .)
+    CTEFLOAT        reduce using rule 89 (aritAux -> MENOS pushOper .)
+    true            reduce using rule 89 (aritAux -> MENOS pushOper .)
+    false           reduce using rule 89 (aritAux -> MENOS pushOper .)
+    ID              reduce using rule 89 (aritAux -> MENOS pushOper .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 241
 
+<<<<<<< HEAD
     (91) aritExpresion -> term cuadTerm aritAux term . cuadTerm
     (116) cuadTerm -> .
 
@@ -3875,10 +6550,50 @@ state 242
     true            reduce using rule 92 (aritAux -> MAS pushOper .)
     false           reduce using rule 92 (aritAux -> MAS pushOper .)
     ID              reduce using rule 92 (aritAux -> MAS pushOper .)
+=======
+    (91) term -> factor cuadFactor termAux factor . cuadFactor
+    (113) cuadFactor -> .
+
+    MAS             reduce using rule 113 (cuadFactor -> .)
+    MENOS           reduce using rule 113 (cuadFactor -> .)
+    MAYORQUE        reduce using rule 113 (cuadFactor -> .)
+    MENORQUE        reduce using rule 113 (cuadFactor -> .)
+    MAYORIGUAL      reduce using rule 113 (cuadFactor -> .)
+    MENORIGUAL      reduce using rule 113 (cuadFactor -> .)
+    EQUALS          reduce using rule 113 (cuadFactor -> .)
+    DIFERENTE       reduce using rule 113 (cuadFactor -> .)
+    AND             reduce using rule 113 (cuadFactor -> .)
+    OR              reduce using rule 113 (cuadFactor -> .)
+    ID              reduce using rule 113 (cuadFactor -> .)
+    PARIZQ          reduce using rule 113 (cuadFactor -> .)
+    CTEINT          reduce using rule 113 (cuadFactor -> .)
+    CTEFLOAT        reduce using rule 113 (cuadFactor -> .)
+    true            reduce using rule 113 (cuadFactor -> .)
+    false           reduce using rule 113 (cuadFactor -> .)
+    COMA            reduce using rule 113 (cuadFactor -> .)
+    PARDER          reduce using rule 113 (cuadFactor -> .)
+    DOSPUNTOS       reduce using rule 113 (cuadFactor -> .)
+    CORDER          reduce using rule 113 (cuadFactor -> .)
+    PYC             reduce using rule 113 (cuadFactor -> .)
+
+    cuadFactor                     shift and go to state 253
+
+state 242
+
+    (92) termAux -> MULT pushOper .
+
+    PARIZQ          reduce using rule 92 (termAux -> MULT pushOper .)
+    CTEINT          reduce using rule 92 (termAux -> MULT pushOper .)
+    CTEFLOAT        reduce using rule 92 (termAux -> MULT pushOper .)
+    true            reduce using rule 92 (termAux -> MULT pushOper .)
+    false           reduce using rule 92 (termAux -> MULT pushOper .)
+    ID              reduce using rule 92 (termAux -> MULT pushOper .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 243
 
+<<<<<<< HEAD
     (93) aritAux -> MENOS pushOper .
 
     PARIZQ          reduce using rule 93 (aritAux -> MENOS pushOper .)
@@ -3887,10 +6602,21 @@ state 243
     true            reduce using rule 93 (aritAux -> MENOS pushOper .)
     false           reduce using rule 93 (aritAux -> MENOS pushOper .)
     ID              reduce using rule 93 (aritAux -> MENOS pushOper .)
+=======
+    (93) termAux -> DIV pushOper .
+
+    PARIZQ          reduce using rule 93 (termAux -> DIV pushOper .)
+    CTEINT          reduce using rule 93 (termAux -> DIV pushOper .)
+    CTEFLOAT        reduce using rule 93 (termAux -> DIV pushOper .)
+    true            reduce using rule 93 (termAux -> DIV pushOper .)
+    false           reduce using rule 93 (termAux -> DIV pushOper .)
+    ID              reduce using rule 93 (termAux -> DIV pushOper .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 244
 
+<<<<<<< HEAD
     (95) term -> factor cuadFactor termAux factor . cuadFactor
     (117) cuadFactor -> .
 
@@ -3917,9 +6643,38 @@ state 244
     PYC             reduce using rule 117 (cuadFactor -> .)
 
     cuadFactor                     shift and go to state 257
+=======
+    (68) condicion -> if PARIZQ expresion PARDER cuadGotof bloque . condicionAux cuadFinIf
+    (69) condicionAux -> . else cuadGoto bloque
+    (70) condicionAux -> . empty
+    (119) empty -> .
+
+    else            shift and go to state 255
+    ID              reduce using rule 119 (empty -> .)
+    write           reduce using rule 119 (empty -> .)
+    if              reduce using rule 119 (empty -> .)
+    while           reduce using rule 119 (empty -> .)
+    for             reduce using rule 119 (empty -> .)
+    read            reduce using rule 119 (empty -> .)
+    LLAVEDER        reduce using rule 119 (empty -> .)
+
+    condicionAux                   shift and go to state 254
+    empty                          shift and go to state 256
 
 state 245
 
+    (72) forloop -> for PARIZQ expresion DOSPUNTOS expresion PARDER . bloque
+    (21) bloque -> . LLAVEIZQ bloqueaux LLAVEDER
+    (22) bloque -> . LLAVEIZQ empty LLAVEDER
+
+    LLAVEIZQ        shift and go to state 73
+
+    bloque                         shift and go to state 257
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 246
+
+<<<<<<< HEAD
     (96) termAux -> MULT pushOper .
 
     PARIZQ          reduce using rule 96 (termAux -> MULT pushOper .)
@@ -3928,10 +6683,22 @@ state 245
     true            reduce using rule 96 (termAux -> MULT pushOper .)
     false           reduce using rule 96 (termAux -> MULT pushOper .)
     ID              reduce using rule 96 (termAux -> MULT pushOper .)
+=======
+    (73) lectura -> read PARIZQ ID checkID PARDER PYC .
+
+    ID              reduce using rule 73 (lectura -> read PARIZQ ID checkID PARDER PYC .)
+    write           reduce using rule 73 (lectura -> read PARIZQ ID checkID PARDER PYC .)
+    if              reduce using rule 73 (lectura -> read PARIZQ ID checkID PARDER PYC .)
+    while           reduce using rule 73 (lectura -> read PARIZQ ID checkID PARDER PYC .)
+    for             reduce using rule 73 (lectura -> read PARIZQ ID checkID PARDER PYC .)
+    read            reduce using rule 73 (lectura -> read PARIZQ ID checkID PARDER PYC .)
+    LLAVEDER        reduce using rule 73 (lectura -> read PARIZQ ID checkID PARDER PYC .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
-state 246
+state 247
 
+<<<<<<< HEAD
     (97) termAux -> DIV pushOper .
 
     PARIZQ          reduce using rule 97 (termAux -> DIV pushOper .)
@@ -3941,8 +6708,32 @@ state 246
     false           reduce using rule 97 (termAux -> DIV pushOper .)
     ID              reduce using rule 97 (termAux -> DIV pushOper .)
 
+=======
+    (38) funcaux -> type ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar . masParam
+    (39) masParam -> . funcaux
+    (40) masParam -> . empty
+    (36) funcaux -> . type ID agregaVar masParam
+    (37) funcaux -> . type ID CORIZQ CTEINT CORDER agregaVar masParam
+    (38) funcaux -> . type ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar masParam
+    (119) empty -> .
+    (25) type -> . int guardarTipoVar
+    (26) type -> . float guardarTipoVar
+    (27) type -> . string guardarTipoVar
+    (28) type -> . bool guardarTipoVar
 
-state 247
+    PARDER          reduce using rule 119 (empty -> .)
+    int             shift and go to state 25
+    float           shift and go to state 26
+    string          shift and go to state 27
+    bool            shift and go to state 28
+
+    type                           shift and go to state 68
+    masParam                       shift and go to state 258
+    funcaux                        shift and go to state 114
+    empty                          shift and go to state 115
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
+
+state 248
 
     (70) condicion -> if PARIZQ expresion PARDER cuadGotof bloque . condicionAux cuadFinIf
     (71) condicionAux -> . else cuadGoto bloque
@@ -3961,7 +6752,7 @@ state 247
     condicionAux                   shift and go to state 258
     empty                          shift and go to state 260
 
-state 248
+state 249
 
     (73) whileloop -> while migaja PARIZQ expresion PARDER cuadGotof . bloque cuadFinWhile
     (22) bloque -> . LLAVEIZQ bloqueaux LLAVEDER
@@ -3971,6 +6762,7 @@ state 248
 
     bloque                         shift and go to state 261
 
+<<<<<<< HEAD
 state 249
 
     (76) forloop -> for PARIZQ expresion DOSPUNTOS expresion PARDER . bloque
@@ -3992,10 +6784,40 @@ state 250
     for             reduce using rule 77 (lectura -> read PARIZQ ID checkID PARDER PYC .)
     read            reduce using rule 77 (lectura -> read PARIZQ ID checkID PARDER PYC .)
     LLAVEDER        reduce using rule 77 (lectura -> read PARIZQ ID checkID PARDER PYC .)
+=======
+state 250
+
+    (101) llamada_esp -> ID PUNTO especiales PARIZQ PARDER .
+
+    ID              reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    PARIZQ          reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    CTEINT          reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    CTEFLOAT        reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    true            reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    false           reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    MULT            reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    DIV             reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    MAS             reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    MENOS           reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    MAYORQUE        reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    MENORQUE        reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    MAYORIGUAL      reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    MENORIGUAL      reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    EQUALS          reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    DIFERENTE       reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    AND             reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    OR              reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    COMA            reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    PARDER          reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    DOSPUNTOS       reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    CORDER          reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+    PYC             reduce using rule 101 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 251
 
+<<<<<<< HEAD
     (39) funcaux -> type ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar . masParam
     (40) masParam -> . funcaux
     (41) masParam -> . empty
@@ -4018,9 +6840,26 @@ state 251
     masParam                       shift and go to state 263
     funcaux                        shift and go to state 115
     empty                          shift and go to state 116
+=======
+    (79) relopExpresion -> aritExpresion cuadArit relopAux aritExpresion cuadArit .
 
-state 252
+    AND             reduce using rule 79 (relopExpresion -> aritExpresion cuadArit relopAux aritExpresion cuadArit .)
+    OR              reduce using rule 79 (relopExpresion -> aritExpresion cuadArit relopAux aritExpresion cuadArit .)
+    ID              reduce using rule 79 (relopExpresion -> aritExpresion cuadArit relopAux aritExpresion cuadArit .)
+    PARIZQ          reduce using rule 79 (relopExpresion -> aritExpresion cuadArit relopAux aritExpresion cuadArit .)
+    CTEINT          reduce using rule 79 (relopExpresion -> aritExpresion cuadArit relopAux aritExpresion cuadArit .)
+    CTEFLOAT        reduce using rule 79 (relopExpresion -> aritExpresion cuadArit relopAux aritExpresion cuadArit .)
+    true            reduce using rule 79 (relopExpresion -> aritExpresion cuadArit relopAux aritExpresion cuadArit .)
+    false           reduce using rule 79 (relopExpresion -> aritExpresion cuadArit relopAux aritExpresion cuadArit .)
+    COMA            reduce using rule 79 (relopExpresion -> aritExpresion cuadArit relopAux aritExpresion cuadArit .)
+    PARDER          reduce using rule 79 (relopExpresion -> aritExpresion cuadArit relopAux aritExpresion cuadArit .)
+    DOSPUNTOS       reduce using rule 79 (relopExpresion -> aritExpresion cuadArit relopAux aritExpresion cuadArit .)
+    CORDER          reduce using rule 79 (relopExpresion -> aritExpresion cuadArit relopAux aritExpresion cuadArit .)
+    PYC             reduce using rule 79 (relopExpresion -> aritExpresion cuadArit relopAux aritExpresion cuadArit .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
+
+<<<<<<< HEAD
     (49) asignacion -> ID checkID asignaux ASIGNA expresion cuadAsignacion PYC .
 
     ID              reduce using rule 49 (asignacion -> ID checkID asignaux ASIGNA expresion cuadAsignacion PYC .)
@@ -4030,17 +6869,69 @@ state 252
     for             reduce using rule 49 (asignacion -> ID checkID asignaux ASIGNA expresion cuadAsignacion PYC .)
     read            reduce using rule 49 (asignacion -> ID checkID asignaux ASIGNA expresion cuadAsignacion PYC .)
     LLAVEDER        reduce using rule 49 (asignacion -> ID checkID asignaux ASIGNA expresion cuadAsignacion PYC .)
+=======
+state 252
+
+    (87) aritExpresion -> term cuadTerm aritAux term cuadTerm .
+
+    MAYORQUE        reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    MENORQUE        reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    MAYORIGUAL      reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    MENORIGUAL      reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    EQUALS          reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    DIFERENTE       reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    AND             reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    OR              reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    ID              reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    PARIZQ          reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    CTEINT          reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    CTEFLOAT        reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    true            reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    false           reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    COMA            reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    PARDER          reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    DOSPUNTOS       reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    CORDER          reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+    PYC             reduce using rule 87 (aritExpresion -> term cuadTerm aritAux term cuadTerm .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 253
 
+<<<<<<< HEAD
     (54) asignaux -> CORIZQ expresion COMA expresion CORDER .
 
     ASIGNA          reduce using rule 54 (asignaux -> CORIZQ expresion COMA expresion CORDER .)
+=======
+    (91) term -> factor cuadFactor termAux factor cuadFactor .
+
+    MAS             reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    MENOS           reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    MAYORQUE        reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    MENORQUE        reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    MAYORIGUAL      reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    MENORIGUAL      reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    EQUALS          reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    DIFERENTE       reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    AND             reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    OR              reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    ID              reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    PARIZQ          reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    CTEINT          reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    CTEFLOAT        reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    true            reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    false           reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    COMA            reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    PARDER          reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    DOSPUNTOS       reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    CORDER          reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+    PYC             reduce using rule 91 (term -> factor cuadFactor termAux factor cuadFactor .)
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
 
 state 254
 
+<<<<<<< HEAD
     (105) llamada_esp -> ID PUNTO especiales PARIZQ PARDER .
 
     ID              reduce using rule 105 (llamada_esp -> ID PUNTO especiales PARIZQ PARDER .)
@@ -4250,6 +7141,59 @@ state 266
 state 267
 
     (71) condicionAux -> else cuadGoto bloque .
+=======
+    (68) condicion -> if PARIZQ expresion PARDER cuadGotof bloque condicionAux . cuadFinIf
+    (117) cuadFinIf -> .
+
+    ID              reduce using rule 117 (cuadFinIf -> .)
+    write           reduce using rule 117 (cuadFinIf -> .)
+    if              reduce using rule 117 (cuadFinIf -> .)
+    while           reduce using rule 117 (cuadFinIf -> .)
+    for             reduce using rule 117 (cuadFinIf -> .)
+    read            reduce using rule 117 (cuadFinIf -> .)
+    LLAVEDER        reduce using rule 117 (cuadFinIf -> .)
+
+    cuadFinIf                      shift and go to state 259
+
+state 255
+
+    (69) condicionAux -> else . cuadGoto bloque
+    (118) cuadGoto -> .
+
+    LLAVEIZQ        reduce using rule 118 (cuadGoto -> .)
+
+    cuadGoto                       shift and go to state 260
+
+state 256
+
+    (70) condicionAux -> empty .
+
+    ID              reduce using rule 70 (condicionAux -> empty .)
+    write           reduce using rule 70 (condicionAux -> empty .)
+    if              reduce using rule 70 (condicionAux -> empty .)
+    while           reduce using rule 70 (condicionAux -> empty .)
+    for             reduce using rule 70 (condicionAux -> empty .)
+    read            reduce using rule 70 (condicionAux -> empty .)
+    LLAVEDER        reduce using rule 70 (condicionAux -> empty .)
+
+
+state 257
+
+    (72) forloop -> for PARIZQ expresion DOSPUNTOS expresion PARDER bloque .
+
+    ID              reduce using rule 72 (forloop -> for PARIZQ expresion DOSPUNTOS expresion PARDER bloque .)
+    write           reduce using rule 72 (forloop -> for PARIZQ expresion DOSPUNTOS expresion PARDER bloque .)
+    if              reduce using rule 72 (forloop -> for PARIZQ expresion DOSPUNTOS expresion PARDER bloque .)
+    while           reduce using rule 72 (forloop -> for PARIZQ expresion DOSPUNTOS expresion PARDER bloque .)
+    for             reduce using rule 72 (forloop -> for PARIZQ expresion DOSPUNTOS expresion PARDER bloque .)
+    read            reduce using rule 72 (forloop -> for PARIZQ expresion DOSPUNTOS expresion PARDER bloque .)
+    LLAVEDER        reduce using rule 72 (forloop -> for PARIZQ expresion DOSPUNTOS expresion PARDER bloque .)
+
+
+state 258
+
+    (38) funcaux -> type ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar masParam .
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 
     ID              reduce using rule 71 (condicionAux -> else cuadGoto bloque .)
     write           reduce using rule 71 (condicionAux -> else cuadGoto bloque .)
@@ -4258,6 +7202,42 @@ state 267
     for             reduce using rule 71 (condicionAux -> else cuadGoto bloque .)
     read            reduce using rule 71 (condicionAux -> else cuadGoto bloque .)
     LLAVEDER        reduce using rule 71 (condicionAux -> else cuadGoto bloque .)
+
+
+state 259
+
+    (68) condicion -> if PARIZQ expresion PARDER cuadGotof bloque condicionAux cuadFinIf .
+
+    ID              reduce using rule 68 (condicion -> if PARIZQ expresion PARDER cuadGotof bloque condicionAux cuadFinIf .)
+    write           reduce using rule 68 (condicion -> if PARIZQ expresion PARDER cuadGotof bloque condicionAux cuadFinIf .)
+    if              reduce using rule 68 (condicion -> if PARIZQ expresion PARDER cuadGotof bloque condicionAux cuadFinIf .)
+    while           reduce using rule 68 (condicion -> if PARIZQ expresion PARDER cuadGotof bloque condicionAux cuadFinIf .)
+    for             reduce using rule 68 (condicion -> if PARIZQ expresion PARDER cuadGotof bloque condicionAux cuadFinIf .)
+    read            reduce using rule 68 (condicion -> if PARIZQ expresion PARDER cuadGotof bloque condicionAux cuadFinIf .)
+    LLAVEDER        reduce using rule 68 (condicion -> if PARIZQ expresion PARDER cuadGotof bloque condicionAux cuadFinIf .)
+
+
+state 260
+
+    (69) condicionAux -> else cuadGoto . bloque
+    (21) bloque -> . LLAVEIZQ bloqueaux LLAVEDER
+    (22) bloque -> . LLAVEIZQ empty LLAVEDER
+
+    LLAVEIZQ        shift and go to state 73
+
+    bloque                         shift and go to state 261
+
+state 261
+
+    (69) condicionAux -> else cuadGoto bloque .
+
+    ID              reduce using rule 69 (condicionAux -> else cuadGoto bloque .)
+    write           reduce using rule 69 (condicionAux -> else cuadGoto bloque .)
+    if              reduce using rule 69 (condicionAux -> else cuadGoto bloque .)
+    while           reduce using rule 69 (condicionAux -> else cuadGoto bloque .)
+    for             reduce using rule 69 (condicionAux -> else cuadGoto bloque .)
+    read            reduce using rule 69 (condicionAux -> else cuadGoto bloque .)
+    LLAVEDER        reduce using rule 69 (condicionAux -> else cuadGoto bloque .)
 
 WARNING: 
 WARNING: Conflicts:
@@ -4268,6 +7248,7 @@ WARNING: shift/reduce conflict for var in state 10 resolved as shift
 WARNING: shift/reduce conflict for LLAVEIZQ in state 66 resolved as shift
 WARNING: shift/reduce conflict for var in state 66 resolved as shift
 WARNING: shift/reduce conflict for var in state 75 resolved as shift
+<<<<<<< HEAD
 WARNING: shift/reduce conflict for var in state 76 resolved as shift
 WARNING: shift/reduce conflict for ID in state 126 resolved as shift
 WARNING: shift/reduce conflict for PARIZQ in state 126 resolved as shift
@@ -4278,6 +7259,17 @@ WARNING: shift/reduce conflict for false in state 126 resolved as shift
 WARNING: shift/reduce conflict for COMA in state 139 resolved as shift
 WARNING: shift/reduce conflict for COMA in state 155 resolved as shift
 WARNING: shift/reduce conflict for PYC in state 180 resolved as shift
+=======
+WARNING: shift/reduce conflict for ID in state 125 resolved as shift
+WARNING: shift/reduce conflict for PARIZQ in state 125 resolved as shift
+WARNING: shift/reduce conflict for CTEINT in state 125 resolved as shift
+WARNING: shift/reduce conflict for CTEFLOAT in state 125 resolved as shift
+WARNING: shift/reduce conflict for true in state 125 resolved as shift
+WARNING: shift/reduce conflict for false in state 125 resolved as shift
+WARNING: shift/reduce conflict for COMA in state 138 resolved as shift
+WARNING: shift/reduce conflict for COMA in state 154 resolved as shift
+WARNING: shift/reduce conflict for PYC in state 179 resolved as shift
+>>>>>>> f1f7cc1c1dbb76bfa1f5dc4071691ba1880fa90b
 WARNING: reduce/reduce conflict in state 11 resolved using rule (varsaux -> empty)
 WARNING: rejected rule (vars -> empty) in state 11
 WARNING: reduce/reduce conflict in state 139 resolved using rule (pushOT -> <empty>)

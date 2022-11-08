@@ -5,6 +5,7 @@
 #Pendiente
 #Se tiene que agregar asignación de índices de arreglos y matrices
 #Guardar el tamaño de listas y matrices cuando se guarda la variable
+#Cuadruplos de llamadas especiales y de expresiones con parentesis
 
 #Cambios:
 
@@ -119,7 +120,6 @@ def t_CTEINT(t):
     return t
 
 def t_CTESTRING(t):
-    # r'\"[a-zA-Z_][a-zA-Z0-9_]*\"'
     r'\"(\\.|[^"\\])*\"'
     t.value = str(t.value)
     return t
@@ -163,8 +163,17 @@ lexer.input(data)
 #paux2 es F
 def p_programa(p):
     '''
-    programa : program ID auxprograma PYC varsaux paux2 mainfunction end PYC
+    programa : program ID auxprograma PYC varsaux paux2 mainfunction end cuadEnd PYC
     '''
+
+def p_cuadEnd(p):
+    '''
+    cuadEnd :
+    '''
+    global listaCuadruplos
+    global contCuadruplos
+    cuad = [contCuadruplos, 'endprogram']
+    listaCuadruplos.append(cuad)
 
 def p_programa_vacio(p):
     '''
@@ -377,10 +386,28 @@ def p_escritura(p):
 
 def p_escaux(p):
     '''
-    escaux : expresion nextexp
-           | CTESTRING nextexp
+    escaux : expresion cuadEsc nextexp
+           | CTESTRING cuadEsc nextexp
            | llamada_esp nextexp
     '''
+
+def p_cuadEsc(p):
+    '''
+    cuadEsc :
+    '''
+    global contCuadruplos
+    global listaCuadruplos
+    global pilaOperandos
+    #Lo que se va a escribir
+    aesc = None
+    print('En el write',p[-1])
+    if(p[-1] is None):
+        aesc = pilaOperandos.pop()
+    elif(isinstance(p[-1], str)):
+        aesc = p[-1].strip('"')
+    cuad = [contCuadruplos, 'write', aesc]
+    listaCuadruplos.append(cuad)
+    contCuadruplos += 1
 
 #Para poner más de una expresión en un print
 def p_nextexp(p):
@@ -421,8 +448,31 @@ def p_condicionAux(p):
 
 def p_whileloop(p):
     '''
-    whileloop : while PARIZQ expresion PARDER bloque
+    whileloop : while migaja PARIZQ expresion PARDER cuadGotof bloque cuadFinWhile
     '''
+
+def p_migaja(p):
+    '''
+    migaja :
+    '''
+    global pilaSaltos
+    global contCuadruplos
+    pilaSaltos.append(contCuadruplos)
+
+def p_cuadFinWhile(p):
+    '''
+    cuadFinWhile :
+    '''
+    global pilaSaltos
+    global listaCuadruplos
+    global contCuadruplos
+    end = pilaSaltos.pop()
+    #Return -> a que cuadruplo tenemos que regresar
+    ret = pilaSaltos.pop()
+    cuad = [contCuadruplos, 'Goto', ret]
+    listaCuadruplos.append(cuad)
+    contCuadruplos += 1
+    fill(end, contCuadruplos)
 
 def p_forloop(p):
     '''
@@ -647,6 +697,7 @@ def p_cuadAsignacion(p):
     global contCuadruplos
     print('p[-5]', p[-5])
     cuad = [contCuadruplos, '=', pilaOperandos.pop(),p[-5]]
+    print("Generamos cuadruplo", cuad)
     listaCuadruplos.append(cuad)
     contCuadruplos += 1
 
@@ -669,12 +720,6 @@ def p_cuadArit(p):
     # print(hayOp)
     print(pilaOperandos)
     print(pilaTipos)
-    # MAYORQUE pushOper 
-    # | MENORQUE pushOper 
-    # | MAYORIGUAL pushOper
-    # | MENORIGUAL pushOper
-    # | EQUALS pushOper
-    # | DIFERENTE pushOper
     if (hayOp and (poper[-1] == '<' or poper[-1] == '>'
                 or poper[-1] == '<=' or poper[-1] == '>='
                 or poper[-1] == '==' or poper[-1] == '$')):
@@ -705,12 +750,13 @@ def p_cuadGotof(p):
     global listaCuadruplos
     global pilaSaltos
     exp_type = pilaTipos.pop()
-    print(exp_type)
+    # print(exp_type)
     if(exp_type != 'bool'):
         sys.exit("Type-mismatch Error: expression inside the if has to be bool")
     else:
         result = pilaOperandos.pop()
         cuad = [contCuadruplos, 'gotof', result]
+        print("Generamos cuadruplo", cuad)
         listaCuadruplos.append(cuad)
         pilaSaltos.append(contCuadruplos)
         contCuadruplos += 1
@@ -732,6 +778,7 @@ def p_cuadGoto(p):
     global contCuadruplos
     global pilaSaltos
     cuad = [contCuadruplos, 'Goto']
+    print("Generamos cuadruplo", cuad)
     listaCuadruplos.append(cuad)
     contCuadruplos += 1
     #False -> la expresión del if fue falsa
@@ -747,7 +794,6 @@ def p_empty(p):
     '''
 
 def p_error(p):
-    # print("Syntax error at '%s'" %p[0])
     print(p)
     print("Syntax error")
     sys.exit()
@@ -758,7 +804,7 @@ parser = yacc.yacc()
 # fn = input("Nombre del archivo\n")
 
 try:
-    f = open("./ejemplo2.txt", "r")
+    f = open("./ejemplo.txt", "r")
     fileContent = f.read()
     # print(fileContent)
 except:

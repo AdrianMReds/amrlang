@@ -1,17 +1,19 @@
 program amr;
 
 func main()
-var int a, b, c, d;
+var int a, b, c, d, cont;
+var bool t;
+var string s;
 {
-    if(a>b+c){
-        b = c-a;
-        if(a>c+d){
-            b = d+a;
+    a = 0;
+    cont = 0;
+    for(0:6){
+        write(a);
+        a = a + 1;
+        for(0:cont){
+            write("Hola");
         }
-    }else{
-        c = a+b;
     }
-    a = a*b;
 }
 
 end;

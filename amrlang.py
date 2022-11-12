@@ -43,6 +43,13 @@ def fill(numCuad, contenido):
     global listaCuadruplos
     listaCuadruplos[numCuad-1].append(contenido)
 
+def checkType(id):
+    global actualFunc
+    varsInFunc = dirFunc[actualFunc]['vars']
+    t = varsInFunc[id]['type']
+    print("Type de {}".format(id), t)
+    return t
+
 reservadas = ['program', 'var', 'func', 'main', 'int', 'float', 'string', 'bool',
               'write', 'if', 'else', 'while', 'for', 'read', 'void', 'end', 'length',
               'max', 'min', 'avg', 'median', 'mode', 'variance', 'stdev', 'true', 'false']
@@ -344,7 +351,7 @@ def p_asignacion(p):
     '''
     asignacion : ID checkID asignaux ASIGNA expresion cuadAsignacion PYC
                | ID checkID asignaux ASIGNA llamada_esp PYC
-               | ID checkID asignaux ASIGNA CTESTRING PYC
+               | ID checkID asignaux ASIGNA CTESTRING cuadAsignacion PYC
     '''
 
 def p_checkID(p):
@@ -372,6 +379,38 @@ def p_checkID(p):
     if varExists == False:
         sys.exit("Error: ID {} does not exist in the scope".format(id))
 
+def p_cuadAsignacion(p):
+    '''
+    cuadAsignacion :
+    '''
+    global listaCuadruplos
+    global avail
+    global contAvail
+    global pilaOperandos
+    global contCuadruplos
+    global pilaTipos
+
+    if(type(p[-1]) == str):
+        pilaOperandos.append(p[-1].strip('"'))
+        pilaTipos.append('string')
+
+    tipoID = checkType(p[-5])
+    tipoAsigna = pilaTipos.pop()
+    print("Typo de {}".format(pilaOperandos[-1]), tipoAsigna)
+    if(tipoID == tipoAsigna):
+        #Si es una expresión
+        if(p[-1] is None):
+            cuad = [contCuadruplos, '=', pilaOperandos.pop(),p[-5]]
+            print("Generamos cuadruplo", cuad)
+            listaCuadruplos.append(cuad)
+            contCuadruplos += 1
+        elif(type(p[-1]) == str):
+            cuad = [contCuadruplos, '=', pilaOperandos.pop(),p[-5]]
+            print("Generamos cuadruplo", cuad)
+            listaCuadruplos.append(cuad)
+            contCuadruplos += 1
+    else:
+        sys.exit("TypeMismatch Error: Id \"{}\" is {}, not {}".format(p[-5],tipoID,tipoAsigna))
 
 def p_asignaux(p):
     '''
@@ -470,15 +509,131 @@ def p_cuadFinWhile(p):
     end = pilaSaltos.pop()
     #Return -> a que cuadruplo tenemos que regresar
     ret = pilaSaltos.pop()
-    cuad = [contCuadruplos, 'Goto', ret]
+    cuad = [contCuadruplos, 'goto', ret]
     listaCuadruplos.append(cuad)
     contCuadruplos += 1
     fill(end, contCuadruplos)
 
 def p_forloop(p):
     '''
-    forloop : for PARIZQ expresion DOSPUNTOS expresion PARDER bloque
+    forloop : for PARIZQ expresion checkExpFor DOSPUNTOS expresion checkExpFor PARDER gotoFor bloque returnFor
     '''
+
+def p_checkExpFor(p):
+    '''
+    checkExpFor :
+    '''
+    global pilaOperandos
+    global poper
+    global pilaTipos
+    print("PILA OPERANDOS FOR", pilaOperandos)
+    print("POPER EN FOR", poper)
+    print("TIPOS EN FOR", pilaTipos)
+    if (pilaTipos[-1] != 'int'):
+        sys.exit("TypeMismatch Error: Expresions inside a for loop have to be int")
+    else:
+        pass
+
+#GotoF del for
+def p_gotoFor(p):
+    '''
+    gotoFor :
+    '''
+    global listaCuadruplos
+    global pilaOperandos
+    global pilaTipos
+    global contCuadruplos
+    global pilaSaltos
+    global avail
+    global contAvail
+    rightOp = pilaOperandos.pop()
+    rightType = pilaTipos.pop()
+    leftOp =  pilaOperandos.pop()
+    leftType = pilaTipos.pop()
+
+    #Asignamos el primer valor a un temporal
+    cuad = [contCuadruplos, '=', leftOp, avail[contAvail]]
+    listaCuadruplos.append(cuad)
+    pilaOperandos.append(avail[contAvail])
+    contCuadruplos += 1
+    contAvail += 1
+
+    #Asignamos el segundo valor a un temporal
+    cuad = [contCuadruplos, '=', rightOp, avail[contAvail]]
+    listaCuadruplos.append(cuad)
+    pilaOperandos.append(avail[contAvail])
+    contCuadruplos += 1
+    contAvail += 1
+
+    #A este punto tendremos que regresar
+    pilaSaltos.append(contCuadruplos)
+
+    # Revisamos si el de la izquierda es menor al de la derecha para el gotof
+    rightOp = pilaOperandos.pop()
+    leftOp =  pilaOperandos.pop()
+    pilaTipos.append('int')
+    pilaTipos.append('int')
+    typeResult = cuboSemantico(pilaTipos.pop(), pilaTipos.pop(), '<=')
+    cuad = [contCuadruplos, '<=', leftOp, rightOp, avail[contAvail]]
+    pilaOperandos.append(leftOp)
+    print("Generamos cuadruplo", cuad)
+    listaCuadruplos.append(cuad)
+    pilaOperandos.append(avail[contAvail])
+    pilaTipos.append(typeList[typeResult])
+    contAvail += 1
+    contCuadruplos += 1
+
+    #A este cuadruplo tendremos que llenar el gotof
+    pilaSaltos.append(contCuadruplos)
+
+    #Resultado para ver si hace lo del for
+    result = pilaOperandos.pop()
+    pilaTipos.pop()
+    cuad = [contCuadruplos, 'gotof', result]
+    print("Generamos cuadruplo", cuad)
+    listaCuadruplos.append(cuad)
+    contCuadruplos += 1
+
+def p_returnFor(p):
+    '''
+    returnFor :
+    '''
+    global listaCuadruplos
+    global pilaOperandos
+    global pilaTipos
+    global contCuadruplos
+    global pilaSaltos
+    global avail
+    global contAvail
+    #A donde hacemos el goto
+    toFill = pilaSaltos.pop()
+    ret = pilaSaltos.pop()
+    aSumar = pilaOperandos.pop()
+    
+    cuad = [contCuadruplos, '+', aSumar, 1, avail[contAvail]]
+    print("Generamos cuadruplo", cuad)
+    listaCuadruplos.append(cuad)
+    pilaOperandos.append(avail[contAvail])
+    pilaTipos.append('int')
+    contAvail +=1
+    contCuadruplos += 1
+
+    #Asignamos la suma de 1 al primer valor del for
+    cuad = [contCuadruplos, '=', pilaOperandos.pop(), aSumar]
+    pilaTipos.pop()
+    print("Generamos cuadruplo", cuad)
+    listaCuadruplos.append(cuad)
+    contCuadruplos += 1
+
+    #Regresamos y rellenamos el gotof del principio
+    
+    cuad = [contCuadruplos, 'goto', ret]
+    print("Generamos cuadruplo", cuad)
+    listaCuadruplos.append(cuad)
+    contCuadruplos += 1
+    fill(toFill, contCuadruplos)
+
+
 
 def p_lectura(p):
     '''
@@ -621,7 +776,7 @@ def p_cuadTerm(p):
     global contAvail
     global pilaOperandos
     global contCuadruplos
-    print("Poper dentro de cuadTerm",poper)
+    # print("Poper dentro de cuadTerm",poper)
     # try:
     #     print("Ultimo elemento de poper",poper[-1])
     # except:
@@ -658,7 +813,7 @@ def p_cuadFactor(p):
     global contAvail
     global typeList
     global contCuadruplos
-    print("Poper dentro de cuadTerm",poper)
+    # print("Poper dentro de cuadTerm",poper)
     # try:
     #     print("Ultimo elemento de poper",poper[-1])
     # except:
@@ -687,20 +842,6 @@ def p_cuadFactor(p):
     else:
         pass
 
-def p_cuadAsignacion(p):
-    '''
-    cuadAsignacion :
-    '''
-    global listaCuadruplos
-    global avail
-    global contAvail
-    global pilaOperandos
-    global contCuadruplos
-    print('p[-5]', p[-5])
-    cuad = [contCuadruplos, '=', pilaOperandos.pop(),p[-5]]
-    print("Generamos cuadruplo", cuad)
-    listaCuadruplos.append(cuad)
-    contCuadruplos += 1
 
 def p_cuadArit(p):
     '''
@@ -712,7 +853,7 @@ def p_cuadArit(p):
     global contAvail
     global pilaOperandos
     global contCuadruplos
-    print("Poper dentro de cuadTerm",poper)
+    # print("Poper dentro de cuadTerm",poper)
     # try:
     #     print("Ultimo elemento de poper",poper[-1])
     # except:
@@ -805,7 +946,7 @@ parser = yacc.yacc()
 # fn = input("Nombre del archivo\n")
 
 try:
-    f = open("./ejemplo.txt", "r")
+    f = open("./ejemplo2.txt", "r")
     fileContent = f.read()
     # print(fileContent)
 except:
@@ -825,6 +966,7 @@ for f in funcs:
 print('Pila operandos\n',pilaOperandos)
 print('Pila Tipos\n', pilaTipos)
 print('Pila operadores\n', poper)
+print('Pila de saltos\n', pilaSaltos)
 for c in listaCuadruplos:
     print(c)
 # -----------------------------------------------------------------

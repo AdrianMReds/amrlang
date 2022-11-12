@@ -15,6 +15,10 @@ var int a,b,c,e;
     e = a+b;
     write(a,b,c);
     write("Hola");
+    for(0:8){
+        a = a + 1;
+        write(a);
+    }
 }
 
 end;

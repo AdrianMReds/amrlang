@@ -1,5 +1,13 @@
 program ejemplo;
 
+void func uno(string s)
+var int i;
+{
+    for(0:i){
+        write(s);
+    }
+}
+
 func main()
 var int a,b,c,e;
 {

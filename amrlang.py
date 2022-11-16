@@ -39,6 +39,8 @@ pilaTipos = []
 # contAvail = 0
 pilaSaltos = []
 listaConstantes = {}
+paramCounter = 0
+funcACorrer = ''
 
 #Globales
 #Int 1000-1999
@@ -214,17 +216,28 @@ def t_error(t):
 lexer = lex.lex()
 
 data = '''
-program amr;
-var int x;
+program ejemplo3;
+var int i, z;
+var float f;
+var string st;
 var bool b;
 
-func main()
-var float y;
+void func imprimir(string s)
+var int w;
 {
-    write("Hola");
-    y = 2.0;
-    y = y + 1;
-    b = true;
+    w = 8 + (6 * 2);
+    w = w + 1;
+}
+
+int func suma(int a, int b){
+    imprimir("Hola");
+    return(1+suma(2,1));
+}
+
+func main(){
+    z = 5;
+    write(5);
+    i = suma(1,2);
 }
 
 end;
@@ -497,9 +510,26 @@ def p_cuadEndf(p):
     '''
     global contCuadruplos
     global listaCuadruplos
+    global locInt
+    global locFloat
+    global locString
+    global locBool
+    global tempInt
+    global tempFloat
+    global tempString
+    global tempBool
     cuad = [contCuadruplos, 'endfunc']
     listaCuadruplos.append(cuad)
     contCuadruplos += 1
+    locInt = locIntInf
+    locFloat = locFloatInf
+    locString = locStringInf
+    locBool = locBoolInf
+    tempInt = tempIntInf
+    tempFloat = tempFloatInf
+    tempString = tempStringInf
+    tempBool = tempBoolInf
+    # dirFunc[actualFunc]['vars'] = {}
 
 def p_agregaFunc(p):
     '''
@@ -560,11 +590,30 @@ def p_asignacion(p):
                | ID checkID asignaux ASIGNA CTESTRING cuadAsignacion PYC
     '''
 
+def p_aaa(p):
+    '''
+    aaa :
+    '''
+    print("ESTOY DENTRO DE LLAMADA EN ASIGNACION")
+
+def p_bbb(p):
+    '''
+    bbb :
+    '''
+    print("ESTOY DENTRO DE EXPRESION EN ASIGNACION")
+
+def p_ccc(p):
+    '''
+    ccc :
+    '''
+    print("ESTOY DENTRO DE CTESTRING EN ASIGNACION")
+
 def p_checkID(p):
     '''
     checkID :
     '''
     id = p[-1]
+    print('ID EN ASIGNACION',p[-1])
     varExists = False
     global dirFunc
     global actualFunc
@@ -681,10 +730,27 @@ def p_nextexp(p):
 
 def p_llamada(p):
     '''
-    llamada : ID checkFunc cuadEra PARIZQ expresion llamaux PARDER PYC
-            | ID checkFunc cuadEra PARIZQ CTESTRING llamaux PARDER PYC
-            | ID checkFunc cuadEra PARIZQ llamada_esp llamaux PARDER PYC
+    llamada : ID checkFunc cuadEra PARIZQ guardaFondo llamaux verPars PARDER cuadGoSub quitaFondo PYC
             | ID checkFunc cuadEra PARIZQ PARDER PYC
+    '''
+
+def p_pycopc(p):
+    '''
+    pycopc : PYC
+           | empty
+    '''
+
+def p_llamaux(p):
+    '''
+    llamaux : expresion cuadPar nextparametro
+            | llamada_esp cuadPar nextparametro
+            | CTESTRING cuadPar nextparametro
+    '''
+
+def p_nextparametro(p):
+    '''
+    nextparametro : COMA llamaux
+                  | empty
     '''
 
 def p_checkFunc(p):
@@ -693,9 +759,7 @@ def p_checkFunc(p):
     '''
     print('------------------------', p[-1])
     existe = dirFunc.get(p[-1], -1) != -1
-    if existe:
-        pass
-    else:
+    if existe == False:
         sys.exit('Error: {} is not defined as a function'.format(p[-1]))
 
 def p_cuadEra(p):
@@ -704,7 +768,9 @@ def p_cuadEra(p):
     '''
     global listaCuadruplos
     global contCuadruplos
+    global funcACorrer
     funcACorrer = p[-2]
+    
     numLoci = dirFunc[funcACorrer]['locInt']
     numLocf = dirFunc[funcACorrer]['locFloat']
     numLocs = dirFunc[funcACorrer]['locString']
@@ -717,25 +783,162 @@ def p_cuadEra(p):
     numTempf = dirFunc[funcACorrer]['tempFloat']
     numTemps = dirFunc[funcACorrer]['tempString']
     numTempb = dirFunc[funcACorrer]['tempBool']
+    
     cuad = [contCuadruplos, 'era', numLoci, numLocf, numLocs, numLocb
                                  , numPari, numParf, numPars, numParb
                                  , numTempi, numTempf, numTemps, numTempb]
     listaCuadruplos.append(cuad)
     contCuadruplos += 1
+    print('Funca',funcACorrer)
 
-def p_llamaux(p):
+def p_cuadPar(p):
     '''
-    llamaux : COMA expresion nextparametro
-            | COMA llamada_esp nextparametro
-            | COMA CTESTRING nextparametro
-            | empty
+    cuadPar :
     '''
+    global listaCuadruplos
+    global contCuadruplos
+    global pilaOperandos
+    global pilaTipos
+    global paramCounter
+    global funcACorrer
+    print('P[-1] de cuadPar',p[-1])
+    if p[-1] is None:
+        arg = pilaOperandos.pop()
+        argType = pilaTipos.pop()
+    else:
+        if(p[-1] == 'true' or p[-1] == 'false'):
+            arg = p[-1]
+            argType = 'bool'
+        else:
+            arg = p[-1]
+            argType = 'string'
 
-def p_nextparametro(p):
+    # funcACorrer = p[-5]
+    secuencia = dirFunc[funcACorrer]['secPars']
+    numPars = len(secuencia)
+    print('PARAM COUNTER',paramCounter)
+    print('NUMPARS',numPars)
+    if paramCounter+1 > numPars:
+        sys.exit('Error: The number of parameters on the call is incorrect')
+    if argType == 'int':
+        if secuencia[paramCounter] == 'i':
+            paramCounter += 1
+        else:
+            sys.exit('Error: {}\'s parameter number {} is not int'.format(funcACorrer,paramCounter+1))
+    elif argType == 'float':
+        if secuencia[paramCounter] == 'f':
+            paramCounter += 1
+        else:
+            sys.exit('Error: {}\'s parameter number {} is not float'.format(funcACorrer,paramCounter+1))
+    elif argType == 'string':
+        if secuencia[paramCounter] == 's':
+            paramCounter += 1
+        else:
+            sys.exit('Error: {}\'s parameter number {} is not string'.format(funcACorrer,paramCounter+1))
+    elif argType == 'bool':
+        if secuencia[paramCounter] == 'b':
+            paramCounter += 1
+        else:
+            sys.exit('Error: {}\'s parameter number {} is not bool'.format(funcACorrer,paramCounter+1))
+    parNum = 'par'+str(paramCounter)
+    cuad = [contCuadruplos, 'par', arg, parNum]
+    listaCuadruplos.append(cuad)
+    contCuadruplos += 1
+
+
+def p_verPars(p):
     '''
-    nextparametro : llamaux
-                  | empty
+    verPars :
     '''
+    global paramCounter
+    global funcACorrer
+    # funcACorrer = p[-7]
+    secuencia = dirFunc[funcACorrer]['secPars']
+    print('PARAM COUNTER',paramCounter)
+    print('NUMPARS', len(secuencia))
+    if paramCounter != len(secuencia):
+        sys.exit('Error: {} needs to have {} parameters'.format(funcACorrer,len(secuencia)))
+    else:
+        #Reiniciamos paramCounter para la siguiente llamada
+        paramCounter = 0
+
+def p_cuadGoSub(p):
+    '''
+    cuadGoSub :
+    '''
+    global listaCuadruplos
+    global contCuadruplos
+    global funcACorrer
+    global globInt
+    global globFloat
+    global globString
+    global globBool
+    global tempInt
+    global tempFloat
+    global tempString
+    global tempBool
+    # funcACorrer = p[-9]
+    dirDeFunc = dirFunc[funcACorrer]['dirFunc']
+    cuad = [contCuadruplos, 'gosub', funcACorrer, dirDeFunc]
+    listaCuadruplos.append(cuad)
+    contCuadruplos += 1
+    #Si la función no es void tiene que guardar lo que retorna en una variable
+    if(dirFunc[funcACorrer]['type'] != 'void'):
+        tFunc = dirFunc[funcACorrer]['type']
+        #Si aún no existe una variable de la función
+        #Si ya existe no es necesario crear la variable, solo hacer el cuadruplo
+        if(dirFunc[progName]['vars'].get(funcACorrer,-1) == -1):
+            #Tipo de la función
+            if tFunc == 'int':
+                dirFunc[progName]['vars'][funcACorrer] = {'type':tFunc, 'dimensions':0, 'dirVar':globInt}
+                dirFunc[progName]['globInt'] += 1
+                globInt+=1
+            elif tFunc == 'float':
+                dirFunc[progName]['vars'][funcACorrer] = {'type':tFunc, 'dimensions':0, 'dirVar':globFloat}
+                dirFunc[progName]['globFloat'] += 1
+                globFloat+=1
+            elif tFunc == 'string':
+                dirFunc[progName]['vars'][funcACorrer] = {'type':tFunc, 'dimensions':0, 'dirVar':globString}
+                dirFunc[progName]['globString'] += 1
+                globString+=1
+            elif tFunc == 'bool':
+                dirFunc[progName]['vars'][funcACorrer] = {'type':tFunc, 'dimensions':0, 'dirVar':globBool}
+                dirFunc[progName]['globBool'] += 1
+                globBool+=1
+        
+        direc = dirFunc[progName]['vars'][funcACorrer]['dirVar']
+        if tFunc == 'int':
+            cuad = [contCuadruplos, '=', direc, tempInt]
+            listaCuadruplos.append(cuad)
+            pilaOperandos.append(tempInt)
+            pilaTipos.append('int')
+            dirFunc[actualFunc]['tempInt'] += 1
+            contCuadruplos += 1
+            tempInt += 1
+        elif tFunc == 'float':
+            cuad = [contCuadruplos, '=', direc, tempFloat]
+            listaCuadruplos.append(cuad)
+            pilaOperandos.append(tempFloat)
+            pilaTipos.append('float')
+            dirFunc[actualFunc]['tempFloat'] += 1
+            contCuadruplos += 1
+            tempFloat += 1
+        elif tFunc == 'string':
+            cuad = [contCuadruplos, '=', direc, tempString]
+            listaCuadruplos.append(cuad)
+            pilaOperandos.append(tempString)
+            pilaTipos.append('string')
+            dirFunc[actualFunc]['tempString'] += 1
+            contCuadruplos += 1
+            tempString += 1
+        elif tFunc == 'bool':
+            cuad = [contCuadruplos, '=', direc, tempBool]
+            listaCuadruplos.append(cuad)
+            pilaOperandos.append(tempBool)
+            pilaTipos.append('bool')
+            dirFunc[actualFunc]['tempBool'] += 1
+            contCuadruplos += 1
+            tempBool += 1
 
 def p_condicion(p):
     '''
@@ -924,12 +1127,40 @@ def p_estReturn(p):
 
 def p_retAux(p):
     '''
-    retAux : expresion
-           | CTESTRING
-           | true
-           | false
-           | llamada
+    retAux : expresion cuadRet
+           | CTESTRING cuadRet
+           | true cuadRet
+           | false cuadRet
+           | llamada cuadRet
     '''
+
+def p_cuadRet(p):
+    '''
+    cuadRet :
+    '''
+    global listaCuadruplos
+    global contCuadruplos
+    global pilaOperandos
+    global pilaTipos
+    pasado = p[-1]
+    #Es una expresión
+    if(pasado is None):
+        retVal = pilaOperandos.pop()
+        retType = pilaTipos.pop()
+    elif(isinstance(pasado, str)):
+        if(pasado == 'true' or pasado == 'false'):
+            retVal = pasado
+            retType = 'bool'
+        else:
+            retVal = pasado
+            retType = 'string'
+    if(retType != dirFunc[actualFunc]['type']):
+        sys.exit('Error: {} function has to return {} value'.format(actualFunc, dirFunc[actualFunc]['type']))
+    else:
+        cuad = [contCuadruplos, 'ret', retVal]
+        listaCuadruplos.append(cuad)
+        contCuadruplos += 1
+
 
 def p_expresion(p):
     '''
@@ -994,7 +1225,7 @@ def p_factor(p):
            | false pushOT
            | ID checkID pushOT
            | llamada_esp pushOT
-           | llamada pushOT
+           | llamada pushOTLlam
     '''
 
 def p_guardaFondo(p):
@@ -1068,6 +1299,9 @@ def p_pushOT(p):
         if varLocal:
             pilaOperandos.append(dirFunc[actualFunc]['vars'][operando]['dirVar'])
         else:
+            # for c in listaCuadruplos:
+            #     print(c)
+            # print(pilaOperandos)
             pilaOperandos.append(dirFunc[progName]['vars'][operando]['dirVar'])
         
 
@@ -1093,6 +1327,11 @@ def p_pushOT(p):
             else:
                 pilaTipos.append(dirFunc[progName]['vars'][operando]['type'])
 
+def p_pushOTLlam(p):
+    '''
+    pushOTLlam :
+    '''
+
 def p_cuadTerm(p):
     '''
     cuadTerm :
@@ -1103,6 +1342,7 @@ def p_cuadTerm(p):
     global contCuadruplos
     global tempInt
     global tempFloat
+    global pilaTipos
     # print("Poper dentro de cuadTerm",poper)
     # try:
     #     print("Ultimo elemento de poper",poper[-1])
@@ -1110,8 +1350,8 @@ def p_cuadTerm(p):
     #     print("No hay último elemento", poper)
     hayOp = len(poper) >= 1
     # print(hayOp)
-    print(pilaOperandos)
-    print(pilaTipos)
+    print('PilaO cuadTerm',pilaOperandos)
+    print('PilaT cuadTerm',pilaTipos)
     if (hayOp and (poper[-1] == '+' or poper[-1] == '-')):
         rightOp = pilaOperandos.pop()
         right_type = pilaTipos.pop()
@@ -1160,8 +1400,8 @@ def p_cuadFactor(p):
     #     print("No hay último elemento", poper)
     hayOp = len(poper) >= 1
     # print(hayOp)
-    print(pilaOperandos)
-    print(pilaTipos)
+    print('PilaO cuadFactor',pilaOperandos)
+    print('PilaT cuadFactor',pilaTipos)
     if (hayOp and (poper[-1] == '*' or poper[-1] == '/')):
         rightOp = pilaOperandos.pop()
         right_type = pilaTipos.pop()

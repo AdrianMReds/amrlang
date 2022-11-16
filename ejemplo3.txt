@@ -12,19 +12,12 @@ var int w;
 }
 
 int func suma(int a, int b){
-    imprimir();
-    return(1+2);
+    imprimir("Hola");
+    return(1+suma(2,1););
 }
 
-func main()
-{
-    i = 2 + (2 - (2*2));
-    f = (5/2)+5;
-    read(z);
-    write(z);
-    for(0:2){
-        write(2);
-    }
+func main(){
+    i = suma(2,1);;
 }
 
 end;

@@ -1,26 +1,30 @@
 program ejemplo3;
-var int i, y, z, v;
+var int i, z;
 var float f;
 var string st;
 var bool b;
 
-void func imprimir(string s){
-    write(s);
+void func imprimir(string s)
+var int w;
+{
+    w = 8 + (6 * 2);
+    w = w + 1;
+}
+
+int func suma(int a, int b){
+    imprimir();
+    return(1+2);
 }
 
 func main()
 {
-    i = 5 + 6;
-    y = i - 2;
-    z = 3 * 8;
-    f = 2 * 1.5;
-    if(z>y){
-        write("Hey");
-        for(0:2){
-            write(i);
-        }
+    i = 2 + (2 - (2*2));
+    f = (5/2)+5;
+    read(z);
+    write(z);
+    for(0:2){
+        write(2);
     }
-
 }
 
 end;

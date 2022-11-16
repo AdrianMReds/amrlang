@@ -5,11 +5,7 @@
 #Pendiente
 #Se tiene que agregar asignación de índices de arreglos y matrices
 #Guardar el tamaño de listas y matrices cuando se guarda la variable
-#Cuadruplos de llamadas especiales y de expresiones con parentesis
-#Cuadruplos de read
-#Cuadruplo de gotomain al principio del programa
-#Agregar cuantos variables, parametros y temporales por tipo a las funciones
-#Asignar mismo código de dirección a las constantes
+#Cuadruplos de llamadas especiales
 
 #Cambios:
 
@@ -38,9 +34,9 @@ contCuadruplos = 1
 poper = []
 pilaOperandos = []
 pilaTipos = []
-avail = ['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10'
-         , 't11', 't12', 't13', 't14', 't15', 't16', 't17', 't18', 't19', 't20', 't21', 't22', 't23', 't24', 't25', 't26', 't27']
-contAvail = 0
+# avail = ['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10'
+#          , 't11', 't12', 't13', 't14', 't15', 't16', 't17', 't18', 't19', 't20', 't21', 't22', 't23', 't24', 't25', 't26', 't27']
+# contAvail = 0
 pilaSaltos = []
 listaConstantes = {}
 
@@ -58,21 +54,38 @@ globString = globStringInf
 globBoolInf = 4000
 globBool = globBoolInf
 
+#locales
+#Int 5000-5999
+locIntInf = 5000 #Límite inferior de memoria
+locInt = locIntInf
+#Float 6000-6999
+locFloatInf = 6000
+locFloat = locFloatInf
+#String 7000-7999
+locStringInf = 7000
+locString = locStringInf
+#Bool 8000-8999
+locBoolInf = 8000
+locBool = locBoolInf
+#Pointer 9000-9999
+locPointerInf = 9000
+locPointer = locPointerInf
+
 #Temporales
 #Int 5000-5999
-tempIntInf = 5000 #Límite inferior de memoria
+tempIntInf = 10000 #Límite inferior de memoria
 tempInt = tempIntInf
 #Float 6000-6999
-tempFloatInf = 6000
+tempFloatInf = 11000
 tempFloat = tempFloatInf
 #String 7000-7999
-tempStringInf = 7000
+tempStringInf = 12000
 tempString = tempStringInf
 #Bool 8000-8999
-tempBoolInf = 8000
+tempBoolInf = 13000
 tempBool = tempBoolInf
 #Pointer 9000-9999
-tempPointerInf = 9000
+tempPointerInf = 14000
 tempPointer = tempPointerInf
 
 #Constantes
@@ -88,7 +101,7 @@ tempPointer = tempPointerInf
 # #Bool 13000-13999
 # constBoolInf = 13000
 # constBool = constBoolInf
-ctesInf = 10000
+ctesInf = 15000
 ctes = ctesInf
 
 def fill(numCuad, contenido):
@@ -238,7 +251,9 @@ def p_cuadGotoMain(p):
     '''
     global listaCuadruplos
     global contCuadruplos
-    cuad = ['']
+    cuad = [contCuadruplos, 'goto']
+    listaCuadruplos.append(cuad)
+    contCuadruplos += 1
 
 def p_cuadEnd(p):
     '''
@@ -256,7 +271,9 @@ def p_auxprograma(p):
     global progName
     progName = str(p[-1])
     t = 'program'
-    dirFunc[progName] = {'type': t, 'vars' : {}, 'dirVar': None}
+    dirFunc[progName] = {'type': t, 'globInt':0, 'globFloat':0, 'globString':0, 'globBool':0
+                       ,'tempInt':0, 'tempFloat':0, 'tempString':0, 'tempBool':0
+                       , 'vars' : {}}
     global actualFunc
     actualFunc = progName
 
@@ -295,10 +312,10 @@ def p_agregaVar(p):
     '''
     agregaVar :
     '''
-    global tempInt
-    global tempFloat
-    global tempString
-    global tempBool
+    global locInt
+    global locFloat
+    global locString
+    global locBool
     global globInt
     global globFloat
     global globString
@@ -311,30 +328,93 @@ def p_agregaVar(p):
             if actualFunc == progName:
                 direc = globInt
                 globInt += 1
+                dirFunc[actualFunc]['globInt'] += 1
             else:
-                direc = tempInt
-                tempInt+=1
+                direc = locInt
+                locInt+=1
+                dirFunc[actualFunc]['locInt'] += 1
         elif tipoVar == 'float':
             if actualFunc == progName:
                 direc = globFloat
                 globFloat += 1
+                dirFunc[actualFunc]['globFloat'] += 1
             else:
-                direc = tempFloat
-                tempFloat+=1
+                direc = locFloat
+                locFloat+=1
+                dirFunc[actualFunc]['locFloat'] += 1
         elif tipoVar == 'string':
             if actualFunc == progName:
                 direc = globString
                 globString += 1
+                dirFunc[actualFunc]['globString'] += 1
             else:
-                direc = tempString
-                tempString+=1
+                direc = locString
+                locString+=1
+                dirFunc[actualFunc]['locString'] += 1
         elif tipoVar == 'bool':
             if actualFunc == progName:
                 direc = globBool
                 globBool += 1
+                dirFunc[actualFunc]['globBool'] += 1
             else:
-                direc = tempBool
-                tempBool+=1
+                direc = locBool
+                locBool+=1
+                dirFunc[actualFunc]['locBool'] += 1
+
+        #Simple variable
+        if p[-1]!=']':
+            #Name of var (ID)
+            nv = p[-1]
+            dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':0, 'dirVar' : direc}
+        else:
+            print('p de arreglo o matriz',p)
+            #Array
+            if p[-3] != ',':
+                #Name of var (ID)
+                nv = p[-4]
+                dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':1, 'dirVar' : direc}
+            #Matrix
+            else:
+                #Name of var (ID)
+                nv = p[-6]
+                dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':2, 'dirVar' : direc}
+
+def p_agregaPar(p):
+    '''
+    agregaPar :
+    '''
+    global locInt
+    global locFloat
+    global locString
+    global locBool
+    global globInt
+    global globFloat
+    global globString
+    global globBool
+
+    e = dirFunc.get(actualFunc,0)
+    if e!=0:
+        direc = None
+        if tipoVar == 'int':
+            direc = locInt
+            locInt+=1
+            dirFunc[actualFunc]['parInt'] += 1
+            dirFunc[actualFunc]['secPars'] += 'i'
+        elif tipoVar == 'float':
+            direc = locFloat
+            locFloat+=1
+            dirFunc[actualFunc]['parFloat'] += 1
+            dirFunc[actualFunc]['secPars'] += 'f'
+        elif tipoVar == 'string':
+            direc = locString
+            locString+=1
+            dirFunc[actualFunc]['parString'] += 1
+            dirFunc[actualFunc]['secPars'] += 's'
+        elif tipoVar == 'bool':
+            direc = locBool
+            locBool+=1
+            dirFunc[actualFunc]['parBool'] += 1
+            dirFunc[actualFunc]['secPars'] += 'b'
 
         #Simple variable
         if p[-1]!=']':
@@ -370,8 +450,14 @@ def p_guardarTipoFunc(p):
 
 def p_mainfunction(p):
     '''
-    mainfunction : func main agregaFunc PARIZQ PARDER bloque
+    mainfunction : func main agregaFunc PARIZQ PARDER fillMain bloque
     '''
+
+def p_fillMain(p):
+    '''
+    fillMain :
+    '''
+    fill(1,contCuadruplos)
 
 def p_bloque(p):
     '''
@@ -395,9 +481,25 @@ def p_type(p):
 
 def p_function(p):
     '''
-    function : ftype func ID agregaFunc PARIZQ funcaux PARDER varsaux bloque
-             | ftype func ID agregaFunc PARIZQ empty PARDER varsaux bloque
+    function : ftype func ID agregaFunc PARIZQ funcaux PARDER varsaux agregaDir bloque cuadEndf
+             | ftype func ID agregaFunc PARIZQ empty PARDER varsaux agregaDir bloque cuadEndf
     '''
+
+def p_agregaDir(p):
+    '''
+    agregaDir :
+    '''
+    dirFunc[actualFunc]['dirFunc'] = contCuadruplos
+
+def p_cuadEndf(p):
+    '''
+    cuadEndf :
+    '''
+    global contCuadruplos
+    global listaCuadruplos
+    cuad = [contCuadruplos, 'endfunc']
+    listaCuadruplos.append(cuad)
+    contCuadruplos += 1
 
 def p_agregaFunc(p):
     '''
@@ -410,7 +512,11 @@ def p_agregaFunc(p):
     else:
         t = tipoFunc
         actualFunc = p[-1]
-        dirFunc[actualFunc] = {'type': t, 'vars' : {}, 'dirFunc' : None}
+        dirFunc[actualFunc] = {'type': t, 'dirFunc': None, 'locInt':0
+                             , 'locFloat':0, 'locString':0, 'locBool':0
+                             , 'parInt':0, 'parFloat':0, 'parString':0
+                             , 'parBool':0, 'tempInt':0, 'tempFloat':0, 'tempString':0
+                             , 'tempBool':0, 'secPars':'', 'vars' : {}}
 
 #Function types
 def p_ftype(p):
@@ -424,14 +530,14 @@ def p_ftype(p):
 
 def p_funcaux(p):
     '''
-    funcaux : type ID agregaVar masParam
-            | type ID CORIZQ CTEINT CORDER agregaVar masParam
-            | type ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar masParam
+    funcaux : type ID agregaPar masParam
+            | type ID CORIZQ CTEINT CORDER agregaPar masParam
+            | type ID CORIZQ CTEINT COMA CTEINT CORDER agregaPar masParam
     '''
 
 def p_masParam(p):
     '''
-    masParam : funcaux
+    masParam : COMA funcaux
              | empty
     '''
 
@@ -548,12 +654,14 @@ def p_cuadEsc(p):
     global pilaOperandos
     global ctes
     global listaConstantes
+    global pilaTipos
     #Lo que se va a escribir
     aesc = None
-    print('En el write',p[-1])
+    # print('En el write',p[-1])
     #Expresion o llamada
     if(p[-1] is None):
         aesc = pilaOperandos.pop()
+        pilaTipos.pop()
     #String
     elif(isinstance(p[-1], str)):
         # aesc = p[-1].strip('"')
@@ -573,20 +681,59 @@ def p_nextexp(p):
 
 def p_llamada(p):
     '''
-    llamada : ID PARIZQ expresion llamaux PARDER
-            | ID PARIZQ llamada_esp llamaux PARDER
-            | ID PARIZQ PARDER
+    llamada : ID checkFunc cuadEra PARIZQ expresion llamaux PARDER PYC
+            | ID checkFunc cuadEra PARIZQ CTESTRING llamaux PARDER PYC
+            | ID checkFunc cuadEra PARIZQ llamada_esp llamaux PARDER PYC
+            | ID checkFunc cuadEra PARIZQ PARDER PYC
     '''
+
+def p_checkFunc(p):
+    '''
+    checkFunc :
+    '''
+    print('------------------------', p[-1])
+    existe = dirFunc.get(p[-1], -1) != -1
+    if existe:
+        pass
+    else:
+        sys.exit('Error: {} is not defined as a function'.format(p[-1]))
+
+def p_cuadEra(p):
+    '''
+    cuadEra :
+    '''
+    global listaCuadruplos
+    global contCuadruplos
+    funcACorrer = p[-2]
+    numLoci = dirFunc[funcACorrer]['locInt']
+    numLocf = dirFunc[funcACorrer]['locFloat']
+    numLocs = dirFunc[funcACorrer]['locString']
+    numLocb = dirFunc[funcACorrer]['locBool']
+    numPari = dirFunc[funcACorrer]['parInt']
+    numParf = dirFunc[funcACorrer]['parFloat']
+    numPars = dirFunc[funcACorrer]['parString']
+    numParb = dirFunc[funcACorrer]['parBool']
+    numTempi = dirFunc[funcACorrer]['tempInt']
+    numTempf = dirFunc[funcACorrer]['tempFloat']
+    numTemps = dirFunc[funcACorrer]['tempString']
+    numTempb = dirFunc[funcACorrer]['tempBool']
+    cuad = [contCuadruplos, 'era', numLoci, numLocf, numLocs, numLocb
+                                 , numPari, numParf, numPars, numParb
+                                 , numTempi, numTempf, numTemps, numTempb]
+    listaCuadruplos.append(cuad)
+    contCuadruplos += 1
 
 def p_llamaux(p):
     '''
-    llamaux : expresion nextparametro
-            | llamada_esp nextparametro
+    llamaux : COMA expresion nextparametro
+            | COMA llamada_esp nextparametro
+            | COMA CTESTRING nextparametro
+            | empty
     '''
 
 def p_nextparametro(p):
     '''
-    nextparametro : COMA llamaux
+    nextparametro : llamaux
                   | empty
     '''
 
@@ -670,6 +817,7 @@ def p_gotoFor(p):
     cuad = [contCuadruplos, '=', leftOp, tempInt]
     listaCuadruplos.append(cuad)
     pilaOperandos.append(tempInt)
+    dirFunc[actualFunc]['tempInt'] += 1
     contCuadruplos += 1
     tempInt += 1
 
@@ -677,6 +825,7 @@ def p_gotoFor(p):
     cuad = [contCuadruplos, '=', rightOp, tempInt]
     listaCuadruplos.append(cuad)
     pilaOperandos.append(tempInt)
+    dirFunc[actualFunc]['tempInt'] += 1
     contCuadruplos += 1
     tempInt += 1
 
@@ -694,6 +843,7 @@ def p_gotoFor(p):
     print("Generamos cuadruplo", cuad)
     listaCuadruplos.append(cuad)
     pilaOperandos.append(tempBool)
+    dirFunc[actualFunc]['tempBool'] += 1
     pilaTipos.append(typeList[typeResult])
     tempBool += 1
     contCuadruplos += 1
@@ -728,6 +878,7 @@ def p_returnFor(p):
     print("Generamos cuadruplo", cuad)
     listaCuadruplos.append(cuad)
     pilaOperandos.append(tempInt)
+    dirFunc[actualFunc]['tempInt'] += 1
     pilaTipos.append('int')
     tempInt += 1
     contCuadruplos += 1
@@ -751,8 +902,20 @@ def p_returnFor(p):
 
 def p_lectura(p):
     '''
-    lectura : read PARIZQ ID checkID PARDER PYC
+    lectura : read PARIZQ ID checkID cuadRead PARDER PYC
     '''
+
+def p_cuadRead(p):
+    '''
+    cuadRead :
+    '''
+    global listaCuadruplos
+    global contCuadruplos
+    aleer = p[-2]
+    d = dirFunc[actualFunc]['vars'][aleer]['dirVar']
+    cuad = [contCuadruplos,'read',d]
+    listaCuadruplos.append(cuad)
+    contCuadruplos += 1
 
 def p_estReturn(p):
     '''
@@ -824,7 +987,7 @@ def p_factor(p):
     #Agregar representante de fondo falso
     #Agregar un operador que no use 
     '''
-    factor : PARIZQ expresion PARDER
+    factor : PARIZQ guardaFondo expresion PARDER quitaFondo
            | CTEINT pushOT
            | CTEFLOAT pushOT
            | true pushOT
@@ -833,6 +996,21 @@ def p_factor(p):
            | llamada_esp pushOT
            | llamada pushOT
     '''
+
+def p_guardaFondo(p):
+    '''
+    guardaFondo :
+    '''
+    global poper
+    poper.append('?')
+
+def p_quitaFondo(p):
+    '''
+    quitaFondo :
+    '''
+    global poper
+    # print('Qutifondo',poper[-1])
+    poper.pop()
 
 def p_llamada_esp(p):
     '''
@@ -948,6 +1126,7 @@ def p_cuadTerm(p):
                 print("Generamos cuadruplo", cuad)
                 listaCuadruplos.append(cuad)
                 pilaOperandos.append(tempInt)
+                dirFunc[actualFunc]['tempInt'] += 1
                 pilaTipos.append(typeList[typeResult])
                 tempInt += 1
                 contCuadruplos += 1
@@ -957,6 +1136,7 @@ def p_cuadTerm(p):
                 print("Generamos cuadruplo", cuad)
                 listaCuadruplos.append(cuad)
                 pilaOperandos.append(tempFloat)
+                dirFunc[actualFunc]['tempFloat'] += 1
                 pilaTipos.append(typeList[typeResult])
                 tempFloat += 1
                 contCuadruplos += 1
@@ -995,6 +1175,7 @@ def p_cuadFactor(p):
                 print("Generamos cuadruplo", cuad)
                 listaCuadruplos.append(cuad)
                 pilaOperandos.append(tempInt)
+                dirFunc[actualFunc]['tempInt'] += 1
                 pilaTipos.append(typeList[typeResult])
                 tempInt += 1
                 contCuadruplos += 1
@@ -1003,6 +1184,7 @@ def p_cuadFactor(p):
                 print("Generamos cuadruplo", cuad)
                 listaCuadruplos.append(cuad)
                 pilaOperandos.append(tempFloat)
+                dirFunc[actualFunc]['tempFloat'] += 1
                 pilaTipos.append(typeList[typeResult])
                 tempFloat += 1
                 contCuadruplos += 1
@@ -1044,6 +1226,7 @@ def p_cuadArit(p):
             print("Generamos cuadruplo", cuad)
             listaCuadruplos.append(cuad)
             pilaOperandos.append(tempBool)
+            dirFunc[actualFunc]['tempBool'] += 1
             pilaTipos.append(typeList[typeResult])
             tempBool += 1
             contCuadruplos += 1
@@ -1128,8 +1311,11 @@ parser.parse(fileContent)
 funcs = list(dirFunc)
 
 for f in funcs:
+    attrs = list(dirFunc[f])
     print(f)
-    print(dirFunc[f],'\n')
+    # print(dirFunc[f],'\n')
+    for a in attrs:
+        print('    ',a,dirFunc[f][a])
 
 print('Pila operandos\n',pilaOperandos)
 print('Pila Tipos\n', pilaTipos)

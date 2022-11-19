@@ -1,11 +1,16 @@
 #Adrián Montemayor Rojas
 #A01283139
 
+
 #Pendiente y cambios
 #Pendiente
 #Se tiene que agregar asignación de índices de arreglos y matrices
 #Guardar el tamaño de listas y matrices cuando se guarda la variable
 #Cuadruplos de llamadas especiales
+
+#En la máquina virtual va a haber una pila por cada loc y temp por cada tipo
+#Las variables globales se envían como una lista estática
+#Las constantes se envían como una lista estática
 
 #Cambios:
 
@@ -14,6 +19,7 @@ import ply.yacc as yacc
 import numpy as np
 import sys
 from funcionesCompilacion import *
+from linkedListComp import *
 
 
 # -1 = error
@@ -55,55 +61,55 @@ globString = globStringInf
 #Bool 4000-4999
 globBoolInf = 4000
 globBool = globBoolInf
+#Global lists
+#ListInt 1000-1999
+globListIntInf = 5000 #Límite inferior de memoria
+globListInt = globIntInf
+#ListFloat 2000-2999
+globListFloatInf = 6000
+globListFloat = globFloatInf
+#ListString 3000-3999
+globListStringInf = 7000
+globListString = globStringInf
+#ListBool 4000-4999
+globListBoolInf = 5000
+globListBool = globBoolInf
 
 #locales
 #Int 5000-5999
-locIntInf = 5000 #Límite inferior de memoria
+locIntInf = 6000 #Límite inferior de memoria
 locInt = locIntInf
 #Float 6000-6999
-locFloatInf = 6000
+locFloatInf = 7000
 locFloat = locFloatInf
 #String 7000-7999
-locStringInf = 7000
+locStringInf = 8000
 locString = locStringInf
 #Bool 8000-8999
-locBoolInf = 8000
+locBoolInf = 9000
 locBool = locBoolInf
 #Pointer 9000-9999
-locPointerInf = 9000
+locPointerInf = 10000
 locPointer = locPointerInf
 
 #Temporales
 #Int 5000-5999
-tempIntInf = 10000 #Límite inferior de memoria
+tempIntInf = 11000 #Límite inferior de memoria
 tempInt = tempIntInf
 #Float 6000-6999
-tempFloatInf = 11000
+tempFloatInf = 12000
 tempFloat = tempFloatInf
 #String 7000-7999
-tempStringInf = 12000
+tempStringInf = 13000
 tempString = tempStringInf
 #Bool 8000-8999
-tempBoolInf = 13000
+tempBoolInf = 14000
 tempBool = tempBoolInf
 #Pointer 9000-9999
-tempPointerInf = 14000
+tempPointerInf = 15000
 tempPointer = tempPointerInf
 
-#Constantes
-# #Int 10000-10999
-# constIntInf = 10000 #Límite inferior de memoria
-# constInt = constIntInf
-# #Float 11000-11999
-# constFloatInf = 11000
-# constFloat = constFloatInf
-# #String 12000-12999
-# constStringInf = 12000
-# constString = constStringInf
-# #Bool 13000-13999
-# constBoolInf = 13000
-# constBool = constBoolInf
-ctesInf = 15000
+ctesInf = 16000
 ctes = ctesInf
 
 def fill(numCuad, contenido):
@@ -284,7 +290,7 @@ def p_auxprograma(p):
     global progName
     progName = str(p[-1])
     t = 'program'
-    dirFunc[progName] = {'type': t, 'globInt':0, 'globFloat':0, 'globString':0, 'globBool':0
+    dirFunc[progName] = {'type': t, 'globInt':0, 'globFloat':0, 'globString':0, 'globBool':0, 'globListInt':0, 'globListFloat':0, 'globListString':0, 'globListBool':0
                        ,'tempInt':0, 'tempFloat':0, 'tempString':0, 'tempBool':0
                        , 'vars' : {}}
     global actualFunc
@@ -378,19 +384,132 @@ def p_agregaVar(p):
         if p[-1]!=']':
             #Name of var (ID)
             nv = p[-1]
-            dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':0, 'dirVar' : direc}
+            dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':0, 'dirVar' : direc, 'size':1}
         else:
-            print('p de arreglo o matriz',p)
+            # print('p de arreglo o matriz',p)
             #Array
             if p[-3] != ',':
                 #Name of var (ID)
                 nv = p[-4]
                 dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':1, 'dirVar' : direc}
+                # ID CORIZQ CTEINT CORDER agregaVar nextvar
+                # ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar nextvar
+                inf = 0
+                sup = p[-2]
+                dim = 1
+                r = 1
+                r = (sup+1)*r
+                m0 = r
+                dirFunc[actualFunc]['vars'][nv]['size'] = m0
+                # print('m0',r)
+                offset = 0
+                n = Node(inf, sup, 0)
+                ll = LinkedList(n)
+                dirFunc[actualFunc]['vars'][nv]['llDims'] = ll
+                dirFunc[actualFunc]['vars'][nv]['llDims'].printList()
+
+                for x in range(m0-1):
+                    direc = None
+                    if tipoVar == 'int':
+                        if actualFunc == progName:
+                            direc = globInt
+                            globInt += 1
+                            dirFunc[actualFunc]['globInt'] += 1
+                        else:
+                            direc = locInt
+                            locInt+=1
+                            dirFunc[actualFunc]['locInt'] += 1
+                    elif tipoVar == 'float':
+                        if actualFunc == progName:
+                            direc = globFloat
+                            globFloat += 1
+                            dirFunc[actualFunc]['globFloat'] += 1
+                        else:
+                            direc = locFloat
+                            locFloat+=1
+                            dirFunc[actualFunc]['locFloat'] += 1
+                    elif tipoVar == 'string':
+                        if actualFunc == progName:
+                            direc = globString
+                            globString += 1
+                            dirFunc[actualFunc]['globString'] += 1
+                        else:
+                            direc = locString
+                            locString+=1
+                            dirFunc[actualFunc]['locString'] += 1
+                    elif tipoVar == 'bool':
+                        if actualFunc == progName:
+                            direc = globBool
+                            globBool += 1
+                            dirFunc[actualFunc]['globBool'] += 1
+                        else:
+                            direc = locBool
+                            locBool+=1
+                            dirFunc[actualFunc]['locBool'] += 1
             #Matrix
             else:
                 #Name of var (ID)
                 nv = p[-6]
                 dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':2, 'dirVar' : direc}
+                # ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar nextvar
+                inf = 0
+                sup = p[-4]
+                inf2 = 0
+                sup2 = p[-2]
+
+                r=1
+                dim = 1
+                r = sup+1
+                r = r *(sup2 + 1)
+                m0 = r
+                dirFunc[actualFunc]['vars'][nv]['size'] = r
+                # print('m0',m0)
+                m1 = m0/(sup+1)
+                m1 = int(m1)
+                n = Node(inf,sup,m1)
+                ll = LinkedList(n)
+                m2 = m1/(sup2+1)
+                ll.add(inf,sup2,0)
+                dirFunc[actualFunc]['vars'][nv]['llDims'] = ll
+                dirFunc[actualFunc]['vars'][nv]['llDims'].printList()
+                for x in range(m0-1):
+                    direc = None
+                    if tipoVar == 'int':
+                        if actualFunc == progName:
+                            direc = globInt
+                            globInt += 1
+                            dirFunc[actualFunc]['globInt'] += 1
+                        else:
+                            direc = locInt
+                            locInt+=1
+                            dirFunc[actualFunc]['locInt'] += 1
+                    elif tipoVar == 'float':
+                        if actualFunc == progName:
+                            direc = globFloat
+                            globFloat += 1
+                            dirFunc[actualFunc]['globFloat'] += 1
+                        else:
+                            direc = locFloat
+                            locFloat+=1
+                            dirFunc[actualFunc]['locFloat'] += 1
+                    elif tipoVar == 'string':
+                        if actualFunc == progName:
+                            direc = globString
+                            globString += 1
+                            dirFunc[actualFunc]['globString'] += 1
+                        else:
+                            direc = locString
+                            locString+=1
+                            dirFunc[actualFunc]['locString'] += 1
+                    elif tipoVar == 'bool':
+                        if actualFunc == progName:
+                            direc = globBool
+                            globBool += 1
+                            dirFunc[actualFunc]['globBool'] += 1
+                        else:
+                            direc = locBool
+                            locBool+=1
+                            dirFunc[actualFunc]['locBool'] += 1
 
 def p_agregaPar(p):
     '''
@@ -412,21 +531,25 @@ def p_agregaPar(p):
             direc = locInt
             locInt+=1
             dirFunc[actualFunc]['parInt'] += 1
+            dirFunc[actualFunc]['locInt'] += 1
             dirFunc[actualFunc]['secPars'] += 'i'
         elif tipoVar == 'float':
             direc = locFloat
             locFloat+=1
             dirFunc[actualFunc]['parFloat'] += 1
+            dirFunc[actualFunc]['locFloat'] += 1
             dirFunc[actualFunc]['secPars'] += 'f'
         elif tipoVar == 'string':
             direc = locString
             locString+=1
             dirFunc[actualFunc]['parString'] += 1
+            dirFunc[actualFunc]['locString'] += 1
             dirFunc[actualFunc]['secPars'] += 's'
         elif tipoVar == 'bool':
             direc = locBool
             locBool+=1
             dirFunc[actualFunc]['parBool'] += 1
+            dirFunc[actualFunc]['locBool'] += 1
             dirFunc[actualFunc]['secPars'] += 'b'
 
         #Simple variable
@@ -435,17 +558,94 @@ def p_agregaPar(p):
             nv = p[-1]
             dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':0, 'dirVar' : direc}
         else:
-            print('p de arreglo o matriz',p)
+            # print('p de arreglo o matriz',p)
             #Array
             if p[-3] != ',':
                 #Name of var (ID)
                 nv = p[-4]
                 dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':1, 'dirVar' : direc}
+                # ID CORIZQ CTEINT CORDER agregaPar nextvar
+                # ID CORIZQ CTEINT COMA CTEINT CORDER agregaPar nextvar
+                inf = 0
+                sup = p[-2]
+                dim = 1
+                r = 1
+                r = (sup+1)*r
+                m0 = r
+                dirFunc[actualFunc]['vars'][nv]['size'] = m0
+                print('m0',m0)
+                offset = 0
+                n = Node(inf, sup, 0)
+                ll = LinkedList(n)
+                dirFunc[actualFunc]['vars'][nv]['llDims'] = ll
+                dirFunc[actualFunc]['vars'][nv]['llDims'].printList()
+
+                for x in range(m0-1):
+                    print('m0',m0)
+                    print('actualFunc',actualFunc)
+                    direc = None
+                    if tipoVar == 'int':
+                        direc = locInt
+                        locInt+=1
+                        dirFunc[actualFunc]['locInt'] += 1
+                    elif tipoVar == 'float':
+                        direc = locFloat
+                        locFloat+=1
+                        dirFunc[actualFunc]['locFloat'] += 1
+                    elif tipoVar == 'string':
+                        direc = locString
+                        locString+=1
+                        dirFunc[actualFunc]['locString'] += 1
+                    elif tipoVar == 'bool':
+                        direc = locBool
+                        locBool+=1
+                        dirFunc[actualFunc]['locBool'] += 1
             #Matrix
             else:
                 #Name of var (ID)
                 nv = p[-6]
                 dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':2, 'dirVar' : direc}
+                # ID CORIZQ CTEINT COMA CTEINT CORDER agregaVar nextvar
+                inf = 0
+                sup = p[-4]
+                inf2 = 0
+                sup2 = p[-2]
+
+                r=1
+                dim = 1
+                r = sup+1
+                r = r *(sup2 + 1)
+                m0 = r
+                dirFunc[actualFunc]['vars'][nv]['size'] = r
+                # print('m0',m0)
+                m1 = m0/(sup+1)
+                m1 = int(m1)
+                n = Node(inf,sup,m1)
+                ll = LinkedList(n)
+                m2 = m1/(sup2+1)
+                ll.add(inf,sup2,0)
+                dirFunc[actualFunc]['vars'][nv]['llDims'] = ll
+                dirFunc[actualFunc]['vars'][nv]['llDims'].printList()
+                for x in range(m0-1):
+                    print('m0',m0)
+                    print('actualFunc',actualFunc)
+                    direc = None
+                    if tipoVar == 'int':
+                        direc = locInt
+                        locInt+=1
+                        dirFunc[actualFunc]['locInt'] += 1
+                    elif tipoVar == 'float':
+                        direc = locFloat
+                        locFloat+=1
+                        dirFunc[actualFunc]['locFloat'] += 1
+                    elif tipoVar == 'string':
+                        direc = locString
+                        locString+=1
+                        dirFunc[actualFunc]['locString'] += 1
+                    elif tipoVar == 'bool':
+                        direc = locBool
+                        locBool+=1
+                        dirFunc[actualFunc]['locBool'] += 1
 
 def p_guardarTipoVar(p):
     '''
@@ -542,11 +742,11 @@ def p_agregaFunc(p):
     else:
         t = tipoFunc
         actualFunc = p[-1]
-        dirFunc[actualFunc] = {'type': t, 'dirFunc': None, 'locInt':0
-                             , 'locFloat':0, 'locString':0, 'locBool':0
-                             , 'parInt':0, 'parFloat':0, 'parString':0
-                             , 'parBool':0, 'tempInt':0, 'tempFloat':0, 'tempString':0
-                             , 'tempBool':0, 'secPars':'', 'vars' : {}}
+        dirFunc[actualFunc] = {'type': t, 'dirFunc': None
+                             , 'locInt':0, 'locFloat':0, 'locString':0, 'locBool':0
+                             , 'parInt':0, 'parFloat':0, 'parString':0, 'parBool':0, 'parListInt':0, 'parListFloat':0, 'parListString':0, 'parListBool':0
+                             , 'tempInt':0, 'tempFloat':0, 'tempString':0, 'tempBool':0
+                             , 'secPars':'', 'vars' : {}}
 
 #Function types
 def p_ftype(p):
@@ -575,7 +775,7 @@ def p_estatuto(p):
     '''
     estatuto : asignacion
              | escritura
-             | llamada
+             | llamada PYC
              | condicion
              | whileloop
              | forloop
@@ -730,8 +930,8 @@ def p_nextexp(p):
 
 def p_llamada(p):
     '''
-    llamada : ID checkFunc cuadEra PARIZQ guardaFondo llamaux verPars PARDER cuadGoSub quitaFondo PYC
-            | ID checkFunc cuadEra PARIZQ PARDER PYC
+    llamada : ID checkFunc cuadEra PARIZQ guardaFondo llamaux verPars PARDER cuadGoSub quitaFondo
+            | ID checkFunc cuadEra PARIZQ PARDER
     '''
 
 def p_pycopc(p):
@@ -1563,6 +1763,7 @@ print('Pila operadores\n', poper)
 print('Pila de saltos\n', pilaSaltos)
 print('Lista de constantes')
 consts = list(listaConstantes)
+# print('list(constantes)',consts)
 for co in consts:
     print(co,listaConstantes[co])
 print()

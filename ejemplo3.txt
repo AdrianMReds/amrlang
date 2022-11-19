@@ -1,23 +1,29 @@
 program ejemplo3;
 var int i, z;
 var float f;
-var string st;
+var string st, z[3];
 var bool b;
 
-void func imprimir(string s)
+
+void func imprimir(string s, string q[3])
 var int w;
 {
     w = 8 + (6 * 2);
     w = w + 1;
+    write(w);
 }
 
-int func suma(int a, int b){
-    imprimir("Hola");
-    return(1+suma(2,1););
+int func suma(int a, int b)
+var int mat[5,2];
+{
+    imprimir("Hola",z);
+    return(1+suma(2,1)*5);
 }
 
 func main(){
-    i = suma(2,1);;
+    i = suma(2,1)+1;
+
 }
 
 end;
+

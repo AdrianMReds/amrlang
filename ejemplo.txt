@@ -1,32 +1,33 @@
-program ejemplo;
+program patito;
+var int i,j,p;
+var int arreglo[10];
+var int matriz[2,5];
 
-void func uno(string s)
+int func fact(int j)
 var int i;
 {
-    for(0:i){
-        write(s);
+
+    i = p-j*2-j;
+    if(j == 1){
+        return(j);
+    }else{
+        return(j*fact(j-1));
     }
 }
 
-func main()
-var int a,b,c,e;
+void func inicia(int y)
+var int x;
 {
-    a = b+c;
-    while(a>b*c){
-        b = c+a;
-        if(c>a){
-            c = b + c;
-        }else{
-            a = b-c;
-        }
-    }
-    e = a+b;
-    write(a,b,c);
-    write("Hola");
-    for(0:8){
-        a = a + 1;
-        write(a);
+    x = 0;
+    while(x<11){
+        arreglo[x] = y*x;
+        x = x+1;
     }
 }
 
-end;
+func main(){
+    read(p);
+    j = p*2;
+    i = -1;
+    inicia(p*j-5)
+}

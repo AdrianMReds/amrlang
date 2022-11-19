@@ -1,0 +1,11 @@
+program ejemplo4;
+var int a, b, c;
+
+func main(){
+    a = 2;
+    b = 3;
+    c = a + b;
+    write(c);
+}
+
+end;

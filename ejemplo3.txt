@@ -1,28 +1,22 @@
 program ejemplo3;
-var int i, z;
-var float f;
-var string st, z[3];
-var bool b;
+var int x;
 
-
-void func imprimir(string s, string q[3])
-var int w;
-{
-    w = 8 + (6 * 2);
-    w = w + 1;
-    write(w);
+int func fib(int n){
+    if(n<2){
+        return(0);
+    }
+    if(n==2){
+        return(1);
+    }else{
+        return(fib(n-1)+fib(n-2)); 
+    }
 }
 
-int func suma(int a, int b)
-var int mat[5,2];
+func main()
 {
-    imprimir("Hola",z);
-    return(1+suma(2,1)*5);
-}
-
-func main(){
-    i = suma(2,1)+1;
-
+    x = 5;
+    x = fib(6);
+    write(x);
 }
 
 end;

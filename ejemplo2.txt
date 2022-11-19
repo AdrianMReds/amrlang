@@ -1,19 +1,33 @@
 program amr;
+var string opcion;
+var int num1, num2;
 
-func main()
-var int a, b, c, d, cont;
-var bool t;
-var string s;
-{
-    a = 0;
-    cont = 0;
-    for(0:6){
-        write(a);
-        a = a + 1;
-        for(0:cont){
-            write("Hola");
+int func suma(int a, int b){
+    return(a+b);
+}
+
+int func resta(int a, int b){
+    return(a-b);
+}
+
+func main(){
+    write("Escribe una opcion");
+    write("1. suma");
+    write("2. resta");
+    read(opcion);
+    while(opcion$"salir"){
+        if(opcion=="suma"){
+            read(num1);
+            read(num2);
+            write(suma(num1, num2));
+        }
+        if(opcion=="resta"){
+            read(num1);
+            read(num2);
+            write(resta(num1, num2));
         }
     }
 }
+
 
 end;

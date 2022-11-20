@@ -91,6 +91,16 @@ def ejecucion(pointer):
             # print(cuadruplos[cuadruplo[2]-1])
             adonde = cuadruplo[2]
             ejecucion(adonde)
+        # GOTOF -------------------------------------------------------
+        elif operador == 'gotof':
+            cond = cuadruplo[2]
+            dirCond = (cond//1000)*1000
+            cond = dicDir[dirCond][-1][cond-dirCond]
+            adonde = cuadruplo[3]
+            if(cond=='false'):
+                ejecucion(adonde)
+            else:
+                pointer += 1
         # ASIGNA -------------------------------------------------------
         elif operador == '=':
             asigna = cuadruplo[2]

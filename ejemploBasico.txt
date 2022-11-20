@@ -3,6 +3,9 @@ var int a, b, d;
 var float c;
 
 func main(){
+    if((2<10 && 5>3)||(8$6)){
+        write("Dentro del if");
+    }
     a = 3*3*3;
     b = 3*2;
     c = 5/9;

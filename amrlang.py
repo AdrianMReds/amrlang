@@ -1517,15 +1517,90 @@ def p_cuadRet(p):
 
 def p_expresion(p):
     '''
-    expresion : andExpresion
-              | andExpresion OR pushOper andExpresion
+    expresion : andExpresion cuadAnd
+              | andExpresion cuadAnd OR pushOper andExpresion cuadAnd
     '''
+
+def p_cuadAnd(p):
+    '''
+    cuadAnd :
+    '''
+
 
 def p_andExpresion(p):
     '''
-    andExpresion : relopExpresion
-                 | relopExpresion AND pushOper relopExpresion
+    andExpresion : relopExpresion cuadRelop
+                 | relopExpresion cuadRelop AND pushOper relopExpresion cuadRelop
     '''
+    global poper
+    global listaCuadruplos
+    global pilaOperandos
+    global contCuadruplos
+    global tempBool
+    # print("Poper dentro de cuadTerm",poper)
+    # try:
+    #     print("Ultimo elemento de poper",poper[-1])
+    # except:
+    #     print("No hay último elemento", poper)
+    hayOp = len(poper) >= 1
+    # print(hayOp)
+    print(pilaOperandos)
+    print(pilaTipos)
+    if (hayOp and (poper[-1] == '&&')):
+        rightOp = pilaOperandos.pop()
+        right_type = pilaTipos.pop()
+        leftOp = pilaOperandos.pop()
+        left_type = pilaTipos.pop()
+        operator = poper.pop()
+        typeResult = cuboSemantico(left_type, right_type, operator)
+        if typeResult != -1:
+            cuad = [contCuadruplos, operator, leftOp, rightOp, tempBool]
+            listaCuadruplos.append(cuad)
+            print("Generamos cuadruplo", cuad)
+            pilaOperandos.append(tempBool)
+            dirFunc[actualFunc]['tempBool'] += 1
+            pilaTipos.append(typeList[typeResult])
+            tempBool += 1
+            contCuadruplos += 1
+        else:
+            sys.exit("TypeError : {} and {} cannot use operator {}".format(left_type, right_type, operator))
+
+def p_cuadRelop(p):
+    '''
+    cuadRelop :
+    '''
+    global poper
+    global listaCuadruplos
+    global pilaOperandos
+    global contCuadruplos
+    global tempBool
+    # print("Poper dentro de cuadTerm",poper)
+    # try:
+    #     print("Ultimo elemento de poper",poper[-1])
+    # except:
+    #     print("No hay último elemento", poper)
+    hayOp = len(poper) >= 1
+    # print(hayOp)
+    print(pilaOperandos)
+    print(pilaTipos)
+    if (hayOp and (poper[-1] == '||')):
+        rightOp = pilaOperandos.pop()
+        right_type = pilaTipos.pop()
+        leftOp = pilaOperandos.pop()
+        left_type = pilaTipos.pop()
+        operator = poper.pop()
+        typeResult = cuboSemantico(left_type, right_type, operator)
+        if typeResult != -1:
+            cuad = [contCuadruplos, operator, leftOp, rightOp, tempBool]
+            listaCuadruplos.append(cuad)
+            print("Generamos cuadruplo", cuad)
+            pilaOperandos.append(tempBool)
+            dirFunc[actualFunc]['tempBool'] += 1
+            pilaTipos.append(typeList[typeResult])
+            tempBool += 1
+            contCuadruplos += 1
+        else:
+            sys.exit("TypeError : {} and {} cannot use operator {}".format(left_type, right_type, operator))
 
 def p_relopExpresion(p):
     '''

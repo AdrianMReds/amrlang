@@ -1,0 +1,15 @@
+program ejemplo4;
+var int a, b, d;
+var float c;
+
+func main(){
+    a = 3*3*3;
+    b = 3*2;
+    c = 5/9;
+    write("Escribe el valor de d");
+    read(d);
+    write("");
+    write(a,b,c,d);
+}
+
+end;

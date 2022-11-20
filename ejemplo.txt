@@ -28,6 +28,9 @@ var int x;
 func main(){
     read(p);
     j = p*2;
-    i = -1;
-    inicia(p*j-5)
+    i = 8;
+    inicia(p*j-5);
+    write(i);
 }
+
+end;

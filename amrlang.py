@@ -91,28 +91,25 @@ locString = locStringInf
 #Bool 8000-8999
 locBoolInf = 8000
 locBool = locBoolInf
-#Pointer 9000-9999
-locPointerInf = 9000
-locPointer = locPointerInf
 
 #Temporales
 #Int 5000-5999
-tempIntInf = 10000 #Límite inferior de memoria
+tempIntInf = 9000 #Límite inferior de memoria
 tempInt = tempIntInf
 #Float 6000-6999
-tempFloatInf = 11000
+tempFloatInf = 10000
 tempFloat = tempFloatInf
 #String 7000-7999
-tempStringInf = 12000
+tempStringInf = 11000
 tempString = tempStringInf
 #Bool 8000-8999
-tempBoolInf = 13000
+tempBoolInf = 12000
 tempBool = tempBoolInf
 #Pointer 9000-9999
-tempPointerInf = 14000
+tempPointerInf = 13000
 tempPointer = tempPointerInf
 
-ctesInf = 15000
+ctesInf = 14000
 ctes = ctesInf
 
 def fill(numCuad, contenido):
@@ -122,14 +119,17 @@ def fill(numCuad, contenido):
 def checkType(id):
     global actualFunc
     print(actualFunc)
-    varsInFunc = dirFunc[actualFunc]['vars']
+    if(dirFunc[actualFunc]['vars'].get(id,-1)!=-1):
+        varsInFunc = dirFunc[actualFunc]['vars']
+    else:
+        varsInFunc = dirFunc[progName]['vars']
     t = varsInFunc[id]['type']
     print("Type de {}".format(id), t)
     return t
 
 reservadas = ['program', 'var', 'func', 'main', 'int', 'float', 'string', 'bool',
               'write', 'if', 'else', 'while', 'for', 'read', 'void', 'end', 'length',
-              'max', 'min', 'avg', 'median', 'mode', 'variance', 'stdev', 'true', 'false', 'return']
+              'max', 'min', 'avg', 'median', 'mode', 'variance', 'stdev', 'graph','true', 'false', 'return']
 
 tokens = reservadas + ['ID', #NOMBRE DE VARIABLE O FUNCIÓN
                        'CTEINT', #CONSTANTE INT
@@ -199,6 +199,7 @@ def t_CTEFLOAT(t):
 
 def t_CTEINT(t):
     r'\d+'
+    # r'-?[0-9]\d*'
     t.value = int(t.value)
     return t
 
@@ -905,7 +906,10 @@ def p_pushOTAsig(p):
             print('operando', operando)
             aVerificar = pilaOperandos.pop()
             pilaTipos.pop()
-            lilist  = dirFunc[actualFunc]['vars'][operando]['llDims']
+            if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
+                lilist  = dirFunc[actualFunc]['vars'][operando]['llDims']
+            else:
+                lilist  = dirFunc[progName]['vars'][operando]['llDims']
             n = lilist.root
             inf = n.get_inf()
             sup = n.get_sup()
@@ -923,7 +927,10 @@ def p_pushOTAsig(p):
             tempInt += 1
 
             tx = pilaOperandos.pop()
-            dirB = dirFunc[actualFunc]['vars'][operando]['dirVar']
+            if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
+                dirB = dirFunc[actualFunc]['vars'][operando]['dirVar']
+            else:
+                dirB = dirFunc[progName]['vars'][operando]['dirVar']
 
             print('TX AJDKLAJFLAKSDJFÑLSAKDJFLKSDAJF', tx)
             print('DIRB AJASDLKFJSDAÑFLKJASLÑDKF', dirB)
@@ -933,7 +940,10 @@ def p_pushOTAsig(p):
             listaCuadruplos.append(cuad)
             print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempPointer)
-            tipoEnElPointer = dirFunc[actualFunc]['vars'][operando]['type']
+            if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
+                tipoEnElPointer = dirFunc[actualFunc]['vars'][operando]['type']
+            else:
+                tipoEnElPointer = dirFunc[progName]['vars'][operando]['type']
             print('METO EL TIPO POINTER #######################################', tipoEnElPointer)
             pilaTipos.append(tipoEnElPointer)
             contCuadruplos += 1
@@ -944,7 +954,10 @@ def p_pushOTAsig(p):
             operando = idParaLista
             aVerificar = pilaOperandos.pop()
             pilaTipos.pop()
-            lilist  = dirFunc[actualFunc]['vars'][operando]['llDims']
+            if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
+                lilist  = dirFunc[actualFunc]['vars'][operando]['llDims']
+            else:
+                lilist  = dirFunc[progName]['vars'][operando]['llDims']
             n1 = lilist.root
             inf = n1.get_inf()
             sup = n1.get_sup()
@@ -989,14 +1002,20 @@ def p_pushOTAsig(p):
             tempInt += 1
 
             ty = pilaOperandos.pop()
-            dirB = dirFunc[actualFunc]['vars'][operando]['dirVar']
+            if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
+                dirB = dirFunc[actualFunc]['vars'][operando]['dirVar']
+            else:
+                dirB = dirFunc[progName]['vars'][operando]['dirVar']
 
 
             cuad = [contCuadruplos, '+', ty, dirB, tempPointer]
             listaCuadruplos.append(cuad)
             print('Generamos cuadruplos',cuad)
             pilaOperandos.append(tempPointer)
-            tipoEnElPointer = dirFunc[actualFunc]['vars'][operando]['type']
+            if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
+                tipoEnElPointer = dirFunc[actualFunc]['vars'][operando]['type']
+            else:
+                tipoEnElPointer = dirFunc[progName]['vars'][operando]['type']
             pilaTipos.append(tipoEnElPointer)
             contCuadruplos += 1
             tempPointer += 1
@@ -1524,8 +1543,8 @@ def p_relopAux(p):
 
 def p_aritExpresion(p):
     '''
-    aritExpresion : term cuadTerm
-                  | term cuadTerm aritAux term cuadTerm
+    aritExpresion : term
+                  | term cuadTerm aritAux aritExpresion cuadTerm
     '''
 
 def p_aritAux(p):
@@ -1533,12 +1552,11 @@ def p_aritAux(p):
     aritAux : MAS pushOper
             | MENOS pushOper
     '''
-    print('ENTRE A + o -')
 
 def p_term(p):
     '''
     term : factor 
-         | factor cuadFactor termAux factor cuadFactor
+         | factor cuadFactor termAux term cuadFactor
     '''
 
 def p_termAux(p):
@@ -1590,8 +1608,6 @@ def p_checkIDfac(p):
                 break
     if varExists == False:
         sys.exit("Error: ID {} does not exist in the scope".format(id))
-    else:
-        idParaLista = id
 
 def p_guardaFondo(p):
     '''
@@ -1623,6 +1639,7 @@ def p_especiales(p):
                | mode
                | variance
                | stdev
+               | graph
     '''
 
 def p_pushOper(p):
@@ -1659,7 +1676,10 @@ def p_pushOT(p):
             print('operando', operando)
             aVerificar = pilaOperandos.pop()
             pilaTipos.pop()
-            lilist  = dirFunc[actualFunc]['vars'][operando]['llDims']
+            if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
+                lilist  = dirFunc[actualFunc]['vars'][operando]['llDims']
+            else:
+                lilist  = dirFunc[progName]['vars'][operando]['llDims']
             n = lilist.root
             inf = n.get_inf()
             sup = n.get_sup()
@@ -1679,7 +1699,10 @@ def p_pushOT(p):
             tempInt += 1
 
             tx = pilaOperandos.pop()
-            dirB = dirFunc[actualFunc]['vars'][operando]['dirVar']
+            if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
+                dirB = dirFunc[actualFunc]['vars'][operando]['dirVar']
+            else:
+                dirB = dirFunc[progName]['vars'][operando]['dirVar']
 
             print('TX AJDKLAJFLAKSDJFÑLSAKDJFLKSDAJF', tx)
             print('DIRB AJASDLKFJSDAÑFLKJASLÑDKF', dirB)
@@ -1688,7 +1711,10 @@ def p_pushOT(p):
             listaCuadruplos.append(cuad)
             print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempPointer)
-            tipoEnElPointer = dirFunc[actualFunc]['vars'][operando]['type']
+            if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
+                tipoEnElPointer = dirFunc[actualFunc]['vars'][operando]['type']
+            else:
+                tipoEnElPointer = dirFunc[progName]['vars'][operando]['type']
             pilaTipos.append(tipoEnElPointer)
             contCuadruplos += 1
             tempPointer += 1
@@ -1699,7 +1725,10 @@ def p_pushOT(p):
             operando = p[-7]
             aVerificar = pilaOperandos.pop()
             pilaTipos.pop()
-            lilist  = dirFunc[actualFunc]['vars'][operando]['llDims']
+            if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
+                lilist  = dirFunc[actualFunc]['vars'][operando]['llDims']
+            else:
+                lilist  = dirFunc[progName]['vars'][operando]['llDims']
             n1 = lilist.root
             inf = n1.get_inf()
             sup = n1.get_sup()
@@ -1750,13 +1779,19 @@ def p_pushOT(p):
             tempInt += 1
 
             ty = pilaOperandos.pop()
-            dirB = dirFunc[actualFunc]['vars'][operando]['dirVar']
+            if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
+                dirB = dirFunc[actualFunc]['vars'][operando]['dirVar']
+            else:
+                dirB = dirFunc[progName]['vars'][operando]['dirVar']
 
             cuad = [contCuadruplos, '+', ty, dirB, tempPointer]
             listaCuadruplos.append(cuad)
             print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempPointer)
-            tipoEnElPointer = dirFunc[actualFunc]['vars'][operando]['type']
+            if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
+                tipoEnElPointer = dirFunc[actualFunc]['vars'][operando]['type']
+            else:
+                tipoEnElPointer = dirFunc[progName]['vars'][operando]['type']
             pilaTipos.append(tipoEnElPointer)
             contCuadruplos += 1
             tempPointer += 1
@@ -2043,8 +2078,10 @@ parser = yacc.yacc()
 # parser.parse(data)
 # fn = input("Nombre del archivo\n")
 
+arch = input('¿Qué archivo quieres abrir?\n')
+arch = './' + arch
 try:
-    f = open("./ejemplo4.txt", "r")
+    f = open(arch, "r")
     fileContent = f.read()
     # print(fileContent)
 except:
@@ -2076,7 +2113,11 @@ for co in consts:
 print()
 for c in listaCuadruplos:
     print(c)
-maq(listaCuadruplos,dirFunc[progName]['vars'],listaConstantes)
+tempi = dirFunc[progName]['tempInt']
+tempf = dirFunc[progName]['tempFloat']
+temps = dirFunc[progName]['tempString']
+tempb = dirFunc[progName]['tempBool']
+maq(listaCuadruplos,dirFunc[progName]['vars'],listaConstantes,tempi,tempf,temps,tempb)
 
 # -----------------------------------------------------------------
 

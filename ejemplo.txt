@@ -6,7 +6,6 @@ var int matriz[2,5];
 int func fact(int j)
 var int i;
 {
-
     i = p-j*2-j;
     if(j == 1){
         return(j);

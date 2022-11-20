@@ -88,7 +88,6 @@ def ejecucion(pointer):
         # print('Operador: ',operador)
         # GOTO -------------------------------------------------------
         if operador == 'goto':
-            # print(cuadruplos[cuadruplo[2]-1])
             adonde = cuadruplo[2]
             ejecucion(adonde)
         # GOTOF -------------------------------------------------------
@@ -109,18 +108,32 @@ def ejecucion(pointer):
             dirAdonde = (adonde//1000)*1000
             asigna = dicDir[dirAsigna][-1][asigna-dirAsigna]
             l = dicDir[dirAdonde]
-            l[-1][adonde-dirAdonde] = asigna
-            # print(globInt)
+            #Tengo que hacer esto pero en suma, resta, etc para que se escriba lo que están en el indice que tiene el pointer
+            if(dirAdonde!=13000):
+                l[-1][adonde-dirAdonde] = asigna
+            else:
+                indice = l[-1][adonde-dirAdonde]
+                # print('indice', indice)
+                dirIndice = (indice//1000)*1000
+                l = dicDir[dirIndice]
+                # print(globInt[-1])
+                # print(l[-1][indice-dirIndice])
+                l[-1][indice-dirIndice] = asigna
             pointer += 1
-        # ENDPROGRAM -------------------------------------------------------
-        elif operador == 'endprogram':
-            sys.exit('Termino ejecución')
         # ENDFUNC -------------------------------------------------------
         elif operador == 'endfunc':
             pointer +=1
             pass
         # VERIFICAR -------------------------------------------------------
         elif operador == 'ver':
+            aVerificar = cuadruplo[2]
+            dirAVerificar = (aVerificar//1000)*1000
+            aVerificar = dicDir[dirAVerificar][-1][aVerificar-dirAVerificar]
+            # print('Hay que verificar {} en {}'.format(aVerificar,pointer))
+            inf = cuadruplo[3]
+            sup = cuadruplo[4]
+            if(aVerificar<inf or aVerificar>sup):
+                sys.exit('ExecutionError: The list you\'re trying to access has indexes from {} to {}'.format(inf,sup))
             pointer +=1
             pass
         # READ -------------------------------------------------------
@@ -154,10 +167,17 @@ def ejecucion(pointer):
             dedonde = cuadruplo[2]
             dirDedonde = (dedonde//1000)*1000
             l = dicDir[dirDedonde]
-            print(l[-1][dedonde-dirDedonde])
+            if(dirDedonde!=13000):
+                print(l[-1][dedonde-dirDedonde])
+            else:
+                indice = l[-1][adonde-dirAdonde]
+                # print('indice', indice)
+                dirIndice = (indice//1000)*1000
+                l = dicDir[dirIndice]
+                print(l[-1][indice-dirIndice])
             pointer +=1
-        # SUMA -------------------------------------------------------
-        elif operador == '+':
+        # MENORQUE -------------------------------------------------------
+        elif operador == '<':
             op1 = cuadruplo[2]
             op2 = cuadruplo[3]
             adonde = cuadruplo[4]
@@ -167,6 +187,124 @@ def ejecucion(pointer):
             op1 = dicDir[dirop1][-1][op1-dirop1]
             op2 = dicDir[dirop2][-1][op2-dirop2]
             dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
+            if(op1<op2):
+                dicDir[dirAdonde][-1][adonde-dirAdonde] = 'true'
+                # print('{}<{} true'.format(op1,op2))
+            else:
+                dicDir[dirAdonde][-1][adonde-dirAdonde] = 'false'
+                # print('{}<{} false'.format(op1,op2))
+            
+            pointer += 1
+        # MAYORQUE -------------------------------------------------------
+        elif operador == '>':
+            op1 = cuadruplo[2]
+            op2 = cuadruplo[3]
+            adonde = cuadruplo[4]
+            dirop1 = (op1//1000)*1000
+            dirop2 = (op2//1000)*1000
+            dirAdonde = (adonde//1000)*1000
+            op1 = dicDir[dirop1][-1][op1-dirop1]
+            op2 = dicDir[dirop2][-1][op2-dirop2]
+            dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
+            if(op1>op2):
+                dicDir[dirAdonde][-1][adonde-dirAdonde] = 'true'
+                # print('{}>{} true'.format(op1,op2))
+            else:
+                dicDir[dirAdonde][-1][adonde-dirAdonde] = 'false'
+                # print('{}>{} false'.format(op1,op2))
+
+            pointer += 1
+        # IGUALQUE -------------------------------------------------------
+        elif operador == '==':
+            op1 = cuadruplo[2]
+            op2 = cuadruplo[3]
+            adonde = cuadruplo[4]
+            dirop1 = (op1//1000)*1000
+            dirop2 = (op2//1000)*1000
+            dirAdonde = (adonde//1000)*1000
+            op1 = dicDir[dirop1][-1][op1-dirop1]
+            op2 = dicDir[dirop2][-1][op2-dirop2]
+            dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
+            if(op1==op2):
+                dicDir[dirAdonde][-1][adonde-dirAdonde] = 'true'
+                # print('{}=={} true'.format(op1,op2))
+            else:
+                dicDir[dirAdonde][-1][adonde-dirAdonde] = 'false'
+                # print('{}=={} false'.format(op1,op2))
+            
+            pointer += 1
+        # DIFERENTEDE -------------------------------------------------------
+        elif operador == '$':
+            op1 = cuadruplo[2]
+            op2 = cuadruplo[3]
+            adonde = cuadruplo[4]
+            dirop1 = (op1//1000)*1000
+            dirop2 = (op2//1000)*1000
+            dirAdonde = (adonde//1000)*1000
+            op1 = dicDir[dirop1][-1][op1-dirop1]
+            op2 = dicDir[dirop2][-1][op2-dirop2]
+            dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
+            if(op1!=op2):
+                dicDir[dirAdonde][-1][adonde-dirAdonde] = 'true'
+                # print('{}${} true'.format(op1,op2))
+            else:
+                dicDir[dirAdonde][-1][adonde-dirAdonde] = 'false'
+                # print('{}${} false'.format(op1,op2))
+
+            pointer += 1
+        # AND -------------------------------------------------------
+        elif operador == '&&':
+            op1 = cuadruplo[2]
+            op2 = cuadruplo[3]
+            adonde = cuadruplo[4]
+            dirop1 = (op1//1000)*1000
+            dirop2 = (op2//1000)*1000
+            dirAdonde = (adonde//1000)*1000
+            op1 = dicDir[dirop1][-1][op1-dirop1]
+            op2 = dicDir[dirop2][-1][op2-dirop2]
+            dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
+            if(op1=='true' and op2=='true'):
+                dicDir[dirAdonde][-1][adonde-dirAdonde] = 'true'
+                # print('{}&&{} true'.format(op1,op2))
+            else:
+                dicDir[dirAdonde][-1][adonde-dirAdonde] = 'false'
+                # print('{}&&{} false'.format(op1,op2))
+            
+            pointer += 1
+        # OR -------------------------------------------------------
+        elif operador == '||':
+            op1 = cuadruplo[2]
+            op2 = cuadruplo[3]
+            adonde = cuadruplo[4]
+            dirop1 = (op1//1000)*1000
+            dirop2 = (op2//1000)*1000
+            dirAdonde = (adonde//1000)*1000
+            op1 = dicDir[dirop1][-1][op1-dirop1]
+            op2 = dicDir[dirop2][-1][op2-dirop2]
+            dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
+            if(op1=='true' or op2=='true'):
+                dicDir[dirAdonde][-1][adonde-dirAdonde] = 'true'
+                # print('{}||{} true'.format(op1,op2))
+            else:
+                dicDir[dirAdonde][-1][adonde-dirAdonde] = 'false'
+                # print('{}||{} false'.format(op1,op2))
+            
+            pointer += 1
+        # SUMA -------------------------------------------------------
+        elif operador == '+':
+            op1 = cuadruplo[2]
+            op2 = cuadruplo[3]
+            adonde = cuadruplo[4]
+            dirop1 = (op1//1000)*1000
+            dirop2 = (op2//1000)*1000
+            dirAdonde = (adonde//1000)*1000
+            # print('op1 {} op2 {} adonde {}'.format(op1,op2,adonde))
+            # print('dirop1 {} dirop2 {} dirAdonde {}'.format(dirop1,dirop2, dirAdonde))
+            op1 = dicDir[dirop1][-1][op1-dirop1]
+            # print(dicDir[dirop2][-1])
+            op2 = dicDir[dirop2][-1][op2-dirop2]
+            dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
+            # print('temppointer',tempPointer)
             pointer += 1
         # RESTA -------------------------------------------------------
         elif operador == '-':
@@ -204,12 +342,16 @@ def ejecucion(pointer):
             op2 = dicDir[dirop2][-1][op2-dirop2]
             dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 / op2
             pointer += 1
+        # ENDPROGRAM -------------------------------------------------------
+        elif operador == 'endprogram':
+            # print(tempPointer)
+            sys.exit('Termino ejecución')
         else:
             print('Aún no programo eso :p')
             pointer += 1
 
 
-def maq(listaCuad : list, glob, ctes, tempiglob, tempfglob, tempsglob, tempbglob):
+def maq(listaCuad : list, glob, ctes, tempiglob, tempfglob, tempsglob, tempbglob, temppglob, globi, globf, globs, globb):
     global cuadruplos
     global globales
     global constantes
@@ -228,30 +370,28 @@ def maq(listaCuad : list, glob, ctes, tempiglob, tempfglob, tempsglob, tempbglob
     # for c in cuadruplos:
     #     print(c)
 
-    globs = list(globales)
+    # globs = list(globales)
     contGlobs = 0
     contGlobint = 0
     contGlobfloat = 0
     contGlobstring = 0
     contGlobbool = 0
-    # print('list(constantes)',consts)
-    for g in globs:
-        # print(g,globales[g])
-        if(globales[g]['type']=='int'):
-            globInt[-1].append(None)
-            contGlobint += 1
-        elif(globales[g]['type']=='float'):
-            globFloat[-1].append(None)
-            contGlobfloat += 1
-        elif(globales[g]['type']=='string'):
-            globString[-1].append(None)
-            contGlobstring += 1
-        elif(globales[g]['type']=='bool'):
-            globBool[-1].append(None)
-            contGlobbool += 1
-        contGlobs += 1
-    # print('Hay {} globales'.format(contGlobs))
-    # print('Hay {} globales enteras'.format(contGlobint))
+    for i in range(globi):
+        globInt[-1].append(None)
+        contGlobint += 1
+    for i in range(globf):
+        globFloat[-1].append(None)
+        contGlobfloat += 1
+    for i in range(globs):
+        globString[-1].append(None)
+        contGlobint += 1
+    for i in range(globb):
+        globBool[-1].append(None)
+        contGlobbool += 1
+
+    contGlobs = globi+globf+globs+globb
+    print('Hay {} globales'.format(contGlobs))
+    print('Hay {} globales enteras'.format(contGlobint))
     #Declaramos memoria global
     globales = []
     for g in range(contGlobs):
@@ -264,7 +404,7 @@ def maq(listaCuad : list, glob, ctes, tempiglob, tempfglob, tempsglob, tempbglob
     #Declaramos la memoria de constantess
     consts = list(constants)
     for co in consts:
-        # print(co,constants[co])
+        print(co,constants[co])
         constantes[-1].append(co)
     
     # print(constantes)
@@ -277,6 +417,9 @@ def maq(listaCuad : list, glob, ctes, tempiglob, tempfglob, tempsglob, tempbglob
         tempString[-1].append(None)
     for i in range(tempbglob):
         tempBool[-1].append(None)
+    for i in range(temppglob):
+        tempPointer[-1].append(None)
     
+
     print('-----------EMPIEZA EJECUCIÓN-----------')
     ejecucion(1)

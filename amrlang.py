@@ -898,6 +898,7 @@ def p_pushOTAsig(p):
     global tempInt
     global contCuadruplos
     global tempPointer
+    global ctes
     if(p[-1] == ']'):
         #Array/Lista
         if(p[-3]!=','):
@@ -919,24 +920,49 @@ def p_pushOTAsig(p):
             print('Generamos cuadruplos',cuad)
             contCuadruplos += 1
             
-            cuad = [contCuadruplos, '+', aVerificar, (k*-1), tempInt]
+            existe = listaConstantes.get((k*-1),-1)
+            if(existe == -1):
+                dirConst = ctes
+                ctes += 1
+                # pilaOperandos.append(dirConst)
+                # | MENOS CTEINT pushOT 
+                listaConstantes[k*-1] = dirConst
+            else:
+                # pilaOperandos.append(listaConstantes[k*-1])
+                dirConst = listaConstantes[k*-1]
+
+            cuad = [contCuadruplos, '+', aVerificar, dirConst, tempInt]
             listaCuadruplos.append(cuad)
             print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
+            #Acabo de poner esto
+            dirFunc[actualFunc]['tempInt'] += 1
             tempInt += 1
 
             tx = pilaOperandos.pop()
             if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
                 dirB = dirFunc[actualFunc]['vars'][operando]['dirVar']
+                dirFunc[actualFunc]['tempPointer'] += 1
             else:
                 dirB = dirFunc[progName]['vars'][operando]['dirVar']
+                dirFunc[progName]['tempPointer'] += 1
 
             print('TX AJDKLAJFLAKSDJFÑLSAKDJFLKSDAJF', tx)
             print('DIRB AJASDLKFJSDAÑFLKJASLÑDKF', dirB)
 
+            existe = listaConstantes.get(dirB,-1)
+            if(existe == -1):
+                dirConst = ctes
+                ctes += 1
+                # pilaOperandos.append(dirConst)
+                # | MENOS CTEINT pushOT 
+                listaConstantes[dirB] = dirConst
+            else:
+                # pilaOperandos.append(listaConstantes[dirB])
+                dirConst = listaConstantes[dirB]
 
-            cuad = [contCuadruplos, '+', tx, dirB, tempPointer]
+            cuad = [contCuadruplos, '+', tx, dirConst, tempPointer]
             listaCuadruplos.append(cuad)
             print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempPointer)
@@ -984,6 +1010,8 @@ def p_pushOTAsig(p):
             print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
+            #Acabo de poner esto
+            dirFunc[actualFunc]['tempInt'] += 1
             tempInt += 1
 
             aVerificar2 = pilaOperandos.pop()
@@ -999,16 +1027,50 @@ def p_pushOTAsig(p):
             print('Generamos cuadruplos',cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
+            #Acabo de poner esto
+            dirFunc[actualFunc]['tempInt'] += 1
+            tempInt += 1
+
+            existe = listaConstantes.get((k*-1),-1)
+            if(existe == -1):
+                dirConst = ctes
+                ctes += 1
+                # pilaOperandos.append(dirConst)
+                # | MENOS CTEINT pushOT 
+                listaConstantes[k*-1] = dirConst
+            else:
+                # pilaOperandos.append(listaConstantes[k*-1])
+                dirConst = listaConstantes[k*-1]
+
+            cuad = [contCuadruplos, '+', aVerificar, dirConst, tempInt]
+            listaCuadruplos.append(cuad)
+            print("Generamos cuadruplo", cuad)
+            pilaOperandos.append(tempInt)
+            contCuadruplos += 1
+            #Acabo de poner esto
+            dirFunc[actualFunc]['tempInt'] += 1
             tempInt += 1
 
             ty = pilaOperandos.pop()
             if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
                 dirB = dirFunc[actualFunc]['vars'][operando]['dirVar']
+                dirFunc[actualFunc]['tempPointer'] += 1
             else:
                 dirB = dirFunc[progName]['vars'][operando]['dirVar']
+                dirFunc[progName]['tempPointer'] += 1
 
+            existe = listaConstantes.get(dirB,-1)
+            if(existe == -1):
+                dirConst = ctes
+                ctes += 1
+                # pilaOperandos.append(dirConst)
+                # | MENOS CTEINT pushOT 
+                listaConstantes[dirB] = dirConst
+            else:
+                # pilaOperandos.append(listaConstantes[dirB])
+                dirConst = listaConstantes[dirB]
 
-            cuad = [contCuadruplos, '+', ty, dirB, tempPointer]
+            cuad = [contCuadruplos, '+', ty, dirConst, tempPointer]
             listaCuadruplos.append(cuad)
             print('Generamos cuadruplos',cuad)
             pilaOperandos.append(tempPointer)
@@ -1054,13 +1116,19 @@ def p_cuadEsc(p):
     #String
     elif(isinstance(p[-1], str)):
         # aesc = p[-1].strip('"')
-        aesc = ctes
-        listaConstantes[p[-1].strip('"')] = ctes
+        existe = listaConstantes.get(p[-1],-1)
+        if(existe == -1):
+            aesc = ctes
+            ctes += 1 
+            listaConstantes[p[-1].strip('"')] = aesc
+        else:
+            aesc = listaConstantes[p[-1]]
+        
     cuad = [contCuadruplos, 'write', aesc]
     listaCuadruplos.append(cuad)
     print('Generamos cuadruplos',cuad)
     contCuadruplos += 1
-    ctes += 1
+    
 
 #Para poner más de una expresión en un print
 def p_nextexp(p):
@@ -1391,8 +1459,8 @@ def p_gotoFor(p):
     leftOp =  pilaOperandos.pop()
     pilaTipos.append('int')
     pilaTipos.append('int')
-    typeResult = cuboSemantico(pilaTipos.pop(), pilaTipos.pop(), '<=')
-    cuad = [contCuadruplos, '<=', leftOp, rightOp, tempBool]
+    typeResult = cuboSemantico(pilaTipos.pop(), pilaTipos.pop(), '<')
+    cuad = [contCuadruplos, '<', leftOp, rightOp, tempBool]
     pilaOperandos.append(leftOp)
     listaCuadruplos.append(cuad)
     print("Generamos cuadruplo", cuad)
@@ -1428,10 +1496,22 @@ def p_returnFor(p):
     ret = pilaSaltos.pop()
     aSumar = pilaOperandos.pop()
     
-    cuad = [contCuadruplos, '+', aSumar, 1, tempInt]
+    existe = listaConstantes.get(1,-1)
+    if(existe == -1):
+        dirConst = ctes
+        ctes += 1
+        pilaOperandos.append(dirConst)
+        # | MENOS CTEINT pushOT 
+        listaConstantes[1] = dirConst
+    else:
+        pilaOperandos.append(listaConstantes[1])
+        dirConst = listaConstantes[1]
+
+    cuad = [contCuadruplos, '+', aSumar, dirConst, tempInt]
     listaCuadruplos.append(cuad)
     print("Generamos cuadruplo", cuad)
     pilaOperandos.append(tempInt)
+    print('ACTUALFUNC EN RETURNFOR ES {}'.format(actualFunc))
     dirFunc[actualFunc]['tempInt'] += 1
     pilaTipos.append('int')
     tempInt += 1
@@ -1525,13 +1605,6 @@ def p_cuadAnd(p):
     '''
     cuadAnd :
     '''
-
-
-def p_andExpresion(p):
-    '''
-    andExpresion : relopExpresion cuadRelop
-                 | relopExpresion cuadRelop AND pushOper relopExpresion cuadRelop
-    '''
     global poper
     global listaCuadruplos
     global pilaOperandos
@@ -1564,6 +1637,12 @@ def p_andExpresion(p):
             contCuadruplos += 1
         else:
             sys.exit("TypeError : {} and {} cannot use operator {}".format(left_type, right_type, operator))
+
+def p_andExpresion(p):
+    '''
+    andExpresion : relopExpresion cuadRelop
+                 | relopExpresion cuadRelop AND pushOper relopExpresion cuadRelop
+    '''
 
 def p_cuadRelop(p):
     '''
@@ -1765,23 +1844,50 @@ def p_pushOT(p):
             contCuadruplos += 1
             
             #+ S1 (-k) tx -> k siempre es 0 este cuadruplo es innecesario
-            cuad = [contCuadruplos, '+', aVerificar, (k*-1), tempInt]
+
+            existe = listaConstantes.get((k*-1),-1)
+            if(existe == -1):
+                dirConst = ctes
+                ctes += 1
+                # pilaOperandos.append(dirConst)
+                # | MENOS CTEINT pushOT 
+                listaConstantes[k*-1] = dirConst
+            else:
+                # pilaOperandos.append(listaConstantes[k*-1])
+                dirConst = listaConstantes[k*-1]
+
+            cuad = [contCuadruplos, '+', aVerificar, dirConst, tempInt]
             listaCuadruplos.append(cuad)
             print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
+            #Acabo de poner esto
+            dirFunc[actualFunc]['tempInt'] += 1
             tempInt += 1
 
             tx = pilaOperandos.pop()
             if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
                 dirB = dirFunc[actualFunc]['vars'][operando]['dirVar']
+                dirFunc[actualFunc]['tempPointer'] += 1
             else:
                 dirB = dirFunc[progName]['vars'][operando]['dirVar']
+                dirFunc[progName]['tempPointer'] += 1
 
             print('TX AJDKLAJFLAKSDJFÑLSAKDJFLKSDAJF', tx)
             print('DIRB AJASDLKFJSDAÑFLKJASLÑDKF', dirB)
 
-            cuad = [contCuadruplos, '+', tx, dirB, tempPointer]
+            existe = listaConstantes.get(dirB,-1)
+            if(existe == -1):
+                dirConst = ctes
+                ctes += 1
+                # pilaOperandos.append(dirConst)
+                # | MENOS CTEINT pushOT 
+                listaConstantes[dirB] = dirConst
+            else:
+                # pilaOperandos.append(listaConstantes[dirB])
+                dirConst = listaConstantes[dirB]
+
+            cuad = [contCuadruplos, '+', tx, dirConst, tempPointer]
             listaCuadruplos.append(cuad)
             print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempPointer)
@@ -1826,6 +1932,8 @@ def p_pushOT(p):
             print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
+            #Acabo de poner esto
+            dirFunc[actualFunc]['tempInt'] += 1
             tempInt += 1
 
             aVerificar2 = pilaOperandos.pop()
@@ -1842,23 +1950,50 @@ def p_pushOT(p):
             print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
+            #Acabo de poner esto
+            dirFunc[actualFunc]['tempInt'] += 1
             tempInt += 1
 
+            existe = listaConstantes.get((k*-1),-1)
+            if(existe == -1):
+                dirConst = ctes
+                ctes += 1
+                # pilaOperandos.append(dirConst)
+                # | MENOS CTEINT pushOT 
+                listaConstantes[k*-1] = dirConst
+            else:
+                # pilaOperandos.append(listaConstantes[k*-1])
+                dirConst = listaConstantes[k*-1]
 
-            cuad = [contCuadruplos, '+', aVerificar, (k*-1), tempInt]
+            cuad = [contCuadruplos, '+', aVerificar, dirConst, tempInt]
             listaCuadruplos.append(cuad)
             print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
+            #Acabo de poner esto
+            dirFunc[actualFunc]['tempInt'] += 1
             tempInt += 1
 
             ty = pilaOperandos.pop()
             if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
                 dirB = dirFunc[actualFunc]['vars'][operando]['dirVar']
+                dirFunc[actualFunc]['tempPointer'] += 1
             else:
                 dirB = dirFunc[progName]['vars'][operando]['dirVar']
+                dirFunc[progName]['tempPointer'] += 1
 
-            cuad = [contCuadruplos, '+', ty, dirB, tempPointer]
+            existe = listaConstantes.get(dirB,-1)
+            if(existe == -1):
+                dirConst = ctes
+                ctes += 1
+                # pilaOperandos.append(dirConst)
+                # | MENOS CTEINT pushOT 
+                listaConstantes[dirB] = dirConst
+            else:
+                # pilaOperandos.append(listaConstantes[dirB])
+                dirConst = listaConstantes[dirB]
+
+            cuad = [contCuadruplos, '+', ty, dirConst, tempPointer]
             listaCuadruplos.append(cuad)
             print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempPointer)
@@ -1873,7 +2008,10 @@ def p_pushOT(p):
     #Constantes
     elif p[-1] != None:
         operando = p[-1]
-        existe = listaConstantes.get(operando,-1)
+        if(p[-2] != '-'):
+            existe = listaConstantes.get(operando,-1)
+        else:
+            existe = listaConstantes.get(operando*-1,-1)
         if(existe == -1):
             dirConst = ctes
             ctes += 1
@@ -1883,11 +2021,16 @@ def p_pushOT(p):
             else:
                 # | MENOS CTEINT pushOT
                 if(p[-2]=='-'):
+                    # listaConstantes[operando*-1] = dirConst
+                    print('OPERANDO {} ES NEGATIVOOOOOOOOOOO'.format(operando*-1))
                     listaConstantes[operando*-1] = dirConst
                 else:
                     listaConstantes[operando] = dirConst
         else:
-            pilaOperandos.append(listaConstantes[operando])
+            if(p[-2] != '-'):
+                pilaOperandos.append(listaConstantes[operando])
+            else:
+                pilaOperandos.append(listaConstantes[operando*-1])
         
         #En este if revisamos que tipo es el factor para agregarlo a la pila de tipos
         
@@ -2179,23 +2322,28 @@ for f in funcs:
     for a in attrs:
         print('    ',a,dirFunc[f][a])
 
-print('Pila operandos\n',pilaOperandos)
-print('Pila Tipos\n', pilaTipos)
-print('Pila operadores\n', poper)
-print('Pila de saltos\n', pilaSaltos)
-print('Lista de constantes')
-consts = list(listaConstantes)
-# print('list(constantes)',consts)
-for co in consts:
-    print(co,listaConstantes[co])
+# print('Pila operandos\n',pilaOperandos)
+# print('Pila Tipos\n', pilaTipos)
+# print('Pila operadores\n', poper)
+# print('Pila de saltos\n', pilaSaltos)
+# print('Lista de constantes')
+# consts = list(listaConstantes)
+# for co in consts:
+#     print(co,listaConstantes[co])
 print()
 for c in listaCuadruplos:
     print(c)
+
+globi = dirFunc[progName]['globInt']
+globf = dirFunc[progName]['globFloat']
+globs = dirFunc[progName]['globString']
+globb = dirFunc[progName]['globBool']
 tempi = dirFunc[progName]['tempInt']
 tempf = dirFunc[progName]['tempFloat']
 temps = dirFunc[progName]['tempString']
 tempb = dirFunc[progName]['tempBool']
-maq(listaCuadruplos,dirFunc[progName]['vars'],listaConstantes,tempi,tempf,temps,tempb)
+tempp = dirFunc[progName]['tempPointer']
+maq(listaCuadruplos,dirFunc[progName]['vars'],listaConstantes,tempi,tempf,temps,tempb,tempp,globi,globf,globs,globb)
 
 # -----------------------------------------------------------------
 

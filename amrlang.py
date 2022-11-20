@@ -1571,6 +1571,7 @@ def p_factor(p):
     '''
     factor : PARIZQ guardaFondo expresion PARDER quitaFondo
            | CTEINT pushOT
+           | MENOS CTEINT pushOT
            | CTEFLOAT pushOT
            | true pushOT
            | false pushOT
@@ -1653,8 +1654,6 @@ def p_pushOT(p):
     '''
     pushOT :
     '''
-    # | ID checkID CORIZQ CTEINT CORDER pushOT
-    # | ID checkID CORIZQ CTEINT COMA CTEINT CORDER pushOT
     global pilaOperandos
     global pilaTipos
     global dirFunc
@@ -1807,7 +1806,11 @@ def p_pushOT(p):
             if(isinstance(operando,str)):
                 listaConstantes[operando.strip('"')] = dirConst
             else:
-                listaConstantes[operando] = dirConst
+                # | MENOS CTEINT pushOT
+                if(p[-2]=='-'):
+                    listaConstantes[operando*-1] = dirConst
+                else:
+                    listaConstantes[operando] = dirConst
         else:
             pilaOperandos.append(listaConstantes[operando])
         

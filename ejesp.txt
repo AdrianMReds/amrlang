@@ -1,0 +1,41 @@
+program especiales;
+var int a[1], cont, cont2, x, m[2,1];
+
+void func mat(int ma[2,1]){
+    ma.printMatrix();
+}
+
+func main(){
+    cont = 0;
+    while(cont<2){
+        read(x);
+        a[cont] = x;
+        cont = cont + 1;
+    }
+    write(a.stdev());
+    a.printArray();
+    
+    m[0,0] = 15;
+    m[0,1] = 16;
+    m[1,0] = 27;
+    m[1,1] = 32;
+    m[2,0] = 10;
+    m[2,1] = 7;
+
+    cont = 0;
+    while(cont<3){
+        cont2 = 0;
+        while(cont2<2){
+            read(x);
+            m[cont,cont2] = x;
+            cont2 = cont2 + 1;
+        }
+        cont = cont + 1;
+    }
+
+    m.printMatrix();
+    write(" ");
+    mat(m);
+}
+
+end;

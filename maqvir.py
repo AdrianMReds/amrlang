@@ -1,5 +1,14 @@
 import sys
+import statistics
 
+def avg(lst:list):
+    cont = 0
+    for i in lst:
+        cont += i
+    if(isinstance(lst[0],int)):
+        return int(cont/len(lst))
+    else:
+        return (cont/len(lst))
 
 pointer = 0
 globales = None
@@ -223,6 +232,8 @@ def ejecucion(pointer):
                 op2 = dicDir[dirIndice][-1][indice-dirIndice]
             # dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
             
+            # print('{}<{}'.format(op1,op2))
+
             if(op1<op2):
                 dicDir[dirAdonde][-1][adonde-dirAdonde] = 'true'
                 # print('{}<{} true'.format(op1,op2))
@@ -419,6 +430,7 @@ def ejecucion(pointer):
             dirop1 = (op1//1000)*1000
             dirop2 = (op2//1000)*1000
             dirAdonde = (adonde//1000)*1000
+            # print('op1 {} op2 {}'.format(op1,op2))
             if(dirop1!=13000):
                 op1 = dicDir[dirop1][-1][op1-dirop1]
             else:
@@ -571,18 +583,27 @@ def ejecucion(pointer):
             # print('diradonde',dirAdonde)
             
             if(dirAdonde!=14000):
-                if(dirAdonde==1000 or dirAdonde==5000 or dirAdonde==9000):
-                    for i in range(len(auxlocInt)):
-                        if(auxlocInt[i] is None):
-                            auxlocInt[i] = parametro
-                            break
-                    # auxlocInt[adonde-1] = parametro
-                elif(dirAdonde==2000 or dirAdonde==6000 or dirAdonde==10000):
-                    auxlocFloat[adonde-1] = parametro
-                elif(dirAdonde==3000 or dirAdonde==7000 or dirAdonde==11000):
-                    auxlocString[adonde-1] = parametro
-                elif(dirAdonde==4000 or dirAdonde==8000 or dirAdonde==12000):
-                    auxlocBool[adonde-1] = parametro
+                if(len(cuadruplo)!=5):
+                    if(dirAdonde==1000 or dirAdonde==5000 or dirAdonde==9000):
+                        for i in range(len(auxlocInt)):
+                            if(auxlocInt[i] is None):
+                                auxlocInt[i] = parametro
+                                break
+                    elif(dirAdonde==2000 or dirAdonde==6000 or dirAdonde==10000):
+                        for i in range(len(auxlocFloat)):
+                            if(auxlocFloat[i] is None):
+                                auxlocFloat[i] = parametro
+                                break
+                    elif(dirAdonde==3000 or dirAdonde==7000 or dirAdonde==11000):
+                        for i in range(len(auxlocString)):
+                            if(auxlocString[i] is None):
+                                auxlocString[i] = parametro
+                                break
+                    elif(dirAdonde==4000 or dirAdonde==8000 or dirAdonde==12000):
+                        for i in range(len(auxlocBool)):
+                            if(auxlocBool[i] is None):
+                                auxlocBool[i] = parametro
+                                break
             else:
                 if isinstance(parametro,int):
                     auxlocInt[adonde-1] = parametro
@@ -604,13 +625,25 @@ def ejecucion(pointer):
                     dirD = (d//1000)*1000
                     # print('dirD',dirD)
                     if(dirD==1000 or dirD==5000 or dirD==9000):
-                        auxlocInt[d-dirD] = dicDir[dirD][-1][d-dirD]
+                        for i in range(len(auxlocInt)):
+                            if(auxlocInt[i] is None):
+                                auxlocInt[i] = dicDir[dirD][-1][d-dirD]
+                                break
                     elif(dirD==2000 or dirD==6000 or dirD==10000):
-                        auxlocFloat[d-dirD] = dicDir[dirD][-1][d-dirD]
+                        for i in range(len(auxlocFloat)):
+                            if(auxlocFloat[i] is None):
+                                auxlocFloat[i] = dicDir[dirD][-1][d-dirD]
+                                break
                     elif(dirD==3000 or dirD==7000 or dirD==11000):
-                        auxlocString[d-dirD] = dicDir[dirD][-1][d-dirD]
+                        for i in range(len(auxlocString)):
+                            if(auxlocString[i] is None):
+                                auxlocString[i] = dicDir[dirD][-1][d-dirD]
+                                break
                     elif(dirD==4000 or dirD==8000 or dirD==12000):
-                        auxlocBool[d-dirD] = dicDir[dirD][-1][d-dirD]
+                        for i in range(len(auxlocBool)):
+                            if(auxlocBool[i] is None):
+                                auxlocBool[i] = dicDir[dirD][-1][d-dirD]
+                                break
                     d+=1
             # print(auxlocInt)
             pointer += 1
@@ -693,6 +726,163 @@ def ejecucion(pointer):
             ejecucion(comeBack.pop())
 
             pointer += 1
+        # LENGTH -------------------------------------------------------
+        elif operador == 'length':
+            desdeDonde = cuadruplo[2]
+            hastaDonde = cuadruplo[3]
+            adonde = cuadruplo[4]
+            dirAdonde = (adonde//1000)*1000
+            dicDir[dirAdonde][-1][adonde-dirAdonde] = hastaDonde-desdeDonde+1
+            
+            pointer += 1
+        # MAX -------------------------------------------------------
+        elif operador == 'max':
+            temp = []
+            desdeDonde = cuadruplo[2]
+            hastaDonde = cuadruplo[3]
+            inicio = hastaDonde
+            dirDesdeDonde = (desdeDonde//1000)*1000
+            adonde = cuadruplo[4]
+            dirAdonde = (adonde//1000)*1000
+            size = hastaDonde-desdeDonde+1
+            for i in range(size):
+                temp.append(dicDir[dirDesdeDonde][-1][hastaDonde-inicio])
+                inicio -=1
+            dicDir[dirAdonde][-1][adonde-dirAdonde] = max(temp)
+            pointer+=1
+        # MIN -------------------------------------------------------
+        elif operador == 'min':
+            temp = []
+            desdeDonde = cuadruplo[2]
+            hastaDonde = cuadruplo[3]
+            inicio = hastaDonde
+            dirDesdeDonde = (desdeDonde//1000)*1000
+            adonde = cuadruplo[4]
+            dirAdonde = (adonde//1000)*1000
+            size = hastaDonde-desdeDonde+1
+            for i in range(size):
+                temp.append(dicDir[dirDesdeDonde][-1][hastaDonde-inicio])
+                inicio -=1
+            dicDir[dirAdonde][-1][adonde-dirAdonde] = min(temp)
+            pointer+=1
+        # AVG -------------------------------------------------------
+        elif operador == 'avg':
+            temp = []
+            desdeDonde = cuadruplo[2]
+            hastaDonde = cuadruplo[3]
+            inicio = hastaDonde
+            dirDesdeDonde = (desdeDonde//1000)*1000
+            adonde = cuadruplo[4]
+            dirAdonde = (adonde//1000)*1000
+            size = hastaDonde-desdeDonde+1
+            for i in range(size):
+                temp.append(dicDir[dirDesdeDonde][-1][hastaDonde-inicio])
+                inicio -=1
+            dicDir[dirAdonde][-1][adonde-dirAdonde] = avg(temp)
+            pointer+=1
+
+        # MEDIAN -------------------------------------------------------
+        elif operador == 'median':
+            temp = []
+            desdeDonde = cuadruplo[2]
+            hastaDonde = cuadruplo[3]
+            inicio = hastaDonde
+            dirDesdeDonde = (desdeDonde//1000)*1000
+            adonde = cuadruplo[4]
+            dirAdonde = (adonde//1000)*1000
+            size = hastaDonde-desdeDonde+1
+            for i in range(size):
+                temp.append(dicDir[dirDesdeDonde][-1][hastaDonde-inicio])
+                inicio -=1
+            dicDir[dirAdonde][-1][adonde-dirAdonde] = statistics.median(temp)
+            pointer+=1
+        # MODE -------------------------------------------------------
+        elif operador == 'mode':
+            temp = []
+            desdeDonde = cuadruplo[2]
+            hastaDonde = cuadruplo[3]
+            inicio = hastaDonde
+            dirDesdeDonde = (desdeDonde//1000)*1000
+            adonde = cuadruplo[4]
+            dirAdonde = (adonde//1000)*1000
+            size = hastaDonde-desdeDonde+1
+            for i in range(size):
+                temp.append(dicDir[dirDesdeDonde][-1][hastaDonde-inicio])
+                inicio -=1
+            dicDir[dirAdonde][-1][adonde-dirAdonde] = statistics.mode(temp)
+            pointer+=1
+        # VARIANCE -------------------------------------------------------
+        elif operador == 'variance':
+            temp = []
+            desdeDonde = cuadruplo[2]
+            hastaDonde = cuadruplo[3]
+            inicio = hastaDonde
+            dirDesdeDonde = (desdeDonde//1000)*1000
+            adonde = cuadruplo[4]
+            dirAdonde = (adonde//1000)*1000
+            size = hastaDonde-desdeDonde+1
+            for i in range(size):
+                temp.append(dicDir[dirDesdeDonde][-1][hastaDonde-inicio])
+                inicio -=1
+            dicDir[dirAdonde][-1][adonde-dirAdonde] = statistics.variance(temp)
+            pointer+=1
+        # STDEV -------------------------------------------------------
+        elif operador == 'stdev':
+            temp = []
+            desdeDonde = cuadruplo[2]
+            hastaDonde = cuadruplo[3]
+            inicio = hastaDonde
+            dirDesdeDonde = (desdeDonde//1000)*1000
+            adonde = cuadruplo[4]
+            dirAdonde = (adonde//1000)*1000
+            size = hastaDonde-desdeDonde+1
+            for i in range(size):
+                temp.append(dicDir[dirDesdeDonde][-1][hastaDonde-inicio])
+                inicio -=1
+            dicDir[dirAdonde][-1][adonde-dirAdonde] = statistics.stdev(temp)
+            pointer+=1
+        # PRINTARRAY -------------------------------------------------------
+        elif operador == 'printArray':
+            temp = []
+            desdeDonde = cuadruplo[2]
+            hastaDonde = cuadruplo[3]
+            # print(desdeDonde,hastaDonde)
+            inicio = desdeDonde
+            dirDesdeDonde = (desdeDonde//1000)*1000
+            size = hastaDonde-desdeDonde+1
+            # print('desdedonde {}'.format(desdeDonde))
+            # print('hastadonde {}'.format(hastaDonde))
+            for i in range(size):
+                temp.append(dicDir[dirDesdeDonde][-1][inicio-dirDesdeDonde])
+                inicio +=1
+            print(temp)
+            pointer+=1
+        # PRINTMATRIX -------------------------------------------------------
+        elif operador == 'printMatrix':
+            
+            numRenglones = cuadruplo[4]
+            numColumnas = cuadruplo[5]
+            temp = []
+            for i in range(numRenglones):
+                temp.append([])
+            
+            desdeDonde = cuadruplo[2]
+            hastaDonde = cuadruplo[3]
+            # print(desdeDonde,hastaDonde)
+            inicio = desdeDonde
+            dirDesdeDonde = (desdeDonde//1000)*1000
+            size = hastaDonde-desdeDonde+1
+            # print('SIZE',size)
+            # print('desdedonde {}'.format(desdeDonde))
+            # print('hastadonde {}'.format(hastaDonde))
+            for x in range(numRenglones):
+                for y in range(numColumnas):
+                    temp[x].append(dicDir[dirDesdeDonde][-1][inicio-dirDesdeDonde])
+                    inicio += 1
+            for e in temp:
+                print(e)
+
+            pointer+=1
         # ENDFUNC -------------------------------------------------------
         elif operador == 'endfunc':
             locInt.pop()

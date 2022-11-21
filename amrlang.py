@@ -47,6 +47,7 @@ contCuadruplos = 1
 poper = []
 pilaOperandos = []
 pilaTipos = []
+nombreEspecial = ''
 # avail = ['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10'
 #          , 't11', 't12', 't13', 't14', 't15', 't16', 't17', 't18', 't19', 't20', 't21', 't22', 't23', 't24', 't25', 't26', 't27']
 # contAvail = 0
@@ -137,7 +138,7 @@ def checkType(id):
 
 reservadas = ['program', 'var', 'func', 'main', 'int', 'float', 'string', 'bool',
               'write', 'if', 'else', 'while', 'for', 'read', 'void', 'end', 'length',
-              'max', 'min', 'avg', 'median', 'mode', 'variance', 'stdev', 'graph','true', 'false', 'return']
+              'max', 'min', 'avg', 'median', 'mode', 'variance', 'stdev', 'graph', 'printArray', 'printMatrix','true', 'false', 'return']
 
 tokens = reservadas + ['ID', #NOMBRE DE VARIABLE O FUNCIÓN
                        'CTEINT', #CONSTANTE INT
@@ -819,12 +820,13 @@ def p_estatuto(p):
              | forloop
              | lectura
              | estReturn
+             | llamadaEspVoid
     '''
 
 def p_asignacion(p):
     '''
     asignacion : ID checkID asignaux ASIGNA expresion cuadAsignacion PYC
-               | ID checkID asignaux ASIGNA llamada_esp PYC
+               | ID checkID asignaux ASIGNA llamada_esp cuadAsignacion PYC
                | ID checkID asignaux ASIGNA CTESTRING cuadAsignacion PYC
     '''
 
@@ -1013,8 +1015,13 @@ def p_pushOTAsig(p):
         else:
             #Nombre de variable/ID
             operando = idParaLista
+            
+            aVerificar2 = pilaOperandos.pop()
+            pilaTipos.pop()
+
             aVerificar = pilaOperandos.pop()
             pilaTipos.pop()
+            
             if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
                 lilist  = dirFunc[actualFunc]['vars'][operando]['llDims']
             else:
@@ -1022,11 +1029,13 @@ def p_pushOTAsig(p):
             n1 = lilist.root
             inf = n1.get_inf()
             sup = n1.get_sup()
-            k = n1.get_k()
+            k = n1.next_node.get_k()
             try:
                 sup2 = n1.next_node.get_sup()
             except AttributeError:
                 sys.exit('Error: {} has not 2 dimensions'.format(operando))
+
+            print('AVERIFICAR PRIMER VER',aVerificar)
 
             cuad = [contCuadruplos, 'ver', aVerificar, inf, sup]
             listaCuadruplos.append(cuad)
@@ -1040,7 +1049,22 @@ def p_pushOTAsig(p):
             m1 = m0/(sup+1)
             m1 = int(m1)
 
-            cuad = [contCuadruplos, '*', aVerificar, m1, tempInt]
+            print("M1 ES IGUAL A ",m1)
+        
+            existe = listaConstantes.get((m1),-1)
+            if(existe == -1):
+                dirConst = ctes
+                ctes += 1
+                # pilaOperandos.append(dirConst)
+                # | MENOS CTEINT pushOT 
+                listaConstantes[m1] = dirConst
+            else:
+                # pilaOperandos.append(listaConstantes[k*-1])
+                dirConst = listaConstantes[m1]
+            print('DIRCONSTE ES IGUAL A ',dirConst)
+            
+
+            cuad = [contCuadruplos, '*', aVerificar, dirConst, tempInt]
             listaCuadruplos.append(cuad)
             print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
@@ -1049,7 +1073,7 @@ def p_pushOTAsig(p):
             dirFunc[actualFunc]['tempInt'] += 1
             tempInt += 1
 
-            aVerificar2 = pilaOperandos.pop()
+            
             cuad = [contCuadruplos, 'ver', aVerificar2, inf, sup2]
             listaCuadruplos.append(cuad)
             print('Generamos cuadruplos',cuad)
@@ -1077,7 +1101,13 @@ def p_pushOTAsig(p):
                 # pilaOperandos.append(listaConstantes[k*-1])
                 dirConst = listaConstantes[k*-1]
 
-            cuad = [contCuadruplos, '+', aVerificar, dirConst, tempInt]
+            print('K*-1', k*-1)
+            print('DIR CONST DE K', dirConst)
+            
+            #Acabo de modificar esto
+            te = pilaOperandos.pop()
+
+            cuad = [contCuadruplos, '+', te, dirConst, tempInt]
             listaCuadruplos.append(cuad)
             print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
@@ -1365,6 +1395,7 @@ def p_cuadPar(p):
                 ar = e
         if dirFunc[actualFunc]['vars'][ar]['size']>1:
             parNum = 'par'+str(paramCounter)
+
             sup = arg + dirFunc[actualFunc]['vars'][ar]['size'] - 1
             cuad = [contCuadruplos, 'par', arg, parNum, sup]
             listaCuadruplos.append(cuad)
@@ -1746,6 +1777,7 @@ def p_cuadAnd(p):
     #     print("No hay último elemento", poper)
     hayOp = len(poper) >= 1
     # print(hayOp)
+    print('CUADAND')
     print(pilaOperandos)
     print(pilaTipos)
     if (hayOp and (poper[-1] == '&&')):
@@ -1789,6 +1821,7 @@ def p_cuadRelop(p):
     #     print("No hay último elemento", poper)
     hayOp = len(poper) >= 1
     # print(hayOp)
+    print('CUADRELOP')
     print(pilaOperandos)
     print(pilaTipos)
     if (hayOp and (poper[-1] == '||')):
@@ -1861,7 +1894,7 @@ def p_factor(p):
            | ID checkIDfac pushOT
            | ID checkIDfac CORIZQ expresion CORDER pushOT
            | ID checkIDfac CORIZQ expresion COMA expresion CORDER pushOT
-           | llamada_esp pushOT
+           | llamada_esp
            | CTESTRING pushOT
            | llamada
     '''
@@ -1910,21 +1943,264 @@ def p_quitaFondo(p):
 
 def p_llamada_esp(p):
     '''
-    llamada_esp : ID PUNTO especiales PARIZQ PARDER
+    llamada_esp : ID checkIDfac PUNTO especiales PARIZQ PARDER cuadEsp
     '''
+
+def p_llamadaEspVoid(p):
+    '''
+    llamadaEspVoid : ID checkIDfac PUNTO especialesVoid PARIZQ PARDER cuadEspVoid PYC
+    '''
+
+def p_cuadEspVoid(p):
+    '''
+    cuadEspVoid :
+    '''
+    global contCuadruplos
+    global listaCuadruplos
+    global tempInt
+    global tempFloat
+    global pilaOperandos
+    global pilaTipos
+    id = p[-6]
+    direc = dirFunc[actualFunc]['vars'][id]['dirVar'] 
+    tipo = dirFunc[actualFunc]['vars'][id]['type']
+    numDimensiones = dirFunc[actualFunc]['vars'][id]['dimensions']
+    print('numdims',numDimensiones)
+    esarray = dirFunc[actualFunc]['vars'][id]['dimensions'] >= 1
+    if esarray == False:
+        sys.exit('Error: You can use special functions only with arrays')
+    if(tipo != 'int' and tipo != 'float'):
+        sys.exit('Error: You can use special functions with int or float arrays')
+    if(nombreEspecial=='graph' and numDimensiones!=2):
+        sys.exit('Error: you can use graph only with arrays of 2 dimensions')
+    if(nombreEspecial=='printMatrix' and numDimensiones!=2):
+        sys.exit('Error: you can use graph only with arrays of 2 dimensions')
+    if(nombreEspecial=='printArray' and numDimensiones!=1):
+        sys.exit('Error: you can use graph only with arrays of 2 dimensions')
+    
+    size = dirFunc[actualFunc]['vars'][id]['size']
+    direcSup = direc+size-1
+
+    if(nombreEspecial == 'graph'):
+        cuad = [contCuadruplos, nombreEspecial, direc, direcSup]
+        listaCuadruplos.append(cuad)
+        print('Generamos cuadruplo',cuad)
+        contCuadruplos +=1
+    elif(nombreEspecial == 'printArray'):
+        cuad = [contCuadruplos, nombreEspecial, direc, direcSup]
+        listaCuadruplos.append(cuad)
+        print('Generamos cuadruplo',cuad)
+        contCuadruplos +=1
+    elif(nombreEspecial == 'printMatrix'):
+        ll = dirFunc[actualFunc]['vars'][id]['llDims']
+        n1 = ll.root
+        sup = n1.sup
+        sup2 = n1.next_node.sup
+        cuad = [contCuadruplos, nombreEspecial, direc, direcSup, sup+1,sup2+1]
+        listaCuadruplos.append(cuad)
+        print('Generamos cuadruplo',cuad)
+        contCuadruplos +=1
+
+def p_cuadEsp(p):
+    '''
+    cuadEsp :
+    '''
+    global contCuadruplos
+    global listaCuadruplos
+    global tempInt
+    global tempFloat
+    global pilaOperandos
+    global pilaTipos
+    id = p[-6]
+    direc = dirFunc[actualFunc]['vars'][id]['dirVar'] 
+    tipo = dirFunc[actualFunc]['vars'][id]['type']
+    numDimensiones = dirFunc[actualFunc]['vars'][id]['dimensions']
+    print('numdims',numDimensiones)
+    esarray = dirFunc[actualFunc]['vars'][id]['dimensions'] >= 1
+    if esarray == False:
+        sys.exit('Error: You can use special functions only with arrays')
+    if(tipo != 'int' and tipo != 'float'):
+        sys.exit('Error: You can use special functions with int or float arrays')
+    if(nombreEspecial=='graph' and numDimensiones!=2):
+        sys.exit('Error: you can use graph only with arrays of 2 dimensions')
+    size = dirFunc[actualFunc]['vars'][id]['size']
+    direcSup = direc+size-1
+    if nombreEspecial == 'length':
+        cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
+        listaCuadruplos.append(cuad)
+        print('Generamos cuadruplo',cuad)
+        pilaOperandos.append(tempInt)
+        pilaTipos.append('int')
+        contCuadruplos +=1
+        dirFunc[actualFunc]['tempInt'] += 1
+        tempInt += 1
+    elif(nombreEspecial == 'max'):
+        if(tipo=='int'):
+            cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
+            listaCuadruplos.append(cuad)
+            print('Generamos cuadruplo',cuad)
+            pilaOperandos.append(tempInt)
+            pilaTipos.append('int')
+            contCuadruplos +=1
+            dirFunc[actualFunc]['tempInt'] += 1
+            tempInt += 1
+        else:
+            cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempFloat]
+            listaCuadruplos.append(cuad)
+            print('Generamos cuadruplo',cuad)
+            pilaOperandos.append(tempFloat)
+            pilaTipos.append('float')
+            contCuadruplos +=1
+            dirFunc[actualFunc]['tempFloat'] += 1
+            tempFloat += 1
+    elif(nombreEspecial == 'min'):
+        if(tipo=='int'):
+            cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
+            listaCuadruplos.append(cuad)
+            print('Generamos cuadruplo',cuad)
+            pilaOperandos.append(tempInt)
+            pilaTipos.append('int')
+            contCuadruplos +=1
+            dirFunc[actualFunc]['tempInt'] += 1
+            tempInt += 1
+        else:
+            cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempFloat]
+            listaCuadruplos.append(cuad)
+            print('Generamos cuadruplo',cuad)
+            pilaOperandos.append(tempFloat)
+            pilaTipos.append('float')
+            contCuadruplos +=1
+            dirFunc[actualFunc]['tempFloat'] += 1
+            tempFloat += 1
+    elif(nombreEspecial == 'avg'):
+        if(tipo=='int'):
+            cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
+            listaCuadruplos.append(cuad)
+            print('Generamos cuadruplo',cuad)
+            pilaOperandos.append(tempInt)
+            pilaTipos.append('int')
+            contCuadruplos +=1
+            dirFunc[actualFunc]['tempInt'] += 1
+            tempInt += 1
+        else:
+            cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempFloat]
+            listaCuadruplos.append(cuad)
+            print('Generamos cuadruplo',cuad)
+            pilaOperandos.append(tempFloat)
+            pilaTipos.append('float')
+            contCuadruplos +=1
+            dirFunc[actualFunc]['tempFloat'] += 1
+            tempFloat += 1
+    elif(nombreEspecial == 'median'):
+        if(tipo=='int'):
+            cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
+            listaCuadruplos.append(cuad)
+            print('Generamos cuadruplo',cuad)
+            pilaOperandos.append(tempInt)
+            pilaTipos.append('int')
+            contCuadruplos +=1
+            dirFunc[actualFunc]['tempInt'] += 1
+            tempInt += 1
+        else:
+            cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempFloat]
+            listaCuadruplos.append(cuad)
+            print('Generamos cuadruplo',cuad)
+            pilaOperandos.append(tempFloat)
+            pilaTipos.append('float')
+            contCuadruplos +=1
+            dirFunc[actualFunc]['tempFloat'] += 1
+            tempFloat += 1
+    elif(nombreEspecial == 'mode'):
+        if(tipo=='int'):
+            cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
+            listaCuadruplos.append(cuad)
+            print('Generamos cuadruplo',cuad)
+            pilaOperandos.append(tempInt)
+            pilaTipos.append('int')
+            contCuadruplos +=1
+            dirFunc[actualFunc]['tempInt'] += 1
+            tempInt += 1
+        else:
+            cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempFloat]
+            listaCuadruplos.append(cuad)
+            print('Generamos cuadruplo',cuad)
+            pilaOperandos.append(tempFloat)
+            pilaTipos.append('float')
+            contCuadruplos +=1
+            dirFunc[actualFunc]['tempFloat'] += 1
+            tempFloat += 1
+    elif(nombreEspecial == 'variance'):
+        if(tipo=='int'):
+            cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
+            listaCuadruplos.append(cuad)
+            print('Generamos cuadruplo',cuad)
+            pilaOperandos.append(tempInt)
+            pilaTipos.append('int')
+            contCuadruplos +=1
+            dirFunc[actualFunc]['tempInt'] += 1
+            tempInt += 1
+        else:
+            cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempFloat]
+            listaCuadruplos.append(cuad)
+            print('Generamos cuadruplo',cuad)
+            pilaOperandos.append(tempFloat)
+            pilaTipos.append('float')
+            contCuadruplos +=1
+            dirFunc[actualFunc]['tempFloat'] += 1
+            tempFloat += 1
+    elif(nombreEspecial == 'stdev'):
+        if(tipo=='int'):
+            cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
+            listaCuadruplos.append(cuad)
+            print('Generamos cuadruplo',cuad)
+            pilaOperandos.append(tempInt)
+            pilaTipos.append('int')
+            contCuadruplos +=1
+            dirFunc[actualFunc]['tempInt'] += 1
+            tempInt += 1
+        else:
+            cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempFloat]
+            listaCuadruplos.append(cuad)
+            print('Generamos cuadruplo',cuad)
+            pilaOperandos.append(tempFloat)
+            pilaTipos.append('float')
+            contCuadruplos +=1
+            dirFunc[actualFunc]['tempFloat'] += 1
+            tempFloat += 1
+    elif(nombreEspecial == 'graph'):
+        pass
+    elif(nombreEspecial == 'printArray'):
+        cuad = [contCuadruplos, nombreEspecial, direc, direcSup]
+        listaCuadruplos.append(cuad)
+        print('Generamos cuadruplo',cuad)
+        contCuadruplos +=1
+
 
 def p_especiales(p):
     '''
-    especiales : length
-               | max
-               | min
-               | avg
-               | median
-               | mode
-               | variance
-               | stdev
-               | graph
+    especiales : length guardaEsp
+               | max guardaEsp
+               | min guardaEsp
+               | avg guardaEsp
+               | median guardaEsp
+               | mode guardaEsp
+               | variance guardaEsp
+               | stdev guardaEsp
     '''
+
+def p_especialesVoid(p):
+    '''
+    especialesVoid : graph guardaEsp
+                   | printArray guardaEsp
+                   | printMatrix guardaEsp
+    '''
+
+def p_guardaEsp(p):
+    '''
+    guardaEsp :
+    '''
+    global nombreEspecial
+    nombreEspecial = p[-1]
 
 def p_pushOper(p):
     '''
@@ -2033,8 +2309,13 @@ def p_pushOT(p):
             print('ESTOY EN PUSHOT SIENDO UNA MATRIZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
             #Nombre de variable/ID
             operando = p[-7]
+            
+            aVerificar2 = pilaOperandos.pop()
+            pilaTipos.pop()
+            
             aVerificar = pilaOperandos.pop()
             pilaTipos.pop()
+            
             if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
                 lilist  = dirFunc[actualFunc]['vars'][operando]['llDims']
             else:
@@ -2057,7 +2338,20 @@ def p_pushOT(p):
             m1 = m0/(sup+1)
             m1 = int(m1)
 
-            cuad = [contCuadruplos, '*', aVerificar, m1, tempInt]
+            existe = listaConstantes.get((m1),-1)
+            if(existe == -1):
+                dirConst = ctes
+                ctes += 1
+                # pilaOperandos.append(dirConst)
+                # | MENOS CTEINT pushOT 
+                listaConstantes[m1] = dirConst
+            else:
+                # pilaOperandos.append(listaConstantes[k*-1])
+                dirConst = listaConstantes[m1]
+            
+            
+
+            cuad = [contCuadruplos, '*', aVerificar, dirConst, tempInt]
             listaCuadruplos.append(cuad)
             print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
@@ -2066,9 +2360,9 @@ def p_pushOT(p):
             dirFunc[actualFunc]['tempInt'] += 1
             tempInt += 1
 
-            aVerificar2 = pilaOperandos.pop()
-            pilaTipos.pop()
-            cuad = [contCuadruplos, 'ver', aVerificar2, inf, sup2]
+            te = pilaOperandos.pop()
+
+            cuad = [contCuadruplos, 'ver', te, inf, sup2]
             listaCuadruplos.append(cuad)
             print('Generamos cuadruplos',cuad)
             contCuadruplos += 1
@@ -2080,7 +2374,6 @@ def p_pushOT(p):
             print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
-            #Acabo de poner esto
             dirFunc[actualFunc]['tempInt'] += 1
             tempInt += 1
 
@@ -2094,6 +2387,9 @@ def p_pushOT(p):
             else:
                 # pilaOperandos.append(listaConstantes[k*-1])
                 dirConst = listaConstantes[k*-1]
+
+            print('K*-1', k*-1)
+            print('DIR CONST DE K', dirConst)
 
             cuad = [contCuadruplos, '+', aVerificar, dirConst, tempInt]
             listaCuadruplos.append(cuad)
@@ -2147,6 +2443,7 @@ def p_pushOT(p):
             dirConst = ctes
             ctes += 1
             pilaOperandos.append(dirConst)
+            print('Agregué constante en pushOT')
             if(isinstance(operando,str)):
                 listaConstantes[operando.strip('"')] = dirConst
             else:
@@ -2160,8 +2457,10 @@ def p_pushOT(p):
         else:
             if(p[-2] != '-'):
                 pilaOperandos.append(listaConstantes[operando])
+                print('Agregué constante en pushOT -')
             else:
                 pilaOperandos.append(listaConstantes[operando*-1])
+                print('Agregué constante en pushOT +')
         
         #En este if revisamos que tipo es el factor para agregarlo a la pila de tipos
         
@@ -2200,6 +2499,7 @@ def p_pushOT(p):
         else:
             # for c in listaCuadruplos:
             #     print(c)
+            print('PUSHOT')
             print(pilaOperandos)
             pilaOperandos.append(dirFunc[progName]['vars'][operando]['dirVar'])
         
@@ -2344,6 +2644,7 @@ def p_cuadArit(p):
     #     print("No hay último elemento", poper)
     hayOp = len(poper) >= 1
     # print(hayOp)
+    print('CUADARIT')
     print(pilaOperandos)
     print(pilaTipos)
     if (hayOp and (poper[-1] == '<' or poper[-1] == '>'
@@ -2463,7 +2764,7 @@ for f in funcs:
 # consts = list(listaConstantes)
 # for co in consts:
 #     print(co,listaConstantes[co])
-print()
+# print()
 for c in listaCuadruplos:
     print(c)
 
@@ -2479,14 +2780,6 @@ tempp = dirFunc[progName]['tempPointer']
 maq(listaCuadruplos,dirFunc[progName]['vars'],listaConstantes,tempi,tempf,temps,tempb,tempp,globi,globf,globs,globb)
 
 # -----------------------------------------------------------------
-
-# while True:
-#     try:
-#         s = input()
-#     except EOFError:
-#         break
-#     parser.parse(s)
-#     # print(result)
 
 while True:
     tok = lexer.token()

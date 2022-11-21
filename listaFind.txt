@@ -1,0 +1,37 @@
+program listaFind;
+var int lista[2], num, cont, x, aenc, i;
+
+int func find(int l[2], int n)
+var int cont;
+{
+    cont = 0;
+    while(cont<3){
+        if(l[cont]==n){
+            return(cont);
+        }
+        cont = cont + 1;
+    }
+    return(-1);
+}
+
+func main(){
+    write("Llena la lista de 5 numeros");
+    cont = 0;
+    while(cont<3){
+        write("Escribe número");
+        read(x);
+        lista[cont] = x;
+        cont = cont + 1;
+    }
+    write("Que numero quieres encontrar en la lista?");
+    read(aenc);
+    i = find(lista,aenc);
+    if(i$-1){
+        write("El indice es");
+        write(i);
+    }else{
+        write("Ese numero no existe en esa lista");
+    }
+}
+
+end;

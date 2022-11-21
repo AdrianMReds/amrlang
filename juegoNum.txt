@@ -1,0 +1,60 @@
+program juegonum;
+var int vidas, num, adivina;
+var bool gano;
+
+bool func esElNum(int num, int adivino){
+    if(num==adivino){
+        return(true);
+    }else{
+        return(false);
+    }
+}
+
+func main(){
+    vidas = 3;
+    write("Para este juego necesitamos que la persona que programa esto escriba un numero del 1 al 100 sin que el jugador vea cual numero fue");
+    write("Escribe el numero");
+    read(num);
+
+    if(num<1 || num>100){
+        write("Numero ilegal");
+        vidas = 0;
+    }
+
+    if(num>0 && num<101){
+        for(0:55){
+            write(" ");
+        }
+    }
+
+    write("Tus vidas son");
+    write(vidas);
+    
+    
+
+    while(vidas>0){
+        write("Adivina el numero");
+        read(adivina);
+        gano = esElNum(num,adivina);
+        if(gano==true){
+            write("Adivinaste");
+            vidas = -1;
+        }else{
+            write("Numero incorrecto");
+            vidas = vidas-1;
+            if(adivina<num){
+                write("El numero que adivinaste es menor al numero correcto");
+            }else{
+                write("El numero que adivinaste es mayor al numero correcto");
+            }
+        }
+    }
+    write("Se acabo el juego!");
+    if(num>0 && num<101){
+        write("El numero correcto era");
+        write(num);    
+    }
+    
+}
+
+end;

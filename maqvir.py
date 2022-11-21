@@ -79,43 +79,7 @@ dicAux = {
         12000:auxlocBool,
         13000:tempPointer,
         14000:constantes
-      }
-
-# def isBetween(num, a, b) -> bool:
-#     return (num>=a) and (num<=b)
-
-# def checkDir(dir:int):
-#     if(isBetween(dir,1000,1999)):
-#         return 'globInt'
-#     elif(isBetween(dir,2000,2999)):
-#         return 'globFloat'
-#     elif(isBetween(dir,3000,3999)):
-#         return 'globString'
-#     elif(isBetween(dir,4000,4999)):
-#         return 'globBool'
-#     elif(isBetween(dir,5000,5999)):
-#         return 'locInt'
-#     elif(isBetween(dir,6000,6999)):
-#         return 'locFloat'
-#     elif(isBetween(dir,7000,7999)):
-#         return 'locString'
-#     elif(isBetween(dir,8000,8999)):
-#         return 'locBool'
-#     elif(isBetween(dir,9000,9999)):
-#         return 'locPointer'
-#     elif(isBetween(dir,10000,10999)):
-#         return 'tempInt'
-#     elif(isBetween(dir,11000,11999)):
-#         return 'tempFloat'
-#     elif(isBetween(dir,12000,12999)):
-#         return 'tempString'
-#     elif(isBetween(dir,13000,13999)):
-#         return 'tempBool'
-#     elif(isBetween(dir,14000,14999)):
-#         return 'locPointer'
-#     elif(isBetween(dir,15000,15999)):
-#         return 'constante'
-    
+      }    
 
 def getDirBase(dir):
     return (dir//1000)*1000
@@ -166,7 +130,12 @@ def ejecucion(pointer):
             adonde = cuadruplo[3]
             dirAsigna = (asigna//1000)*1000
             dirAdonde = (adonde//1000)*1000
-            asigna = dicDir[dirAsigna][-1][asigna-dirAsigna]
+            if(dirAsigna!=13000):
+                asigna = dicDir[dirAsigna][-1][asigna-dirAsigna]
+            else:
+                indice = dicDir[dirAsigna][-1][asigna-dirAsigna]
+                dirIndice = (indice//1000)*1000
+                asigna = dicDir[dirIndice][-1][indice-dirIndice]
             l = dicDir[dirAdonde]
             if(dirAdonde!=13000):
                 l[-1][adonde-dirAdonde] = asigna
@@ -239,9 +208,21 @@ def ejecucion(pointer):
             dirop1 = (op1//1000)*1000
             dirop2 = (op2//1000)*1000
             dirAdonde = (adonde//1000)*1000
-            op1 = dicDir[dirop1][-1][op1-dirop1]
-            op2 = dicDir[dirop2][-1][op2-dirop2]
-            dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
+            if(dirop1!=13000):
+                op1 = dicDir[dirop1][-1][op1-dirop1]
+            else:
+                indice = dicDir[dirop1][-1][op1-dirop1]
+                dirIndice = (indice//1000)*1000
+                op1 = dicDir[dirIndice][-1][indice-dirIndice]
+            # print(dicDir[dirop2][-1])
+            if(dirop2!=13000):
+                op2 = dicDir[dirop2][-1][op2-dirop2]
+            else:
+                indice = dicDir[dirop2][-1][op2-dirop2]
+                dirIndice = (indice//1000)*1000
+                op2 = dicDir[dirIndice][-1][indice-dirIndice]
+            # dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
+            
             if(op1<op2):
                 dicDir[dirAdonde][-1][adonde-dirAdonde] = 'true'
                 # print('{}<{} true'.format(op1,op2))
@@ -258,9 +239,20 @@ def ejecucion(pointer):
             dirop1 = (op1//1000)*1000
             dirop2 = (op2//1000)*1000
             dirAdonde = (adonde//1000)*1000
-            op1 = dicDir[dirop1][-1][op1-dirop1]
-            op2 = dicDir[dirop2][-1][op2-dirop2]
-            dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
+            if(dirop1!=13000):
+                op1 = dicDir[dirop1][-1][op1-dirop1]
+            else:
+                indice = dicDir[dirop1][-1][op1-dirop1]
+                dirIndice = (indice//1000)*1000
+                op1 = dicDir[dirIndice][-1][indice-dirIndice]
+            # print(dicDir[dirop2][-1])
+            if(dirop2!=13000):
+                op2 = dicDir[dirop2][-1][op2-dirop2]
+            else:
+                indice = dicDir[dirop2][-1][op2-dirop2]
+                dirIndice = (indice//1000)*1000
+                op2 = dicDir[dirIndice][-1][indice-dirIndice]
+            # dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
             if(op1>op2):
                 dicDir[dirAdonde][-1][adonde-dirAdonde] = 'true'
                 # print('{}>{} true'.format(op1,op2))
@@ -277,9 +269,20 @@ def ejecucion(pointer):
             dirop1 = (op1//1000)*1000
             dirop2 = (op2//1000)*1000
             dirAdonde = (adonde//1000)*1000
-            op1 = dicDir[dirop1][-1][op1-dirop1]
-            op2 = dicDir[dirop2][-1][op2-dirop2]
-            dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
+            if(dirop1!=13000):
+                op1 = dicDir[dirop1][-1][op1-dirop1]
+            else:
+                indice = dicDir[dirop1][-1][op1-dirop1]
+                dirIndice = (indice//1000)*1000
+                op1 = dicDir[dirIndice][-1][indice-dirIndice]
+            # print(dicDir[dirop2][-1])
+            if(dirop2!=13000):
+                op2 = dicDir[dirop2][-1][op2-dirop2]
+            else:
+                indice = dicDir[dirop2][-1][op2-dirop2]
+                dirIndice = (indice//1000)*1000
+                op2 = dicDir[dirIndice][-1][indice-dirIndice]
+            # dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
             if(op1==op2):
                 dicDir[dirAdonde][-1][adonde-dirAdonde] = 'true'
                 # print('{}=={} true'.format(op1,op2))
@@ -296,9 +299,20 @@ def ejecucion(pointer):
             dirop1 = (op1//1000)*1000
             dirop2 = (op2//1000)*1000
             dirAdonde = (adonde//1000)*1000
-            op1 = dicDir[dirop1][-1][op1-dirop1]
-            op2 = dicDir[dirop2][-1][op2-dirop2]
-            dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
+            if(dirop1!=13000):
+                op1 = dicDir[dirop1][-1][op1-dirop1]
+            else:
+                indice = dicDir[dirop1][-1][op1-dirop1]
+                dirIndice = (indice//1000)*1000
+                op1 = dicDir[dirIndice][-1][indice-dirIndice]
+            # print(dicDir[dirop2][-1])
+            if(dirop2!=13000):
+                op2 = dicDir[dirop2][-1][op2-dirop2]
+            else:
+                indice = dicDir[dirop2][-1][op2-dirop2]
+                dirIndice = (indice//1000)*1000
+                op2 = dicDir[dirIndice][-1][indice-dirIndice]
+            # dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
             if(op1!=op2):
                 dicDir[dirAdonde][-1][adonde-dirAdonde] = 'true'
                 # print('{}${} true'.format(op1,op2))
@@ -317,7 +331,7 @@ def ejecucion(pointer):
             dirAdonde = (adonde//1000)*1000
             op1 = dicDir[dirop1][-1][op1-dirop1]
             op2 = dicDir[dirop2][-1][op2-dirop2]
-            dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
+            # dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
             if(op1=='true' and op2=='true'):
                 dicDir[dirAdonde][-1][adonde-dirAdonde] = 'true'
                 # print('{}&&{} true'.format(op1,op2))
@@ -336,7 +350,7 @@ def ejecucion(pointer):
             dirAdonde = (adonde//1000)*1000
             op1 = dicDir[dirop1][-1][op1-dirop1]
             op2 = dicDir[dirop2][-1][op2-dirop2]
-            dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
+            # dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
             if(op1=='true' or op2=='true'):
                 dicDir[dirAdonde][-1][adonde-dirAdonde] = 'true'
                 # print('{}||{} true'.format(op1,op2))
@@ -355,9 +369,20 @@ def ejecucion(pointer):
             dirAdonde = (adonde//1000)*1000
             # print('op1 {} op2 {} adonde {}'.format(op1,op2,adonde))
             # print('dirop1 {} dirop2 {} dirAdonde {}'.format(dirop1,dirop2, dirAdonde))
-            op1 = dicDir[dirop1][-1][op1-dirop1]
+            if(dirop1!=13000):
+                op1 = dicDir[dirop1][-1][op1-dirop1]
+            else:
+                indice = dicDir[dirop1][-1][op1-dirop1]
+                dirIndice = (indice//1000)*1000
+                op1 = dicDir[dirIndice][-1][indice-dirIndice]
             # print(dicDir[dirop2][-1])
-            op2 = dicDir[dirop2][-1][op2-dirop2]
+            if(dirop2!=13000):
+                op2 = dicDir[dirop2][-1][op2-dirop2]
+            else:
+                indice = dicDir[dirop2][-1][op2-dirop2]
+                dirIndice = (indice//1000)*1000
+                op2 = dicDir[dirIndice][-1][indice-dirIndice]
+
             dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 + op2
             # print('temppointer',tempPointer)
             pointer += 1
@@ -371,8 +396,19 @@ def ejecucion(pointer):
             dirAdonde = (adonde//1000)*1000
             # print('op1 {} op2 {} adonde {}'.format(op1,op2,adonde))
             # print(tempInt)
-            op1 = dicDir[dirop1][-1][op1-dirop1]
-            op2 = dicDir[dirop2][-1][op2-dirop2]
+            if(dirop1!=13000):
+                op1 = dicDir[dirop1][-1][op1-dirop1]
+            else:
+                indice = dicDir[dirop1][-1][op1-dirop1]
+                dirIndice = (indice//1000)*1000
+                op1 = dicDir[dirIndice][-1][indice-dirIndice]
+            # print(dicDir[dirop2][-1])
+            if(dirop2!=13000):
+                op2 = dicDir[dirop2][-1][op2-dirop2]
+            else:
+                indice = dicDir[dirop2][-1][op2-dirop2]
+                dirIndice = (indice//1000)*1000
+                op2 = dicDir[dirIndice][-1][indice-dirIndice]
             dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 - op2
             pointer +=1
         # MULTIPLICACIÓN -------------------------------------------------------
@@ -383,8 +419,19 @@ def ejecucion(pointer):
             dirop1 = (op1//1000)*1000
             dirop2 = (op2//1000)*1000
             dirAdonde = (adonde//1000)*1000
-            op1 = dicDir[dirop1][-1][op1-dirop1]
-            op2 = dicDir[dirop2][-1][op2-dirop2]
+            if(dirop1!=13000):
+                op1 = dicDir[dirop1][-1][op1-dirop1]
+            else:
+                indice = dicDir[dirop1][-1][op1-dirop1]
+                dirIndice = (indice//1000)*1000
+                op1 = dicDir[dirIndice][-1][indice-dirIndice]
+            # print(dicDir[dirop2][-1])
+            if(dirop2!=13000):
+                op2 = dicDir[dirop2][-1][op2-dirop2]
+            else:
+                indice = dicDir[dirop2][-1][op2-dirop2]
+                dirIndice = (indice//1000)*1000
+                op2 = dicDir[dirIndice][-1][indice-dirIndice]
             dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 * op2
             pointer += 1
         # DIVISIÓN -------------------------------------------------------
@@ -395,8 +442,19 @@ def ejecucion(pointer):
             dirop1 = (op1//1000)*1000
             dirop2 = (op2//1000)*1000
             dirAdonde = (adonde//1000)*1000
-            op1 = dicDir[dirop1][-1][op1-dirop1]
-            op2 = dicDir[dirop2][-1][op2-dirop2]
+            if(dirop1!=13000):
+                op1 = dicDir[dirop1][-1][op1-dirop1]
+            else:
+                indice = dicDir[dirop1][-1][op1-dirop1]
+                dirIndice = (indice//1000)*1000
+                op1 = dicDir[dirIndice][-1][indice-dirIndice]
+            # print(dicDir[dirop2][-1])
+            if(dirop2!=13000):
+                op2 = dicDir[dirop2][-1][op2-dirop2]
+            else:
+                indice = dicDir[dirop2][-1][op2-dirop2]
+                dirIndice = (indice//1000)*1000
+                op2 = dicDir[dirIndice][-1][indice-dirIndice]
             dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 / op2
             pointer += 1
         # ERA -------------------------------------------------------
@@ -455,6 +513,18 @@ def ejecucion(pointer):
             for i in range(tempPointerSize):
                 auxtempPointer.append(None)
 
+            # if(len(cuadruplo)>15):
+            #     dirs = cuadruplo[15:]
+            #     for d in dirs:
+            #         if(d==1000 or d==5000 or d==9000):
+            #             auxlocInt[adonde-1] = parametro
+            #         elif(d==2000 or d==6000 or d==10000):
+            #             auxlocFloat[adonde-1] = parametro
+            #         elif(d==3000 or d==7000 or d==11000):
+            #             auxlocString[adonde-1] = parametro
+            #         elif(d==4000 or d==8000 or d==12000):
+            #             auxlocBool[adonde-1] = parametro
+
             # print(cuadruplo)
             # print('Era, auxtempint ->', auxtempInt)
 
@@ -492,6 +562,7 @@ def ejecucion(pointer):
             dirPar = (parametro//1000)*1000
             parametro = dicDir[dirPar][-1][parametro-dirPar]
             # print('Lista del parametro', dicDir[dirPar])
+            # print('dirPar',dirPar)
             # print('par',parametro)
             adonde = cuadruplo[3]
             adonde = int(adonde[-1])
@@ -501,7 +572,11 @@ def ejecucion(pointer):
             
             if(dirAdonde!=14000):
                 if(dirAdonde==1000 or dirAdonde==5000 or dirAdonde==9000):
-                    auxlocInt[adonde-1] = parametro
+                    for i in range(len(auxlocInt)):
+                        if(auxlocInt[i] is None):
+                            auxlocInt[i] = parametro
+                            break
+                    # auxlocInt[adonde-1] = parametro
                 elif(dirAdonde==2000 or dirAdonde==6000 or dirAdonde==10000):
                     auxlocFloat[adonde-1] = parametro
                 elif(dirAdonde==3000 or dirAdonde==7000 or dirAdonde==11000):
@@ -518,7 +593,26 @@ def ejecucion(pointer):
                         auxlocBool[adonde-1] = parametro
                     else:
                         auxlocString[adonde-1] = parametro
-
+            # print(auxlocInt)
+            # print(globInt)
+            if len(cuadruplo) == 5:
+                d = cuadruplo[2]
+                for i in range(cuadruplo[4]-cuadruplo[2]+1):
+                    
+                    # print('d',d)
+                    
+                    dirD = (d//1000)*1000
+                    # print('dirD',dirD)
+                    if(dirD==1000 or dirD==5000 or dirD==9000):
+                        auxlocInt[d-dirD] = dicDir[dirD][-1][d-dirD]
+                    elif(dirD==2000 or dirD==6000 or dirD==10000):
+                        auxlocFloat[d-dirD] = dicDir[dirD][-1][d-dirD]
+                    elif(dirD==3000 or dirD==7000 or dirD==11000):
+                        auxlocString[d-dirD] = dicDir[dirD][-1][d-dirD]
+                    elif(dirD==4000 or dirD==8000 or dirD==12000):
+                        auxlocBool[d-dirD] = dicDir[dirD][-1][d-dirD]
+                    d+=1
+            # print(auxlocInt)
             pointer += 1
         # GOSUB -------------------------------------------------------
         elif operador == 'gosub':
@@ -554,13 +648,36 @@ def ejecucion(pointer):
             pointer += 1
         # RETURN -------------------------------------------------------
         elif operador == 'ret':
+            # print(locInt)
             regresa = cuadruplo[2]
+            # print('regresa',regresa)
             adond = cuadruplo[3]
-            dirRegresa = (regresa//1000)*1000
-            dirAdond = (adond//1000)*1000
+            if(regresa=='true' or regresa=='false'):
+                dirAdond = (adond//1000)*1000
+                dicDir[dirAdond][-1][adond-dirAdond] = regresa
+            else:
+                dirRegresa = (regresa//1000)*1000
+                dirAdond = (adond//1000)*1000
+                # print('dirRegresa',dirRegresa)
+                regresa = dicDir[dirRegresa][-1][regresa-dirRegresa]
+                if(dirRegresa!=13000):
+                    dicDir[dirAdond][-1][adond-dirAdond] = regresa
+                else:
+                    dirRegresa = (regresa//1000)*1000
+                    # print('regresa en else',regresa)
+                    # print('dirRegresa en else',dirRegresa)
+                    indice = dicDir[dirRegresa][-1][regresa-dirRegresa]
+                    # print('indice', indice)
+                    # print('adonde',adond)
+                    # print(dicDir[dirAdond])
+                    dicDir[dirAdond][-1][adond-dirAdond] = indice
 
-            regresa = dicDir[dirRegresa][-1][regresa-dirRegresa]
-            dicDir[dirAdond][-1][adond-dirAdond] = regresa
+                    # dirIndice = (indice//1000)*1000
+                    # l = dicDir[dirIndice]
+                    # # print(globInt[-1])
+                    # # print(l[-1][indice-dirIndice])
+                    # l[-1][indice-dirIndice] = regresa
+            
 
             locInt.pop()
             locFloat.pop()
@@ -635,7 +752,7 @@ def maq(listaCuad : list, glob, ctes, tempiglob, tempfglob, tempsglob, tempbglob
         contGlobfloat += 1
     for i in range(globs):
         globString[-1].append(None)
-        contGlobint += 1
+        contGlobstring += 1
     for i in range(globb):
         globBool[-1].append(None)
         contGlobbool += 1
@@ -643,6 +760,7 @@ def maq(listaCuad : list, glob, ctes, tempiglob, tempfglob, tempsglob, tempbglob
     contGlobs = globi+globf+globs+globb
     print('Hay {} globales'.format(contGlobs))
     print('Hay {} globales enteras'.format(contGlobint))
+
     #Declaramos memoria global
     globales = []
     for g in range(contGlobs):

@@ -1,0 +1,24 @@
+program listas;
+var int lista[3], x, y;
+
+int func algo(int l[3])
+var int y;
+{
+    write("y");
+    read(y);
+    return(l[y]);
+}
+
+func main(){
+    lista[0] = 1;
+    lista[1] = 25;
+    lista[2] = 3;
+    lista[3] = 486;
+    x = algo(lista);
+    y = lista[2];
+    write(x);
+    write(y);
+    write(lista[0]/2);
+}
+
+end;

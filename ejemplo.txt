@@ -14,22 +14,36 @@ var int i;
     }
 }
 
-void func inicia(int y)
+void func inicia(int y, int l)
 var int x;
 {
     x = 0;
     while(x<11){
         arreglo[x] = y*x;
         x = x+1;
+        write("Dentro de while en inicia");
     }
 }
 
+void func imprimeSaludo(string s)
+var int x;
+{
+    write(s);
+}
+
+void func imprimeDespido(){
+    write("Adios");
+}
+
 func main(){
+    imprimeSaludo("Hola que tal");
     read(p);
     j = p*2;
     i = -1;
-    inicia(p*j-5);
+    inicia(p*j-5,6);
     write(i);
+    write(j);
+    imprimeDespido();
 }
 
 end;

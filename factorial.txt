@@ -1,0 +1,28 @@
+program factorial;
+var int num;
+
+int func fact(int n){
+    if(n==1){
+        return(n);
+    }else{
+        return(n*fact(n-1));
+    }
+}
+
+func main(){
+    write("Escriba un valor");
+    read(num);
+    if(num<0){
+        write("No existe factorial para numeros negativos");
+    }
+    if(num==0){
+        write(1);
+    }
+    if(num>0){
+        write("El factorial de ese numero es");
+        write(fact(num));
+    }
+    write("Hasta luego!");
+}
+
+end;

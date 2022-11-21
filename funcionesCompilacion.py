@@ -1,7 +1,7 @@
 #Funciones para compilacion
 
 def cuboSemantico(op1, op2, operador) -> int:
-    print("se revisa {} {} {}".format(op1,operador,op2))
+    # print("se revisa {} {} {}".format(op1,operador,op2))
     if operador == '+':
         if op1 == 'int' and op2 == 'int':
             return 0

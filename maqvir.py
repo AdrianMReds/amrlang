@@ -12,16 +12,40 @@ globFloat = [[]]
 globString = [[]]
 globBool = [[]]
 
-locInt = [[]]
-locFloat = [[]]
-locString = [[]]
-locBool = [[]]
+locInt = []
+locFloat = []
+locString = []
+locBool = []
 
 tempInt = [[]]
 tempFloat = [[]]
 tempString = [[]]
 tempBool = [[]]
 tempPointer = [[]]
+
+# localIntSize = 0
+# localFloatSize = 0
+# localStringSize = 0
+# localBoolSize = 0
+
+# tempIntSize = 0
+# tempFloatSize = 0
+# tempStringSize = 0
+# tempBoolSize = 0
+# tempPointerSize = 0
+
+auxlocInt = []
+auxlocFloat = []
+auxlocString = []
+auxlocBool = []
+
+auxtempInt = []
+auxtempFloat = []
+auxtempString = []
+auxtempBool = []
+auxtempPointer = []
+
+comeBack = []
 
 dicDir = {
         1000:globInt,
@@ -36,6 +60,23 @@ dicDir = {
         10000:tempFloat,
         11000:tempString,
         12000:tempBool,
+        13000:tempPointer,
+        14000:constantes
+      }
+
+dicAux = {
+        1000:auxlocInt,
+        2000:auxlocFloat,
+        3000:auxlocString,
+        4000:auxlocBool,
+        5000:auxlocInt,
+        6000:auxlocFloat,
+        7000:auxlocString,
+        8000:auxlocBool,
+        9000:auxlocInt,
+        10000:auxlocFloat,
+        11000:auxlocString,
+        12000:auxlocBool,
         13000:tempPointer,
         14000:constantes
       }
@@ -80,7 +121,26 @@ def getDirBase(dir):
     return (dir//1000)*1000
 
 def ejecucion(pointer):
-    
+    global comeBack
+    global locInt
+    global locFloat
+    global locString
+    global locBool
+    global tempInt
+    global tempFloat
+    global tempString
+    global tempBool
+    global tempPointer
+    global auxlocInt
+    global auxlocFloat
+    global auxlocString
+    global auxlocBool
+    global auxtempInt
+    global auxtempFloat
+    global auxtempString
+    global auxtempBool
+    global auxtempPointer
+
     while True:
         cuadruplo = cuadruplos[pointer-1]
         # print('Ejecutamos cuadruplo {}'.format(cuadruplo))
@@ -108,7 +168,6 @@ def ejecucion(pointer):
             dirAdonde = (adonde//1000)*1000
             asigna = dicDir[dirAsigna][-1][asigna-dirAsigna]
             l = dicDir[dirAdonde]
-            #Tengo que hacer esto pero en suma, resta, etc para que se escriba lo que están en el indice que tiene el pointer
             if(dirAdonde!=13000):
                 l[-1][adonde-dirAdonde] = asigna
             else:
@@ -120,10 +179,6 @@ def ejecucion(pointer):
                 # print(l[-1][indice-dirIndice])
                 l[-1][indice-dirIndice] = asigna
             pointer += 1
-        # ENDFUNC -------------------------------------------------------
-        elif operador == 'endfunc':
-            pointer +=1
-            pass
         # VERIFICAR -------------------------------------------------------
         elif operador == 'ver':
             aVerificar = cuadruplo[2]
@@ -314,6 +369,8 @@ def ejecucion(pointer):
             dirop1 = (op1//1000)*1000
             dirop2 = (op2//1000)*1000
             dirAdonde = (adonde//1000)*1000
+            # print('op1 {} op2 {} adonde {}'.format(op1,op2,adonde))
+            # print(tempInt)
             op1 = dicDir[dirop1][-1][op1-dirop1]
             op2 = dicDir[dirop2][-1][op2-dirop2]
             dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 - op2
@@ -342,6 +399,200 @@ def ejecucion(pointer):
             op2 = dicDir[dirop2][-1][op2-dirop2]
             dicDir[dirAdonde][-1][adonde-dirAdonde] = op1 / op2
             pointer += 1
+        # ERA -------------------------------------------------------
+        elif operador == 'era':
+            # cuad = [contCuadruplos, 'era', numLoci, numLocf, numLocs, numLocb
+            #                      , numPari, numParf, numPars, numParb
+            #                      , numTempi, numTempf, numTemps, numTempb]
+            
+            localIntSize = cuadruplo[2]
+            localFloatSize = cuadruplo[3]
+            localStringSize = cuadruplo[4]
+            localBoolSize = cuadruplo[5]
+            numParInt = cuadruplo[6]
+            numParFloat = cuadruplo[7]
+            numParString = cuadruplo[8]
+            numParBool = cuadruplo[9]
+            tempIntSize = cuadruplo[10]
+            tempFloatSize = cuadruplo[11]
+            tempStringSize = cuadruplo[12]
+            tempBoolSize = cuadruplo[13]
+            tempPointerSize = cuadruplo[14]
+
+            # auxlocInt.append([])
+            for i in range(localIntSize):
+                auxlocInt.append(None)
+
+            # auxlocFloat.append([])
+            for i in range(localFloatSize):
+                auxlocFloat.append(None)
+
+            # locString.append([])
+            for i in range(localStringSize):
+                auxlocString.append(None)
+
+            # locBool.append([])
+            for i in range(localBoolSize):
+                auxlocBool.append(None)
+
+            # tempInt.append([])
+            for i in range(tempIntSize):
+                auxtempInt.append(None)
+
+            # tempFloat.append([])
+            for i in range(tempFloatSize):
+                auxtempFloat.append(None)
+
+            # tempString.append([])
+            for i in range(tempStringSize):
+                auxtempString.append(None)
+
+            # tempBool.append([])
+            for i in range(tempBoolSize):
+                auxtempBool.append(None)
+
+            # tempPointer.append([])
+            for i in range(tempPointerSize):
+                auxtempPointer.append(None)
+
+            # print(cuadruplo)
+            # print('Era, auxtempint ->', auxtempInt)
+
+            # print(pointer)
+            # print(auxlocInt)
+            # print(auxlocFloat)
+            # print(auxlocString)
+            # print(auxlocBool)
+            # print(auxtempInt)
+            # print(auxtempFloat)
+            # print(auxtempString)
+            # print(auxtempBool)
+            # print(auxtempPointer)
+
+
+            pointer += 1
+        # PARAMETRO -------------------------------------------------------
+        elif operador == 'par':
+            # 1000:auxlocInt,
+            # 2000:auxlocFloat,
+            # 3000:auxlocString,
+            # 4000:auxlocBool,
+            # 5000:auxlocInt,
+            # 6000:auxlocFloat,
+            # 7000:auxlocString,
+            # 8000:auxlocBool,
+            # 9000:auxlocInt,
+            # 10000:auxlocFloat,
+            # 11000:auxlocString,
+            # 12000:auxlocBool,
+            # 13000:tempPointer,
+            # 14000:constantes
+            # print(cuadruplo)
+            parametro = cuadruplo[2]
+            dirPar = (parametro//1000)*1000
+            parametro = dicDir[dirPar][-1][parametro-dirPar]
+            # print('Lista del parametro', dicDir[dirPar])
+            # print('par',parametro)
+            adonde = cuadruplo[3]
+            adonde = int(adonde[-1])
+            # print('adonde',adonde)
+            dirAdonde = dirPar
+            # print('diradonde',dirAdonde)
+            
+            if(dirAdonde!=14000):
+                if(dirAdonde==1000 or dirAdonde==5000 or dirAdonde==9000):
+                    auxlocInt[adonde-1] = parametro
+                elif(dirAdonde==2000 or dirAdonde==6000 or dirAdonde==10000):
+                    auxlocFloat[adonde-1] = parametro
+                elif(dirAdonde==3000 or dirAdonde==7000 or dirAdonde==11000):
+                    auxlocString[adonde-1] = parametro
+                elif(dirAdonde==4000 or dirAdonde==8000 or dirAdonde==12000):
+                    auxlocBool[adonde-1] = parametro
+            else:
+                if isinstance(parametro,int):
+                    auxlocInt[adonde-1] = parametro
+                elif isinstance(parametro,float):
+                    auxlocFloat[adonde-1] = parametro
+                elif isinstance(parametro,str):
+                    if parametro=='true' or parametro=='false':
+                        auxlocBool[adonde-1] = parametro
+                    else:
+                        auxlocString[adonde-1] = parametro
+
+            pointer += 1
+        # GOSUB -------------------------------------------------------
+        elif operador == 'gosub':
+            locInt.append(auxlocInt)
+            locFloat.append(auxlocFloat)
+            locString.append(auxlocString)
+            locBool.append(auxlocBool)
+
+            tempInt.append(auxtempInt)
+            tempFloat.append(auxtempFloat)
+            tempString.append(auxtempString)
+            tempBool.append(auxtempBool)
+            tempPointer.append(auxtempPointer)
+
+            auxlocInt = []
+            auxlocFloat = []
+            auxlocString = []
+            auxlocBool = []
+
+            auxtempInt = []
+            auxtempFloat = []
+            auxtempString = []
+            auxtempBool = []
+            auxtempPointer = []
+
+            # print('LOCALES ->', locInt, locFloat, locString, locBool)
+            # print('TEMPORALES ->', tempInt, tempFloat, tempString, tempBool)
+            # print('gosub, tempint ->', tempInt)
+            comeBack.append(pointer+1)
+            nuevoPointer = cuadruplo[3]
+            ejecucion(nuevoPointer)
+
+            pointer += 1
+        # RETURN -------------------------------------------------------
+        elif operador == 'ret':
+            regresa = cuadruplo[2]
+            adond = cuadruplo[3]
+            dirRegresa = (regresa//1000)*1000
+            dirAdond = (adond//1000)*1000
+
+            regresa = dicDir[dirRegresa][-1][regresa-dirRegresa]
+            dicDir[dirAdond][-1][adond-dirAdond] = regresa
+
+            locInt.pop()
+            locFloat.pop()
+            locString.pop()
+            locBool.pop()
+
+            tempInt.pop()
+            tempFloat.pop()
+            tempString.pop()
+            tempBool.pop()
+            tempPointer.pop()
+
+            ejecucion(comeBack.pop())
+
+            pointer += 1
+        # ENDFUNC -------------------------------------------------------
+        elif operador == 'endfunc':
+            locInt.pop()
+            locFloat.pop()
+            locString.pop()
+            locBool.pop()
+
+            tempInt.pop()
+            tempFloat.pop()
+            tempString.pop()
+            tempBool.pop()
+            tempPointer.pop()
+
+            # print('LOCALES ->', locInt, locFloat, locString, locBool)
+            # print('TEMPORALES ->', tempInt, tempFloat, tempString, tempBool)
+
+            ejecucion(comeBack.pop())
         # ENDPROGRAM -------------------------------------------------------
         elif operador == 'endprogram':
             # print(tempPointer)
@@ -396,10 +647,6 @@ def maq(listaCuad : list, glob, ctes, tempiglob, tempfglob, tempsglob, tempbglob
     globales = []
     for g in range(contGlobs):
         globales.append(None)
-    # print(globInt)
-    # print(globFloat)
-    # print(globString)
-    # print(globBool)
 
     #Declaramos la memoria de constantess
     consts = list(constants)

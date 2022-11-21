@@ -1,5 +1,6 @@
-program ejemplo3;
-var int x;
+program fibonacci;
+var int x, y, cont;
+
 
 int func fib(int n){
     if(n<2){
@@ -14,9 +15,15 @@ int func fib(int n){
 
 func main()
 {
-    x = 5;
-    x = fib(6);
-    write(x);
+    write("Dale un valor a y");
+    read(y);
+    cont = 1;
+    for(1:y){
+        x = fib(cont);
+        write(x);
+        cont = cont + 1;
+    }
+    
 }
 
 end;

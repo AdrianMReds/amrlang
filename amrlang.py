@@ -127,13 +127,11 @@ def fill(numCuad, contenido):
 
 def checkType(id):
     global actualFunc
-    print(actualFunc)
     if(dirFunc[actualFunc]['vars'].get(id,-1)!=-1):
         varsInFunc = dirFunc[actualFunc]['vars']
     else:
         varsInFunc = dirFunc[progName]['vars']
     t = varsInFunc[id]['type']
-    print("Type de {}".format(id), t)
     return t
 
 reservadas = ['program', 'var', 'func', 'main', 'int', 'float', 'string', 'bool',
@@ -291,7 +289,7 @@ def p_cuadGotoMain(p):
     global contCuadruplos
     cuad = [contCuadruplos, 'goto']
     listaCuadruplos.append(cuad)
-    print('Generamos cuadruplo', cuad)
+    # print('Generamos cuadruplo', cuad)
     contCuadruplos += 1
 
 def p_cuadEnd(p):
@@ -302,7 +300,7 @@ def p_cuadEnd(p):
     global contCuadruplos
     cuad = [contCuadruplos, 'endprogram']
     listaCuadruplos.append(cuad)
-    print('Generamos cuadruplo', cuad)
+    # print('Generamos cuadruplo', cuad)
 
 
 def p_auxprograma(p):
@@ -407,7 +405,6 @@ def p_agregaVar(p):
             nv = p[-1]
             dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':0, 'dirVar' : direc, 'size':1}
         else:
-            # print('p de arreglo o matriz',p)
             #Array
             if p[-3] != ',':
                 #Name of var (ID)
@@ -419,12 +416,11 @@ def p_agregaVar(p):
                 r = (sup+1)*r
                 m0 = r
                 dirFunc[actualFunc]['vars'][nv]['size'] = m0
-                # print('m0',r)
                 offset = 0
                 n = Node(inf, sup, 0)
                 ll = LinkedList(n)
                 dirFunc[actualFunc]['vars'][nv]['llDims'] = ll
-                dirFunc[actualFunc]['vars'][nv]['llDims'].printList()
+                # dirFunc[actualFunc]['vars'][nv]['llDims'].printList()
 
                 for x in range(m0-1):
                     direc = None
@@ -478,7 +474,6 @@ def p_agregaVar(p):
                 r = r *(sup2 + 1)
                 m0 = r
                 dirFunc[actualFunc]['vars'][nv]['size'] = r
-                # print('m0',m0)
                 m1 = m0/(sup+1)
                 m1 = int(m1)
                 n = Node(inf,sup,m1)
@@ -486,7 +481,7 @@ def p_agregaVar(p):
                 m2 = m1/(sup2+1)
                 ll.add(inf,sup2,0)
                 dirFunc[actualFunc]['vars'][nv]['llDims'] = ll
-                dirFunc[actualFunc]['vars'][nv]['llDims'].printList()
+                # dirFunc[actualFunc]['vars'][nv]['llDims'].printList()
                 for x in range(m0-1):
                     direc = None
                     if tipoVar == 'int':
@@ -573,7 +568,6 @@ def p_agregaPar(p):
             nv = p[-1]
             dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':0, 'dirVar' : direc}
         else:
-            # print('p de arreglo o matriz',p)
             #Array
             if p[-3] != ',':
                 #Name of var (ID)
@@ -586,16 +580,13 @@ def p_agregaPar(p):
                 r = (sup+1)*r
                 m0 = r
                 dirFunc[actualFunc]['vars'][nv]['size'] = m0
-                print('m0',m0)
                 offset = 0
                 n = Node(inf, sup, 0)
                 ll = LinkedList(n)
                 dirFunc[actualFunc]['vars'][nv]['llDims'] = ll
-                dirFunc[actualFunc]['vars'][nv]['llDims'].printList()
+                # dirFunc[actualFunc]['vars'][nv]['llDims'].printList()
 
                 for x in range(m0-1):
-                    print('m0',m0)
-                    print('actualFunc',actualFunc)
                     direc = None
                     if tipoVar == 'int':
                         direc = locInt
@@ -629,7 +620,6 @@ def p_agregaPar(p):
                 r = r *(sup2 + 1)
                 m0 = r
                 dirFunc[actualFunc]['vars'][nv]['size'] = r
-                # print('m0',m0)
                 m1 = m0/(sup+1)
                 m1 = int(m1)
                 n = Node(inf,sup,m1)
@@ -637,10 +627,8 @@ def p_agregaPar(p):
                 m2 = m1/(sup2+1)
                 ll.add(inf,sup2,0)
                 dirFunc[actualFunc]['vars'][nv]['llDims'] = ll
-                dirFunc[actualFunc]['vars'][nv]['llDims'].printList()
+                
                 for x in range(m0-1):
-                    print('m0',m0)
-                    print('actualFunc',actualFunc)
                     direc = None
                     if tipoVar == 'int':
                         direc = locInt
@@ -733,7 +721,7 @@ def p_cuadEndf(p):
     global tempPointer
     cuad = [contCuadruplos, 'endfunc']
     listaCuadruplos.append(cuad)
-    print('Generamos cuadruplo', cuad)
+    # print('Generamos cuadruplo', cuad)
     contCuadruplos += 1
     locInt = locIntInf
     locFloat = locFloatInf
@@ -744,7 +732,6 @@ def p_cuadEndf(p):
     tempString = tempStringInf
     tempBool = tempBoolInf
     tempPointer = tempPointerInf
-    # dirFunc[actualFunc]['vars'] = {}
 
 def p_agregaFunc(p):
     '''
@@ -766,7 +753,7 @@ def p_agregaFunc(p):
                              , 'parInt':0, 'parFloat':0, 'parString':0, 'parBool':0, 'parListInt':0, 'parListFloat':0, 'parListString':0, 'parListBool':0
                              , 'tempInt':0, 'tempFloat':0, 'tempString':0, 'tempBool':0, 'tempPointer':0
                              , 'secPars':'', 'vars' : {}}
-        # tFunc = dirFunc[actualFunc]['type']
+
         #Si aún no existe una variable de la función
         #Si ya existe no es necesario crear la variable, solo hacer el cuadruplo
         #Tipo de la función
@@ -835,7 +822,6 @@ def p_checkID(p):
     checkID :
     '''
     id = p[-1]
-    # print('ID EN ASIGNACION',p[-1])
     varExists = False
     global dirFunc
     global actualFunc
@@ -872,11 +858,10 @@ def p_cuadAsignacion(p):
         pilaOperandos.append(p[-1].strip('"'))
         pilaTipos.append('string')
 
-    print(p[-5])
 
     tipoID = checkType(p[-5])
     tipoAsigna = pilaTipos.pop()
-    print("Tipo de {}".format(pilaOperandos[-1]), tipoAsigna)
+    # print("Tipo de {}".format(pilaOperandos[-1]), tipoAsigna)
     if(tipoID == tipoAsigna):
         varsInFunc = dirFunc[actualFunc]['vars']
         varLocal = p[-5] in varsInFunc.keys()
@@ -904,12 +889,12 @@ def p_cuadAsignacion(p):
             
             cuad = [contCuadruplos, '=', aAsignar,direc]
             listaCuadruplos.append(cuad)
-            print("Generamos cuadruplo", cuad)
+            # print("Generamos cuadruplo", cuad)
             contCuadruplos += 1
         elif(type(p[-1]) == str):
             cuad = [contCuadruplos, '=', aAsignar,direc]
             listaCuadruplos.append(cuad)
-            print("Generamos cuadruplo", cuad)
+            # print("Generamos cuadruplo", cuad)
             contCuadruplos += 1
     else:
         sys.exit("TypeMismatch Error: Id \"{}\" is {}, not {}".format(p[-5],tipoID,tipoAsigna))
@@ -940,7 +925,6 @@ def p_pushOTAsig(p):
         if(p[-3]!=','):
             #Nombre de variable/ID
             operando = idParaLista
-            print('operando', operando)
             aVerificar = pilaOperandos.pop()
             pilaTipos.pop()
             if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
@@ -953,7 +937,7 @@ def p_pushOTAsig(p):
             k = n.get_k()
             cuad = [contCuadruplos, 'ver', aVerificar, inf, sup]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplos',cuad)
+            # print('Generamos cuadruplos',cuad)
             contCuadruplos += 1
             
             existe = listaConstantes.get((k*-1),-1)
@@ -969,7 +953,7 @@ def p_pushOTAsig(p):
 
             cuad = [contCuadruplos, '+', aVerificar, dirConst, tempInt]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
             #Acabo de poner esto
@@ -985,9 +969,6 @@ def p_pushOTAsig(p):
                 dirFunc[progName]['tempPointer'] += 1
                 dirFunc[actualFunc]['tempPointer'] += 1
 
-            print('TX AJDKLAJFLAKSDJFÑLSAKDJFLKSDAJF', tx)
-            print('DIRB AJASDLKFJSDAÑFLKJASLÑDKF', dirB)
-
             existe = listaConstantes.get(dirB,-1)
             if(existe == -1):
                 dirConst = ctes
@@ -1001,13 +982,12 @@ def p_pushOTAsig(p):
 
             cuad = [contCuadruplos, '+', tx, dirConst, tempPointer]
             listaCuadruplos.append(cuad)
-            print("Generamos cuadruplo", cuad)
+            # print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempPointer)
             if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
                 tipoEnElPointer = dirFunc[actualFunc]['vars'][operando]['type']
             else:
                 tipoEnElPointer = dirFunc[progName]['vars'][operando]['type']
-            # print('METO EL TIPO POINTER #######################################', tipoEnElPointer)
             pilaTipos.append(tipoEnElPointer)
             contCuadruplos += 1
             tempPointer += 1
@@ -1035,11 +1015,9 @@ def p_pushOTAsig(p):
             except AttributeError:
                 sys.exit('Error: {} has not 2 dimensions'.format(operando))
 
-            print('AVERIFICAR PRIMER VER',aVerificar)
-
             cuad = [contCuadruplos, 'ver', aVerificar, inf, sup]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplos',cuad)
+            # print('Generamos cuadruplos',cuad)
             contCuadruplos += 1
 
             r=1
@@ -1049,8 +1027,6 @@ def p_pushOTAsig(p):
             m1 = m0/(sup+1)
             m1 = int(m1)
 
-            print("M1 ES IGUAL A ",m1)
-        
             existe = listaConstantes.get((m1),-1)
             if(existe == -1):
                 dirConst = ctes
@@ -1061,12 +1037,11 @@ def p_pushOTAsig(p):
             else:
                 # pilaOperandos.append(listaConstantes[k*-1])
                 dirConst = listaConstantes[m1]
-            print('DIRCONSTE ES IGUAL A ',dirConst)
             
 
             cuad = [contCuadruplos, '*', aVerificar, dirConst, tempInt]
             listaCuadruplos.append(cuad)
-            print("Generamos cuadruplo", cuad)
+            # print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
             #Acabo de poner esto
@@ -1076,14 +1051,14 @@ def p_pushOTAsig(p):
             
             cuad = [contCuadruplos, 'ver', aVerificar2, inf, sup2]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplos',cuad)
+            # print('Generamos cuadruplos',cuad)
             contCuadruplos += 1
 
             tx = pilaOperandos.pop()
 
             cuad = [contCuadruplos, '+', tx, aVerificar2, tempInt]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplos',cuad)
+            # print('Generamos cuadruplos',cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
             #Acabo de poner esto
@@ -1101,15 +1076,11 @@ def p_pushOTAsig(p):
                 # pilaOperandos.append(listaConstantes[k*-1])
                 dirConst = listaConstantes[k*-1]
 
-            print('K*-1', k*-1)
-            print('DIR CONST DE K', dirConst)
-            
-            #Acabo de modificar esto
             te = pilaOperandos.pop()
 
             cuad = [contCuadruplos, '+', te, dirConst, tempInt]
             listaCuadruplos.append(cuad)
-            print("Generamos cuadruplo", cuad)
+            # print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
             #Acabo de poner esto
@@ -1138,7 +1109,7 @@ def p_pushOTAsig(p):
 
             cuad = [contCuadruplos, '+', ty, dirConst, tempPointer]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplos',cuad)
+            # print('Generamos cuadruplos',cuad)
             pilaOperandos.append(tempPointer)
             if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
                 tipoEnElPointer = dirFunc[actualFunc]['vars'][operando]['type']
@@ -1174,7 +1145,6 @@ def p_cuadEsc(p):
     global pilaTipos
     #Lo que se va a escribir
     aesc = None
-    # print('En el write',p[-1])
     #Expresion o llamada
     if(p[-1] is None):
         aesc = pilaOperandos.pop()
@@ -1182,10 +1152,8 @@ def p_cuadEsc(p):
     #String
     elif(isinstance(p[-1], str)):
         # aesc = p[-1].strip('"')
-        print('En constantes',p[-1])
         existe = listaConstantes.get(p[-1].strip('"'),-1)
         
-        print('Existe ->',existe)
         if(existe == -1):
             aesc = ctes
             ctes += 1 
@@ -1195,7 +1163,7 @@ def p_cuadEsc(p):
         
     cuad = [contCuadruplos, 'write', aesc]
     listaCuadruplos.append(cuad)
-    print('Generamos cuadruplos',cuad)
+    # print('Generamos cuadruplos',cuad)
     contCuadruplos += 1
     
 
@@ -1235,7 +1203,7 @@ def p_checkFunc(p):
     '''
     checkFunc :
     '''
-    print('------------------------', p[-1])
+    # print('------------------------', p[-1])
     existe = dirFunc.get(p[-1], -1) != -1
     if existe == False:
         sys.exit('Error: {} is not defined as a function'.format(p[-1]))
@@ -1264,7 +1232,7 @@ def p_cuadEra(p):
     numTempp = dirFunc[funcACorrer]['tempPointer']
     
     if(actualFunc==progName):
-        print(actualFunc)
+        # print(actualFunc)
         cuad = [contCuadruplos, 'era', numLoci, numLocf, numLocs, numLocb
                                  , numPari, numParf, numPars, numParb
                                  , numTempi, numTempf, numTemps, numTempb, numTempp]
@@ -1304,13 +1272,12 @@ def p_cuadEra(p):
 
 
     else:
-        print(actualFunc)
+        # print(actualFunc)
         cuad = [contCuadruplos, 'era']
         pilaSaltosEra.append(contCuadruplos)
     listaCuadruplos.append(cuad)
-    print('Generamos cuadruplos',cuad)
+    # print('Generamos cuadruplos',cuad)
     contCuadruplos += 1
-    # print('Funca',funcACorrer)
 
 def p_cuadPar(p):
     '''
@@ -1359,8 +1326,6 @@ def p_cuadPar(p):
     # funcACorrer = p[-5]
     secuencia = dirFunc[funcACorrer]['secPars']
     numPars = len(secuencia)
-    # print('PARAM COUNTER',paramCounter)
-    # print('NUMPARS',numPars)
     if paramCounter+1 > numPars:
         sys.exit('Error: The number of parameters on the call is incorrect')
     if argType == 'int':
@@ -1384,7 +1349,6 @@ def p_cuadPar(p):
         else:
             sys.exit('Error: {}\'s parameter number {} is not bool'.format(funcACorrer,paramCounter+1))
     
-    print("ESID ->",esid, arg)
 
     #Si es un id tenemos que revisar si es una lista para enviar en donde termina la direccion y asignarle los valores en ejecución
     if(esid):
@@ -1399,19 +1363,19 @@ def p_cuadPar(p):
             sup = arg + dirFunc[actualFunc]['vars'][ar]['size'] - 1
             cuad = [contCuadruplos, 'par', arg, parNum, sup]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             contCuadruplos += 1
         else:
             parNum = 'par'+str(paramCounter)
             cuad = [contCuadruplos, 'par', arg, parNum]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             contCuadruplos += 1
     else:
         parNum = 'par'+str(paramCounter)
         cuad = [contCuadruplos, 'par', arg, parNum]
         listaCuadruplos.append(cuad)
-        print('Generamos cuadruplo',cuad)
+        # print('Generamos cuadruplo',cuad)
         contCuadruplos += 1
 
 
@@ -1423,8 +1387,6 @@ def p_verPars(p):
     global funcACorrer
     # funcACorrer = p[-7]
     secuencia = dirFunc[funcACorrer]['secPars']
-    # print('PARAM COUNTER',paramCounter)
-    # print('NUMPARS', len(secuencia))
     if paramCounter != len(secuencia):
         sys.exit('Error: {} needs to have {} parameters'.format(funcACorrer,len(secuencia)))
     else:
@@ -1450,7 +1412,7 @@ def p_cuadGoSub(p):
     dirDeFunc = dirFunc[funcACorrer]['dirFunc']
     cuad = [contCuadruplos, 'gosub', funcACorrer, dirDeFunc]
     listaCuadruplos.append(cuad)
-    print('Generamos cuadruplos',cuad)
+    # print('Generamos cuadruplos',cuad)
     contCuadruplos += 1
     #Si la función no es void tiene que guardar lo que retorna en una variable
     if(dirFunc[funcACorrer]['type'] != 'void'):
@@ -1480,7 +1442,7 @@ def p_cuadGoSub(p):
         if tFunc == 'int':
             cuad = [contCuadruplos, '=', direc, tempInt]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplos',cuad)
+            # print('Generamos cuadruplos',cuad)
             pilaOperandos.append(tempInt)
             pilaTipos.append('int')
             dirFunc[actualFunc]['tempInt'] += 1
@@ -1489,7 +1451,7 @@ def p_cuadGoSub(p):
         elif tFunc == 'float':
             cuad = [contCuadruplos, '=', direc, tempFloat]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplos',cuad)
+            # print('Generamos cuadruplos',cuad)
             pilaOperandos.append(tempFloat)
             pilaTipos.append('float')
             dirFunc[actualFunc]['tempFloat'] += 1
@@ -1498,7 +1460,7 @@ def p_cuadGoSub(p):
         elif tFunc == 'string':
             cuad = [contCuadruplos, '=', direc, tempString]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplos',cuad)
+            # print('Generamos cuadruplos',cuad)
             pilaOperandos.append(tempString)
             pilaTipos.append('string')
             dirFunc[actualFunc]['tempString'] += 1
@@ -1507,7 +1469,7 @@ def p_cuadGoSub(p):
         elif tFunc == 'bool':
             cuad = [contCuadruplos, '=', direc, tempBool]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplos',cuad)
+            # print('Generamos cuadruplos',cuad)
             pilaOperandos.append(tempBool)
             pilaTipos.append('bool')
             dirFunc[actualFunc]['tempBool'] += 1
@@ -1550,7 +1512,7 @@ def p_cuadFinWhile(p):
     ret = pilaSaltos.pop()
     cuad = [contCuadruplos, 'goto', ret]
     listaCuadruplos.append(cuad)
-    print('Generamos cuadruplos',cuad)
+    # print('Generamos cuadruplos',cuad)
     contCuadruplos += 1
     fill(end, contCuadruplos)
 
@@ -1566,9 +1528,6 @@ def p_checkExpFor(p):
     global pilaOperandos
     global poper
     global pilaTipos
-    # print("PILA OPERANDOS FOR", pilaOperandos)
-    # print("POPER EN FOR", poper)
-    # print("TIPOS EN FOR", pilaTipos)
     if (pilaTipos[-1] != 'int'):
         sys.exit("TypeMismatch Error: Expresions inside a for loop have to be int")
     else:
@@ -1594,7 +1553,7 @@ def p_gotoFor(p):
     #Asignamos el primer valor a un temporal
     cuad = [contCuadruplos, '=', leftOp, tempInt]
     listaCuadruplos.append(cuad)
-    print('Generamos cuadruplos',cuad)
+    # print('Generamos cuadruplos',cuad)
     pilaOperandos.append(tempInt)
     dirFunc[actualFunc]['tempInt'] += 1
     contCuadruplos += 1
@@ -1603,7 +1562,7 @@ def p_gotoFor(p):
     #Asignamos el segundo valor a un temporal
     cuad = [contCuadruplos, '=', rightOp, tempInt]
     listaCuadruplos.append(cuad)
-    print('Generamos cuadruplos',cuad)
+    # print('Generamos cuadruplos',cuad)
     pilaOperandos.append(tempInt)
     dirFunc[actualFunc]['tempInt'] += 1
     contCuadruplos += 1
@@ -1621,7 +1580,7 @@ def p_gotoFor(p):
     cuad = [contCuadruplos, '<', leftOp, rightOp, tempBool]
     pilaOperandos.append(leftOp)
     listaCuadruplos.append(cuad)
-    print("Generamos cuadruplo", cuad)
+    # print("Generamos cuadruplo", cuad)
     pilaOperandos.append(tempBool)
     dirFunc[actualFunc]['tempBool'] += 1
     pilaTipos.append(typeList[typeResult])
@@ -1636,7 +1595,7 @@ def p_gotoFor(p):
     pilaTipos.pop()
     cuad = [contCuadruplos, 'gotof', result]
     listaCuadruplos.append(cuad)
-    print("Generamos cuadruplo", cuad)
+    # print("Generamos cuadruplo", cuad)
     contCuadruplos += 1
 
 def p_returnFor(p):
@@ -1668,9 +1627,8 @@ def p_returnFor(p):
 
     cuad = [contCuadruplos, '+', aSumar, dirConst, tempInt]
     listaCuadruplos.append(cuad)
-    print("Generamos cuadruplo", cuad)
+    # print("Generamos cuadruplo", cuad)
     pilaOperandos.append(tempInt)
-    print('ACTUALFUNC EN RETURNFOR ES {}'.format(actualFunc))
     dirFunc[actualFunc]['tempInt'] += 1
     pilaTipos.append('int')
     tempInt += 1
@@ -1680,14 +1638,14 @@ def p_returnFor(p):
     cuad = [contCuadruplos, '=', pilaOperandos.pop(), aSumar]
     pilaTipos.pop()
     listaCuadruplos.append(cuad)
-    print("Generamos cuadruplo", cuad)
+    # print("Generamos cuadruplo", cuad)
     contCuadruplos += 1
 
     #Regresamos y rellenamos el gotof del principio
     
     cuad = [contCuadruplos, 'goto', ret]
     listaCuadruplos.append(cuad)
-    print("Generamos cuadruplo", cuad)
+    # print("Generamos cuadruplo", cuad)
     contCuadruplos += 1
     fill(toFill, contCuadruplos)
 
@@ -1708,7 +1666,7 @@ def p_cuadRead(p):
     d = dirFunc[actualFunc]['vars'][aleer]['dirVar']
     cuad = [contCuadruplos,'read',d]
     listaCuadruplos.append(cuad)
-    print("Generamos cuadruplo", cuad)
+    # print("Generamos cuadruplo", cuad)
     contCuadruplos += 1
 
 def p_estReturn(p):
@@ -1751,7 +1709,7 @@ def p_cuadRet(p):
         direc = dirFunc[progName]['vars'][actualFunc]['dirVar']
         cuad = [contCuadruplos, 'ret', retVal, direc]
         listaCuadruplos.append(cuad)
-        print("Generamos cuadruplo", cuad, direc)
+        # print("Generamos cuadruplo", cuad, direc)
         contCuadruplos += 1
 
 
@@ -1770,16 +1728,10 @@ def p_cuadAnd(p):
     global pilaOperandos
     global contCuadruplos
     global tempBool
-    # print("Poper dentro de cuadTerm",poper)
-    # try:
-    #     print("Ultimo elemento de poper",poper[-1])
-    # except:
-    #     print("No hay último elemento", poper)
     hayOp = len(poper) >= 1
-    # print(hayOp)
-    print('CUADAND')
-    print(pilaOperandos)
-    print(pilaTipos)
+    # print('CUADAND')
+    # print(pilaOperandos)
+    # print(pilaTipos)
     if (hayOp and (poper[-1] == '&&')):
         rightOp = pilaOperandos.pop()
         right_type = pilaTipos.pop()
@@ -1790,7 +1742,7 @@ def p_cuadAnd(p):
         if typeResult != -1:
             cuad = [contCuadruplos, operator, leftOp, rightOp, tempBool]
             listaCuadruplos.append(cuad)
-            print("Generamos cuadruplo", cuad)
+            # print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempBool)
             dirFunc[actualFunc]['tempBool'] += 1
             pilaTipos.append(typeList[typeResult])
@@ -1814,16 +1766,10 @@ def p_cuadRelop(p):
     global pilaOperandos
     global contCuadruplos
     global tempBool
-    # print("Poper dentro de cuadTerm",poper)
-    # try:
-    #     print("Ultimo elemento de poper",poper[-1])
-    # except:
-    #     print("No hay último elemento", poper)
     hayOp = len(poper) >= 1
-    # print(hayOp)
-    print('CUADRELOP')
-    print(pilaOperandos)
-    print(pilaTipos)
+    # print('CUADRELOP')
+    # print(pilaOperandos)
+    # print(pilaTipos)
     if (hayOp and (poper[-1] == '||')):
         rightOp = pilaOperandos.pop()
         right_type = pilaTipos.pop()
@@ -1834,7 +1780,7 @@ def p_cuadRelop(p):
         if typeResult != -1:
             cuad = [contCuadruplos, operator, leftOp, rightOp, tempBool]
             listaCuadruplos.append(cuad)
-            print("Generamos cuadruplo", cuad)
+            # print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempBool)
             dirFunc[actualFunc]['tempBool'] += 1
             pilaTipos.append(typeList[typeResult])
@@ -1938,7 +1884,6 @@ def p_quitaFondo(p):
     quitaFondo :
     '''
     global poper
-    # print('Qutifondo',poper[-1])
     poper.pop()
 
 def p_llamada_esp(p):
@@ -1965,12 +1910,11 @@ def p_cuadEspVoid(p):
     direc = dirFunc[actualFunc]['vars'][id]['dirVar'] 
     tipo = dirFunc[actualFunc]['vars'][id]['type']
     numDimensiones = dirFunc[actualFunc]['vars'][id]['dimensions']
-    print('numdims',numDimensiones)
     esarray = dirFunc[actualFunc]['vars'][id]['dimensions'] >= 1
     if esarray == False:
         sys.exit('Error: You can use special functions only with arrays')
-    if(tipo != 'int' and tipo != 'float'):
-        sys.exit('Error: You can use special functions with int or float arrays')
+    # if(tipo != 'int' and tipo != 'float'):
+    #     sys.exit('Error: You can use special functions with int or float arrays')
     if(nombreEspecial=='graph' and numDimensiones!=2):
         sys.exit('Error: you can use graph only with arrays of 2 dimensions')
     if(nombreEspecial=='printMatrix' and numDimensiones!=2):
@@ -1984,12 +1928,12 @@ def p_cuadEspVoid(p):
     if(nombreEspecial == 'graph'):
         cuad = [contCuadruplos, nombreEspecial, direc, direcSup]
         listaCuadruplos.append(cuad)
-        print('Generamos cuadruplo',cuad)
+        # print('Generamos cuadruplo',cuad)
         contCuadruplos +=1
     elif(nombreEspecial == 'printArray'):
         cuad = [contCuadruplos, nombreEspecial, direc, direcSup]
         listaCuadruplos.append(cuad)
-        print('Generamos cuadruplo',cuad)
+        # print('Generamos cuadruplo',cuad)
         contCuadruplos +=1
     elif(nombreEspecial == 'printMatrix'):
         ll = dirFunc[actualFunc]['vars'][id]['llDims']
@@ -1998,7 +1942,7 @@ def p_cuadEspVoid(p):
         sup2 = n1.next_node.sup
         cuad = [contCuadruplos, nombreEspecial, direc, direcSup, sup+1,sup2+1]
         listaCuadruplos.append(cuad)
-        print('Generamos cuadruplo',cuad)
+        # print('Generamos cuadruplo',cuad)
         contCuadruplos +=1
 
 def p_cuadEsp(p):
@@ -2015,7 +1959,6 @@ def p_cuadEsp(p):
     direc = dirFunc[actualFunc]['vars'][id]['dirVar'] 
     tipo = dirFunc[actualFunc]['vars'][id]['type']
     numDimensiones = dirFunc[actualFunc]['vars'][id]['dimensions']
-    print('numdims',numDimensiones)
     esarray = dirFunc[actualFunc]['vars'][id]['dimensions'] >= 1
     if esarray == False:
         sys.exit('Error: You can use special functions only with arrays')
@@ -2028,7 +1971,7 @@ def p_cuadEsp(p):
     if nombreEspecial == 'length':
         cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
         listaCuadruplos.append(cuad)
-        print('Generamos cuadruplo',cuad)
+        # print('Generamos cuadruplo',cuad)
         pilaOperandos.append(tempInt)
         pilaTipos.append('int')
         contCuadruplos +=1
@@ -2038,7 +1981,7 @@ def p_cuadEsp(p):
         if(tipo=='int'):
             cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempInt)
             pilaTipos.append('int')
             contCuadruplos +=1
@@ -2047,7 +1990,7 @@ def p_cuadEsp(p):
         else:
             cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempFloat]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempFloat)
             pilaTipos.append('float')
             contCuadruplos +=1
@@ -2057,7 +2000,7 @@ def p_cuadEsp(p):
         if(tipo=='int'):
             cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempInt)
             pilaTipos.append('int')
             contCuadruplos +=1
@@ -2066,7 +2009,7 @@ def p_cuadEsp(p):
         else:
             cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempFloat]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempFloat)
             pilaTipos.append('float')
             contCuadruplos +=1
@@ -2076,7 +2019,7 @@ def p_cuadEsp(p):
         if(tipo=='int'):
             cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempInt)
             pilaTipos.append('int')
             contCuadruplos +=1
@@ -2085,7 +2028,7 @@ def p_cuadEsp(p):
         else:
             cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempFloat]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempFloat)
             pilaTipos.append('float')
             contCuadruplos +=1
@@ -2095,7 +2038,7 @@ def p_cuadEsp(p):
         if(tipo=='int'):
             cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempInt)
             pilaTipos.append('int')
             contCuadruplos +=1
@@ -2104,7 +2047,7 @@ def p_cuadEsp(p):
         else:
             cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempFloat]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempFloat)
             pilaTipos.append('float')
             contCuadruplos +=1
@@ -2114,7 +2057,7 @@ def p_cuadEsp(p):
         if(tipo=='int'):
             cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempInt)
             pilaTipos.append('int')
             contCuadruplos +=1
@@ -2123,7 +2066,7 @@ def p_cuadEsp(p):
         else:
             cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempFloat]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempFloat)
             pilaTipos.append('float')
             contCuadruplos +=1
@@ -2133,7 +2076,7 @@ def p_cuadEsp(p):
         if(tipo=='int'):
             cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempInt)
             pilaTipos.append('int')
             contCuadruplos +=1
@@ -2142,7 +2085,7 @@ def p_cuadEsp(p):
         else:
             cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempFloat]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempFloat)
             pilaTipos.append('float')
             contCuadruplos +=1
@@ -2152,7 +2095,7 @@ def p_cuadEsp(p):
         if(tipo=='int'):
             cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempInt]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempInt)
             pilaTipos.append('int')
             contCuadruplos +=1
@@ -2161,7 +2104,7 @@ def p_cuadEsp(p):
         else:
             cuad = [contCuadruplos, nombreEspecial, direc, direcSup, tempFloat]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplo',cuad)
+            # print('Generamos cuadruplo',cuad)
             pilaOperandos.append(tempFloat)
             pilaTipos.append('float')
             contCuadruplos +=1
@@ -2172,7 +2115,7 @@ def p_cuadEsp(p):
     elif(nombreEspecial == 'printArray'):
         cuad = [contCuadruplos, nombreEspecial, direc, direcSup]
         listaCuadruplos.append(cuad)
-        print('Generamos cuadruplo',cuad)
+        # print('Generamos cuadruplo',cuad)
         contCuadruplos +=1
 
 
@@ -2228,10 +2171,10 @@ def p_pushOT(p):
     if(p[-1] == ']'):
         #Array/Lista
         if(p[-3]!=','):
-            print('ESTOY EN PUSHOT SIENDO UNA LISTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+            # print('ESTOY EN PUSHOT SIENDO UNA LISTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
             #Nombre de variable/ID
             operando = p[-5]
-            print('operando', operando)
+            # print('operando', operando)
             aVerificar = pilaOperandos.pop()
             pilaTipos.pop()
             if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
@@ -2245,7 +2188,7 @@ def p_pushOT(p):
 
             cuad = [contCuadruplos, 'ver', aVerificar, inf, sup]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplos',cuad)
+            # print('Generamos cuadruplos',cuad)
             contCuadruplos += 1
             
             #+ S1 (-k) tx -> k siempre es 0 este cuadruplo es innecesario
@@ -2263,7 +2206,7 @@ def p_pushOT(p):
 
             cuad = [contCuadruplos, '+', aVerificar, dirConst, tempInt]
             listaCuadruplos.append(cuad)
-            print("Generamos cuadruplo", cuad)
+            # print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
             #Acabo de poner esto
@@ -2279,9 +2222,6 @@ def p_pushOT(p):
                 dirFunc[progName]['tempPointer'] += 1
                 dirFunc[actualFunc]['tempPointer'] += 1
 
-            print('TX AJDKLAJFLAKSDJFÑLSAKDJFLKSDAJF', tx)
-            print('DIRB AJASDLKFJSDAÑFLKJASLÑDKF', dirB)
-
             existe = listaConstantes.get(dirB,-1)
             if(existe == -1):
                 dirConst = ctes
@@ -2295,7 +2235,7 @@ def p_pushOT(p):
 
             cuad = [contCuadruplos, '+', tx, dirConst, tempPointer]
             listaCuadruplos.append(cuad)
-            print("Generamos cuadruplo", cuad)
+            # print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempPointer)
             if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
                 tipoEnElPointer = dirFunc[actualFunc]['vars'][operando]['type']
@@ -2306,7 +2246,7 @@ def p_pushOT(p):
             tempPointer += 1
         #Matriz
         else:
-            print('ESTOY EN PUSHOT SIENDO UNA MATRIZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+            # print('ESTOY EN PUSHOT SIENDO UNA MATRIZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
             #Nombre de variable/ID
             operando = p[-7]
             
@@ -2328,7 +2268,7 @@ def p_pushOT(p):
 
             cuad = [contCuadruplos, 'ver', aVerificar, inf, sup]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplos',cuad)
+            # print('Generamos cuadruplos',cuad)
             contCuadruplos += 1
 
             r=1
@@ -2353,25 +2293,23 @@ def p_pushOT(p):
 
             cuad = [contCuadruplos, '*', aVerificar, dirConst, tempInt]
             listaCuadruplos.append(cuad)
-            print("Generamos cuadruplo", cuad)
+            # print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
             #Acabo de poner esto
             dirFunc[actualFunc]['tempInt'] += 1
             tempInt += 1
 
-            te = pilaOperandos.pop()
-
-            cuad = [contCuadruplos, 'ver', te, inf, sup2]
+            cuad = [contCuadruplos, 'ver', aVerificar2, inf, sup2]
             listaCuadruplos.append(cuad)
-            print('Generamos cuadruplos',cuad)
+            # print('Generamos cuadruplos',cuad)
             contCuadruplos += 1
 
             tx = pilaOperandos.pop()
 
             cuad = [contCuadruplos, '+', tx, aVerificar2, tempInt]
             listaCuadruplos.append(cuad)
-            print("Generamos cuadruplo", cuad)
+            # print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
             dirFunc[actualFunc]['tempInt'] += 1
@@ -2388,12 +2326,12 @@ def p_pushOT(p):
                 # pilaOperandos.append(listaConstantes[k*-1])
                 dirConst = listaConstantes[k*-1]
 
-            print('K*-1', k*-1)
-            print('DIR CONST DE K', dirConst)
 
-            cuad = [contCuadruplos, '+', aVerificar, dirConst, tempInt]
+            te = pilaOperandos.pop()
+
+            cuad = [contCuadruplos, '+', te, dirConst, tempInt]
             listaCuadruplos.append(cuad)
-            print("Generamos cuadruplo", cuad)
+            # print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
             #Acabo de poner esto
@@ -2422,7 +2360,7 @@ def p_pushOT(p):
 
             cuad = [contCuadruplos, '+', ty, dirConst, tempPointer]
             listaCuadruplos.append(cuad)
-            print("Generamos cuadruplo", cuad)
+            # print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempPointer)
             if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
                 tipoEnElPointer = dirFunc[actualFunc]['vars'][operando]['type']
@@ -2443,24 +2381,20 @@ def p_pushOT(p):
             dirConst = ctes
             ctes += 1
             pilaOperandos.append(dirConst)
-            print('Agregué constante en pushOT')
             if(isinstance(operando,str)):
                 listaConstantes[operando.strip('"')] = dirConst
             else:
                 # | MENOS CTEINT pushOT
                 if(p[-2]=='-'):
                     # listaConstantes[operando*-1] = dirConst
-                    print('OPERANDO {} ES NEGATIVOOOOOOOOOOO'.format(operando*-1))
                     listaConstantes[operando*-1] = dirConst
                 else:
                     listaConstantes[operando] = dirConst
         else:
             if(p[-2] != '-'):
                 pilaOperandos.append(listaConstantes[operando])
-                print('Agregué constante en pushOT -')
             else:
                 pilaOperandos.append(listaConstantes[operando*-1])
-                print('Agregué constante en pushOT +')
         
         #En este if revisamos que tipo es el factor para agregarlo a la pila de tipos
         
@@ -2497,10 +2431,6 @@ def p_pushOT(p):
         if varLocal:
             pilaOperandos.append(dirFunc[actualFunc]['vars'][operando]['dirVar'])
         else:
-            # for c in listaCuadruplos:
-            #     print(c)
-            print('PUSHOT')
-            print(pilaOperandos)
             pilaOperandos.append(dirFunc[progName]['vars'][operando]['dirVar'])
         
 
@@ -2537,15 +2467,7 @@ def p_cuadTerm(p):
     global tempInt
     global tempFloat
     global pilaTipos
-    # print("Poper dentro de cuadTerm",poper)
-    # try:
-    #     print("Ultimo elemento de poper",poper[-1])
-    # except:
-    #     print("No hay último elemento", poper)
     hayOp = len(poper) >= 1
-    # print(hayOp)
-    # print('PilaO cuadTerm',pilaOperandos)
-    # print('PilaT cuadTerm',pilaTipos)
     if (hayOp and (poper[-1] == '+' or poper[-1] == '-')):
         rightOp = pilaOperandos.pop()
         right_type = pilaTipos.pop()
@@ -2558,7 +2480,7 @@ def p_cuadTerm(p):
             if(typeResult == 0):
                 cuad = [contCuadruplos, operator, leftOp, rightOp, tempInt]
                 listaCuadruplos.append(cuad)
-                print("Generamos cuadruplo", cuad)
+                # print("Generamos cuadruplo", cuad)
                 pilaOperandos.append(tempInt)
                 dirFunc[actualFunc]['tempInt'] += 1
                 pilaTipos.append(typeList[typeResult])
@@ -2568,7 +2490,7 @@ def p_cuadTerm(p):
             else:
                 cuad = [contCuadruplos, operator, leftOp, rightOp, tempFloat]
                 listaCuadruplos.append(cuad)
-                print("Generamos cuadruplo", cuad)
+                # print("Generamos cuadruplo", cuad)
                 pilaOperandos.append(tempFloat)
                 dirFunc[actualFunc]['tempFloat'] += 1
                 pilaTipos.append(typeList[typeResult])
@@ -2587,15 +2509,7 @@ def p_cuadFactor(p):
     global contCuadruplos
     global tempInt
     global tempFloat
-    # print("Poper dentro de cuadTerm",poper)
-    # try:
-    #     print("Ultimo elemento de poper",poper[-1])
-    # except:
-    #     print("No hay último elemento", poper)
     hayOp = len(poper) >= 1
-    # print(hayOp)
-    print('PilaO cuadFactor',pilaOperandos)
-    print('PilaT cuadFactor',pilaTipos)
     if (hayOp and (poper[-1] == '*' or poper[-1] == '/')):
         rightOp = pilaOperandos.pop()
         right_type = pilaTipos.pop()
@@ -2607,7 +2521,7 @@ def p_cuadFactor(p):
             if(typeResult == 0):
                 cuad = [contCuadruplos, operator, leftOp, rightOp, tempInt]
                 listaCuadruplos.append(cuad)
-                print("Generamos cuadruplo", cuad)
+                # print("Generamos cuadruplo", cuad)
                 pilaOperandos.append(tempInt)
                 dirFunc[actualFunc]['tempInt'] += 1
                 pilaTipos.append(typeList[typeResult])
@@ -2616,7 +2530,7 @@ def p_cuadFactor(p):
             else:
                 cuad = [contCuadruplos, operator, leftOp, rightOp, tempFloat]
                 listaCuadruplos.append(cuad)
-                print("Generamos cuadruplo", cuad)
+                # print("Generamos cuadruplo", cuad)
                 pilaOperandos.append(tempFloat)
                 dirFunc[actualFunc]['tempFloat'] += 1
                 pilaTipos.append(typeList[typeResult])
@@ -2637,16 +2551,7 @@ def p_cuadArit(p):
     global pilaOperandos
     global contCuadruplos
     global tempBool
-    # print("Poper dentro de cuadTerm",poper)
-    # try:
-    #     print("Ultimo elemento de poper",poper[-1])
-    # except:
-    #     print("No hay último elemento", poper)
     hayOp = len(poper) >= 1
-    # print(hayOp)
-    print('CUADARIT')
-    print(pilaOperandos)
-    print(pilaTipos)
     if (hayOp and (poper[-1] == '<' or poper[-1] == '>'
                 or poper[-1] == '<=' or poper[-1] == '>='
                 or poper[-1] == '==' or poper[-1] == '$')):
@@ -2659,7 +2564,7 @@ def p_cuadArit(p):
         if typeResult != -1:
             cuad = [contCuadruplos, operator, leftOp, rightOp, tempBool]
             listaCuadruplos.append(cuad)
-            print("Generamos cuadruplo", cuad)
+            # print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempBool)
             dirFunc[actualFunc]['tempBool'] += 1
             pilaTipos.append(typeList[typeResult])
@@ -2678,14 +2583,13 @@ def p_cuadGotof(p):
     global listaCuadruplos
     global pilaSaltos
     exp_type = pilaTipos.pop()
-    # print(exp_type)
     if(exp_type != 'bool'):
         sys.exit("Type-mismatch Error: expression inside the if has to be bool")
     else:
         result = pilaOperandos.pop()
         cuad = [contCuadruplos, 'gotof', result]
         listaCuadruplos.append(cuad)
-        print("Generamos cuadruplo", cuad)
+        # print("Generamos cuadruplo", cuad)
         pilaSaltos.append(contCuadruplos)
         contCuadruplos += 1
 
@@ -2707,7 +2611,7 @@ def p_cuadGoto(p):
     global pilaSaltos
     cuad = [contCuadruplos, 'goto']
     listaCuadruplos.append(cuad)
-    print("Generamos cuadruplo", cuad)
+    # print("Generamos cuadruplo", cuad)
     contCuadruplos += 1
     #False -> la expresión del if fue falsa
     fal = pilaSaltos.pop()
@@ -2749,24 +2653,19 @@ parser.parse(fileContent)
 
 funcs = list(dirFunc)
 
-for f in funcs:
-    attrs = list(dirFunc[f])
-    print(f)
-    # print(dirFunc[f],'\n')
-    for a in attrs:
-        print('    ',a,dirFunc[f][a])
+# for f in funcs:
+#     attrs = list(dirFunc[f])
+#     print(f)
+#     # print(dirFunc[f],'\n')
+#     for a in attrs:
+#         print('    ',a,dirFunc[f][a])
 
-# print('Pila operandos\n',pilaOperandos)
-# print('Pila Tipos\n', pilaTipos)
-# print('Pila operadores\n', poper)
-# print('Pila de saltos\n', pilaSaltos)
-# print('Lista de constantes')
 # consts = list(listaConstantes)
 # for co in consts:
 #     print(co,listaConstantes[co])
 # print()
-for c in listaCuadruplos:
-    print(c)
+# for c in listaCuadruplos:
+#     print(c)
 
 globi = dirFunc[progName]['globInt']
 globf = dirFunc[progName]['globFloat']
@@ -2781,8 +2680,8 @@ maq(listaCuadruplos,dirFunc[progName]['vars'],listaConstantes,tempi,tempf,temps,
 
 # -----------------------------------------------------------------
 
-while True:
-    tok = lexer.token()
-    if not tok:
-        break
-    print(tok)
+# while True:
+#     tok = lexer.token()
+#     if not tok:
+#         break
+#     print(tok)

@@ -1,6 +1,54 @@
 program listaFind;
 var int lista[2], num, cont, x, aenc, i;
 
+void func sort(int l[2])
+var int aux[2], primero, segundo, tercero;
+{
+    primero = l[0];
+    segundo = l[1];
+    tercero = l[2];
+    
+    if(primero<segundo){
+        if(segundo<tercero){
+            aux[0] = primero;
+            aux[1] = segundo;
+            aux[2] = tercero;
+        }
+        else{
+            aux[2] = segundo;
+            if(primero<tercero){
+                aux[0] = primero;
+                aux[1] = tercero;
+            }
+            else{
+                aux[0] = tercero;
+                aux[1] = primero;
+            }
+        }
+    }
+    else{
+        if(primero>tercero){
+            aux[2] = primero;
+            if(segundo<tercero){
+                aux[0] = segundo;
+                aux[1] = tercero;
+            }
+            else{
+                aux[0] = tercero;
+                aux[1] = segundo;
+                }
+        }
+        else{
+            aux[0] = segundo;
+            aux[1] = primero;
+            aux[2] = tercero;
+        }
+    }
+    
+    write("Lista en orden");
+    aux.printArray();
+}
+
 int func find(int l[2], int n)
 var int cont;
 {
@@ -15,7 +63,7 @@ var int cont;
 }
 
 func main(){
-    write("Llena la lista de 5 numeros");
+    write("Llena la lista de 3 numeros");
     cont = 0;
     while(cont<3){
         write("Escribe número");
@@ -32,6 +80,9 @@ func main(){
     }else{
         write("Ese numero no existe en esa lista");
     }
+    write("La lista es");
+    lista.printArray();
+    sort(lista);
 }
 
 end;

@@ -1,0 +1,49 @@
+program califs;
+var int calificaciones[9], x, cont;
+var string listaNombres[9], nombre;
+
+func main(){
+    write("Escribe los nombres de los alumnos");
+    cont = 0;
+    while(cont<10){
+        read(nombre);
+        listaNombres[cont] = nombre;
+        cont = cont + 1;
+    }
+    write("Escribe las calificaciones de los 10 alumnos");
+    cont = 0;
+    while(cont<10){
+        read(x);
+        calificaciones[cont] = x;
+        cont = cont + 1;
+    }
+    write("Calificaciones de alumnos:");
+    listaNombres.printArray();
+    calificaciones.printArray();
+
+    write("Cantidad de alumnos");
+    write(calificaciones.length());
+
+    write("Calificaion mas alta");
+    write(calificaciones.max());
+
+    write("Calificaion mas baja");
+    write(calificaciones.min());
+
+    write("Calificaion promedio");
+    write(calificaciones.avg());
+
+    write("Mediana");
+    write(calificaciones.median());
+
+    write("Moda");
+    write(calificaciones.mode());
+
+    write("Varianza");
+    write(calificaciones.variance());
+
+    write("Desviacion estandar");
+    write(calificaciones.stdev());
+}
+
+end;

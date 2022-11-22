@@ -18,7 +18,7 @@ func main()
     write("Dale un valor a y");
     read(y);
     cont = 1;
-    for(1:y){
+    for(0:y){
         x = fib(cont);
         write(x);
         cont = cont + 1;

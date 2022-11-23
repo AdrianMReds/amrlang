@@ -11,7 +11,7 @@ bool func esElNum(int num, int adivino){
 }
 
 func main(){
-    vidas = 3;
+    vidas = 2;
     write("Para este juego necesitamos que la persona que programa esto escriba un numero del 1 al 100 sin que el jugador vea cual numero fue");
     write("Escribe el numero");
     read(num);

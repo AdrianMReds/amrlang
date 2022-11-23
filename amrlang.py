@@ -48,9 +48,6 @@ poper = []
 pilaOperandos = []
 pilaTipos = []
 nombreEspecial = ''
-# avail = ['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10'
-#          , 't11', 't12', 't13', 't14', 't15', 't16', 't17', 't18', 't19', 't20', 't21', 't22', 't23', 't24', 't25', 't26', 't27']
-# contAvail = 0
 pilaSaltos = []
 pilaSaltosEra = []
 listaConstantes = {}
@@ -346,6 +343,7 @@ def p_nextvar(p):
             | empty
     '''
 
+#En esta función agregamos las variables a sus respectivas tablas de variables
 def p_agregaVar(p):
     '''
     agregaVar :
@@ -359,6 +357,7 @@ def p_agregaVar(p):
     global globString
     global globBool
 
+    #Nombre de la función en la que estamos (puede ser el main)
     e = dirFunc.get(actualFunc,0)
     if e!=0:
         direc = None
@@ -399,7 +398,8 @@ def p_agregaVar(p):
                 locBool+=1
                 dirFunc[actualFunc]['locBool'] += 1
 
-        #Simple variable
+        #Revisamos que tipo de variable es, arreglo, matriz, o normal
+        #Variable simple
         if p[-1]!=']':
             #Name of var (ID)
             nv = p[-1]
@@ -420,8 +420,8 @@ def p_agregaVar(p):
                 n = Node(inf, sup, 0)
                 ll = LinkedList(n)
                 dirFunc[actualFunc]['vars'][nv]['llDims'] = ll
-                # dirFunc[actualFunc]['vars'][nv]['llDims'].printList()
 
+                #Tenemos que agregar una dirección por cada bloque de memoria
                 for x in range(m0-1):
                     direc = None
                     if tipoVar == 'int':
@@ -465,6 +465,7 @@ def p_agregaVar(p):
                 #Name of var (ID)
                 nv = p[-6]
                 dirFunc[actualFunc]['vars'][nv] = {'type':tipoVar, 'dimensions':2, 'dirVar' : direc}
+                #Generamos la información de la matriz para usarla en los cuadruplos
                 inf = 0
                 sup = p[-4]
                 sup2 = p[-2]
@@ -481,7 +482,7 @@ def p_agregaVar(p):
                 m2 = m1/(sup2+1)
                 ll.add(inf,sup2,0)
                 dirFunc[actualFunc]['vars'][nv]['llDims'] = ll
-                # dirFunc[actualFunc]['vars'][nv]['llDims'].printList()
+
                 for x in range(m0-1):
                     direc = None
                     if tipoVar == 'int':
@@ -733,18 +734,22 @@ def p_cuadEndf(p):
     tempBool = tempBoolInf
     tempPointer = tempPointerInf
 
+#Esta función agrega las funcinoes a la tabla de funciones de donde sacamos toda la información en compilación
 def p_agregaFunc(p):
     '''
     agregaFunc :
     '''
+    #Estas son las variables globales que necesitamos modificar
     global actualFunc
     global tipoFunc
     global globInt
     global globFloat
     global globString
     global globBool
+    #Si estamos en main, modificamos la tabla global
     if(p[-1]=='main'):
         actualFunc = progName
+    #Si no es main, generamos una nueva tabla
     else:
         t = tipoFunc
         actualFunc = p[-1]
@@ -754,8 +759,6 @@ def p_agregaFunc(p):
                              , 'tempInt':0, 'tempFloat':0, 'tempString':0, 'tempBool':0, 'tempPointer':0
                              , 'secPars':'', 'vars' : {}}
 
-        #Si aún no existe una variable de la función
-        #Si ya existe no es necesario crear la variable, solo hacer el cuadruplo
         #Tipo de la función
         if t == 'int':
             dirFunc[progName]['vars'][actualFunc] = {'type':t, 'dimensions':0, 'dirVar':globInt}
@@ -817,10 +820,13 @@ def p_asignacion(p):
                | ID checkID asignaux ASIGNA CTESTRING cuadAsignacion PYC
     '''
 
+#Esta función la usamos en muchas partes del código y es para 
+# revisar que cualquier ID que usemos existe
 def p_checkID(p):
     '''
     checkID :
     '''
+    #ID a revisar
     id = p[-1]
     varExists = False
     global dirFunc
@@ -828,8 +834,10 @@ def p_checkID(p):
     global progName
     global reservadas
     global idParaLista
+    #Si es una palabra reservada no se puede usar
     if id in reservadas:
         sys.exit("Error: can't use {} as an ID name".format(id))
+    #Revisamos local y globalmente
     varsInFunc = dirFunc[actualFunc]['vars']
     for key in varsInFunc:
         if key == id:
@@ -840,8 +848,10 @@ def p_checkID(p):
             if key == id:
                 varExists = True
                 break
+    #Si no existe detenemos ejecución y lanzamos un error
     if varExists == False:
         sys.exit("Error: ID {} does not exist in the scope".format(id))
+    #Esto lo usamos en caso de que sea una lista para futuras funciones
     else:
         idParaLista = id
 
@@ -2152,10 +2162,12 @@ def p_pushOper(p):
     global poper
     poper.append(p[-1])
 
+#Esta funcion mete los operandos a la pila de operadores
 def p_pushOT(p):
     '''
     pushOT :
     '''
+    #Variables globales que modificaremos
     global pilaOperandos
     global pilaTipos
     global dirFunc
@@ -2166,17 +2178,15 @@ def p_pushOT(p):
     global tempInt
     global contCuadruplos
     global tempPointer
-    # print('p[-1] de factor = {}'.format(p[-1]))
-    #Lista o Matriz
+    #Es Lista o Matriz
     if(p[-1] == ']'):
         #Array/Lista
         if(p[-3]!=','):
-            # print('ESTOY EN PUSHOT SIENDO UNA LISTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
             #Nombre de variable/ID
             operando = p[-5]
-            # print('operando', operando)
             aVerificar = pilaOperandos.pop()
             pilaTipos.pop()
+            #Revisamos si la lista es global o local
             if(dirFunc[actualFunc]['vars'].get(operando,-1) != -1):
                 lilist  = dirFunc[actualFunc]['vars'][operando]['llDims']
             else:
@@ -2191,17 +2201,13 @@ def p_pushOT(p):
             # print('Generamos cuadruplos',cuad)
             contCuadruplos += 1
             
-            #+ S1 (-k) tx -> k siempre es 0 este cuadruplo es innecesario
-
+            #Metemos k*-1 a lista de constantes
             existe = listaConstantes.get((k*-1),-1)
             if(existe == -1):
                 dirConst = ctes
                 ctes += 1
-                # pilaOperandos.append(dirConst)
-                # | MENOS CTEINT pushOT 
                 listaConstantes[k*-1] = dirConst
             else:
-                # pilaOperandos.append(listaConstantes[k*-1])
                 dirConst = listaConstantes[k*-1]
 
             cuad = [contCuadruplos, '+', aVerificar, dirConst, tempInt]
@@ -2209,7 +2215,6 @@ def p_pushOT(p):
             # print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
-            #Acabo de poner esto
             dirFunc[actualFunc]['tempInt'] += 1
             tempInt += 1
 
@@ -2226,11 +2231,8 @@ def p_pushOT(p):
             if(existe == -1):
                 dirConst = ctes
                 ctes += 1
-                # pilaOperandos.append(dirConst)
-                # | MENOS CTEINT pushOT 
                 listaConstantes[dirB] = dirConst
             else:
-                # pilaOperandos.append(listaConstantes[dirB])
                 dirConst = listaConstantes[dirB]
 
             cuad = [contCuadruplos, '+', tx, dirConst, tempPointer]
@@ -2246,8 +2248,6 @@ def p_pushOT(p):
             tempPointer += 1
         #Matriz
         else:
-            # print('ESTOY EN PUSHOT SIENDO UNA MATRIZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-            #Nombre de variable/ID
             operando = p[-7]
             
             aVerificar2 = pilaOperandos.pop()
@@ -2282,8 +2282,6 @@ def p_pushOT(p):
             if(existe == -1):
                 dirConst = ctes
                 ctes += 1
-                # pilaOperandos.append(dirConst)
-                # | MENOS CTEINT pushOT 
                 listaConstantes[m1] = dirConst
             else:
                 # pilaOperandos.append(listaConstantes[k*-1])
@@ -2296,7 +2294,6 @@ def p_pushOT(p):
             # print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
-            #Acabo de poner esto
             dirFunc[actualFunc]['tempInt'] += 1
             tempInt += 1
 
@@ -2319,11 +2316,8 @@ def p_pushOT(p):
             if(existe == -1):
                 dirConst = ctes
                 ctes += 1
-                # pilaOperandos.append(dirConst)
-                # | MENOS CTEINT pushOT 
                 listaConstantes[k*-1] = dirConst
             else:
-                # pilaOperandos.append(listaConstantes[k*-1])
                 dirConst = listaConstantes[k*-1]
 
 
@@ -2334,7 +2328,6 @@ def p_pushOT(p):
             # print("Generamos cuadruplo", cuad)
             pilaOperandos.append(tempInt)
             contCuadruplos += 1
-            #Acabo de poner esto
             dirFunc[actualFunc]['tempInt'] += 1
             tempInt += 1
 
@@ -2351,11 +2344,8 @@ def p_pushOT(p):
             if(existe == -1):
                 dirConst = ctes
                 ctes += 1
-                # pilaOperandos.append(dirConst)
-                # | MENOS CTEINT pushOT 
                 listaConstantes[dirB] = dirConst
             else:
-                # pilaOperandos.append(listaConstantes[dirB])
                 dirConst = listaConstantes[dirB]
 
             cuad = [contCuadruplos, '+', ty, dirConst, tempPointer]
@@ -2384,9 +2374,7 @@ def p_pushOT(p):
             if(isinstance(operando,str)):
                 listaConstantes[operando.strip('"')] = dirConst
             else:
-                # | MENOS CTEINT pushOT
                 if(p[-2]=='-'):
-                    # listaConstantes[operando*-1] = dirConst
                     listaConstantes[operando*-1] = dirConst
                 else:
                     listaConstantes[operando] = dirConst
@@ -2632,10 +2620,6 @@ def p_error(p):
 
 parser = yacc.yacc()
 
-# parser.parse(data)
-# fn = input("Nombre del archivo\n")
-
-# arch = input('¿Qué archivo quieres abrir?\n')
 arch = arglst[1]
 arch = './' + arch
 
@@ -2649,23 +2633,7 @@ except:
 
 parser.parse(fileContent)
 
-# PRINTS DEBUGGEO ------------------------------------------------
-
 funcs = list(dirFunc)
-
-# for f in funcs:
-#     attrs = list(dirFunc[f])
-#     print(f)
-#     # print(dirFunc[f],'\n')
-#     for a in attrs:
-#         print('    ',a,dirFunc[f][a])
-
-# consts = list(listaConstantes)
-# for co in consts:
-#     print(co,listaConstantes[co])
-# print()
-# for c in listaCuadruplos:
-#     print(c)
 
 globi = dirFunc[progName]['globInt']
 globf = dirFunc[progName]['globFloat']
@@ -2678,10 +2646,3 @@ tempb = dirFunc[progName]['tempBool']
 tempp = dirFunc[progName]['tempPointer']
 maq(listaCuadruplos,dirFunc[progName]['vars'],listaConstantes,tempi,tempf,temps,tempb,tempp,globi,globf,globs,globb)
 
-# -----------------------------------------------------------------
-
-# while True:
-#     tok = lexer.token()
-#     if not tok:
-#         break
-#     print(tok)
